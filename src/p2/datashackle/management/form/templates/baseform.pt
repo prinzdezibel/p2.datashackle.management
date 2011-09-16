@@ -1,0 +1,75 @@
+<tal:define define="id                  python:view.generate_random_identifier();
+                    source_id           view/source_id;
+                    module              python:context.operational and context.op_setobject_type.__module__ or context.__class__.__module__;
+                    type                python:context.operational and context.op_setobject_type.__name__ or context.__class__.__name__;
+                    data_node_id        python:context.operational and context.op_setobject_id or context.form_identifier;
+                    operational         context/operational;
+                    action              python:context.operational and context.setobject.action or context.action;
+		            linked		        view/linked;
+                    ">
+    <div tal:attributes="id                         id;
+                                         data-action                request/URL;
+                                         data-form-identifier       context/form_identifier;
+    									 data-node-id               data_node_id;
+    									 data-source-id             source_id;
+                                         style                      view/style;
+                                         class                      python:'p2-form ' + (view.alternation != None and view.alternation or '');
+                                         " tabIndex="-1">
+        <tal:define define="script_id               view/generate_random_identifier;">
+            <div tal:attributes="id script_id">
+                  <tal:replace replace="string:
+                     (function(){
+                         var sourceId = null;
+		                 var linked = null;
+			         ">
+                  </tal:replace>
+                  <tal:condition condition="source_id" replace="string:sourceId = ${source_id};"></tal:condition>
+                  <tal:condition condition="python:linked != None" replace="string:linked = ('${linked}' == 'true' ? true : false);"></tal:condition>
+                  <tal:is_not_archetype condition="python:not context.is_archetype()">
+                      <tal:replace replace="string:
+                            var dataNode = p2.datashackle.core.session.registerDataNode('${module}', '${type}', '${data_node_id}', '${action}');
+                            if (sourceId != null && linked != null){
+    			                var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject(sourceId);
+                           	    if (linked){
+                                    linkageVertex.vertex.link('${data_node_id}');
+                                }else{
+                                    linkageVertex.vertex.unlink('${data_node_id}');
+                                }
+    			            }
+    		           " />
+    		      </tal:is_not_archetype>
+                  <tal:comment replace="nothing">Register form linkages in designer mode</tal:comment>
+                  <tal:condition condition="python:(not operational) and (not context.is_archetype())">
+                          <tal:define define="collection python:context.collections['widgets']">
+                                 <tal:replace replace="string:
+                                      p2.datashackle.core.session.registerLinkageNode('${data_node_id}', '${collection/collection_id}', 'widgets', multiSelectable=true);
+                                      $('#${id}').attr('data-linkage-node-id', '${collection/collection_id}');
+                                      ">
+                                  </tal:replace>
+                         </tal:define>
+                  </tal:condition>
+                  <tal:replace replace="string:
+                      })();
+                      ">
+                  </tal:replace>
+            </div>
+            <script type="text/javascript" tal:content="string:
+                (function(){
+                var elem = $$('#${script_id}');
+                try{
+                    var code = $$(elem).text();
+                    eval(code);
+                }catch(ex){
+                    debugger;
+                    alert(ex.message);
+                }
+                $$(elem).remove();})();
+                ">
+            </script>
+        </tal:define>
+        <!-- tal:replace replace="structure python:view.render_widgets()"></tal:replace -->
+        <tal:repeat tal:repeat="widget context/widget_collection">
+            <tal:replace replace="structure python:widget.lookup_view(view.request, view.mode)()" />
+        </tal:repeat>
+    </div>
+</tal:define>

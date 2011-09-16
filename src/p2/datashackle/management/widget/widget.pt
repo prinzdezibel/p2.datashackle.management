@@ -1,0 +1,77 @@
+<tal:define define="id                      python:view.generate_random_identifier();
+                    source_id               view/source_id;
+                    css_style               context/css_style;
+                    operational             context/operational;
+                    module                  python:operational and context.op_setobject_type.__module__ or context.__class__.__module__;
+                    type                    python:operational and context.op_setobject_type.__name__ or context.__class__.__name__;
+                    data_node_id            python:operational and context.op_setobject_id or context.widget_identifier;
+                    action                  python:operational and context.setobject.action or context.action;
+                    archetype               python:context.is_archetype();
+                    ">
+    <div class="p2-widget" tal:attributes="style                        css_style;
+                                           id                           id;
+                                           data-widget-identifier       context/widget_identifier;
+                                           data-widget-type             context/widget_type;
+                                           data-node-id                 data_node_id;
+                                           data-module                  module;
+                                           data-type                    type;
+                                           data-source-id               source_id;
+                                           data-operational             context/operational;
+                                           ">
+        <tal:define define="script_id               python:view.generate_random_identifier();">
+            <div style="visibility: hidden;" tal:attributes="id script_id">
+                 <tal:replace replace="string:
+                     (function(){
+                     var rootEl = $$('#${id}');">
+                 </tal:replace>
+                 <tal:condition condition="operational" replace="string: var operational = true;"></tal:condition>
+                 <tal:condition condition="not:operational" replace="string: var operational = false;"></tal:condition>
+                 <tal:condition condition="not: operational">
+                     <tal:replace replace="string:
+                         var propertyform = new ${context/js_propertyform_constructor}('${view/application_url}/configuration/meta/p2_widget/forms/${context/widget_type}', '${source_id}', '${data_node_id}');
+
+                         $('#${id}').data('data-object', new p2.Widget(rootEl, operational, propertyform, '${source_id}', '${module}', '${type}', '${data_node_id}', '${action}', '${css_style}', '${archetype}'));
+                         ">
+                      </tal:replace>
+                      <tal:is_not_archetype condition="not:archetype">
+                          <tal:define define="collection python:context.collections['spans']">
+                                <tal:replace replace="string:
+                                    p2.datashackle.core.session.registerLinkageNode('${data_node_id}', '${collection/collection_id}', 'spans', isMultiSelectable=true);
+                                ">
+                                </tal:replace>
+                          </tal:define>
+                      </tal:is_not_archetype>
+                  </tal:condition>
+                <tal:replace replace="string: })(); "></tal:replace>
+              </div>
+            <script type="text/javascript" tal:content="string:
+                (function(){
+                var elem = $$('#${script_id}');
+                 try{
+                    eval($$(elem).text());
+                }catch(ex){
+                    debugger;
+                    alert(ex.message);
+                }
+                $$(elem).remove();})();
+                ">
+            </script>
+        </tal:define>
+        
+        <tal:repeat repeat="key context/spans">
+            <div tal:replace="structure python:context.spans[key].lookup_view(view.request, view.mode, source_id)()"></div>
+        </tal:repeat>
+        
+        <tal:condition condition="not: operational">
+            <div class="buttons">
+                <a href="#" class="anchor-edit">
+                    <img alt="edit" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/edit.gif" />
+                </a>
+                <a href="#" class="anchor-delete">
+                    <img alt="delete" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/delete.png" />
+                </a>
+            </div>
+        </tal:condition>
+    </div>
+</tal:define>
+

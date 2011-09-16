@@ -1,0 +1,58 @@
+<tal:define define="id              python:view.generate_random_identifier();
+                    source_id       view/source_id;
+                    info            python:context.get_info();
+                    media_id        context/media_id;
+                    ">
+    <div class="p2-span" tal:attributes="id id;">
+        <div style="float:left;" id="progress_report_name"></div>
+        <!-- div id="progress_report_status" style="font-style: italic;"></div -->
+        <!-- div class="progress_report_bar" style="background-color: blue; width: 0; height: 5px;"></div -->
+        <div class="container" id="container">
+                <!-- Deactivate the native image dragging behaviour of Firefox -->
+                <script style="text/javascript">
+                    var preventdrag = function(event) {
+                        if (event.preventDefault) {
+                            event.preventDefault();
+                        }
+                    }
+                </script>
+                <tal:condition condition="not: context/operational">
+                    <img onmousedown="preventdrag" class="resizeimg" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/placeholder.png" style="width:100%; height:100%;">
+                <script style="text/javascript" tal:content="string:
+                        $('.p2-span[id=&quot;$id&quot;] .resizeimg').bind('mousedown', preventdrag);
+                    ">
+                </script>
+                </tal:condition>
+                <tal:condition condition="context/operational">
+                    <tal:condition condition="context/media">
+                        <img tal:attributes="src string:${view/application_url}/@@media?id=${media_id}&thumbnail" style="width:100%; height:100%;">
+                    </tal:condition>
+                    <tal:condition condition="not: context/media">
+                        <img tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/placeholder.png" style="width:100%; height:100%;">
+                     </tal:condition>
+                </tal:condition>
+        </div>
+        <tal:comment replace="nothing">We don't display the actual fileupload field, as it is hard to style it using css, e.g. no text area field. http://www.shauninman.com/archive/2007/09/10/styling_file_inputs_with_css_and_the_dom</tal:comment>
+        <tal:condition condition="not: context/operational">
+            <div class="resizable" alt="Resize Handle"
+                tal:attributes="style string:background: url(${view/application_url}/@@/setmanager.ui.skin/control_resizable.gif)">
+            </div>
+        </tal:condition>
+        <div class="cabinet">
+            <input type="file" name="upload_field" />
+        </div>
+        <script type="text/javascript" tal:content="string:
+           (function(){
+               try{
+                   var info = $$.parseJSON('${info}');
+               }catch(ex){
+                   alert(ex.message);
+               }
+               var sourceId = null;
+               if ('${source_id}' != 'None') sourceId = '${source_id}';
+               $('#${id}').data('data-object', new p2.Span.Fileupload($('#${id}'), sourceId, '${view/application_url}', info));
+           })();
+          ">
+        </script>
+    </div>
+</tal:define>

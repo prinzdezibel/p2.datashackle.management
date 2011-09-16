@@ -1,0 +1,16 @@
+<tal:define define="setobject_id python:context.op_setobject_id">
+<div tal:attributes="id string:changeableform_${setobject_id}">
+    <!-- Output changeableform obj -->
+    <script type="text/javascript" tal:content="structure string:
+        changeableformobj_${setobject_id} = new p2.ChangeableForm('${setobject_id}');
+        ">
+    </script>
+    <!-- Output form contents -->
+    <tal:replace replace="structure view/call_form" />
+    <!-- Initialize changeableform obj -->
+    <script type="text/javascript" tal:content="structure string:
+        changeableformobj_${setobject_id}.initialize();
+            ">
+    </script>
+</div>
+</tal:define>

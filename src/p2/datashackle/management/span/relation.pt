@@ -1,0 +1,83 @@
+<tal:define define="id              python:view.generate_random_identifier();
+                    source_id       view/source_id;
+                    data_node_id    python:context.span_identifier;
+                    css_style       context/css_style;
+                    span_type       context/span_type;
+                    info            python:context.get_info();
+                    is_multi_selectable python:context.linkage.is_multi_selectable;
+                    ">
+    <div class="p2-span" tal:attributes="id                         id;
+                                         data-span-type             span_type;
+                                         data-span-operational      context/operational;
+                                         style                      css_style;
+                                         data-node-id               data_node_id;
+                                         " tabIndex="-1">
+        <script type="text/javascript" tal:content="string:
+            (function(){
+               try{
+                   var info = $$.parseJSON('${info}');
+               }catch(ex){
+                   alert(ex.message);
+               }
+               var sourceId = null;
+               if ('${source_id}' != 'None') sourceId = '${source_id}';
+               var collectionId = null;
+               if ('${view/collection_id}' != 'None') collectionId = '${view/collection_id}';
+               $('#${id}').data('data-object', new p2.Span.Relation($('#${id}'), sourceId, info, '${view/targetResource}', collectionId));
+             })();
+          ">
+        </script>
+        <tal:condition condition="context/operational">
+            <tal:condition condition="python: view.count == 0">
+                <p>No objects.</p>
+            </tal:condition>
+            <script type="text/javascript" tal:content="string:
+                var isMultiSelectable = null;
+                if ('${is_multi_selectable}' == 'True') isMultiSelectable = true; else isMultiSelectable = false;
+                p2.datashackle.core.session.registerLinkageNode('${context/setobject/id}', '${view/collection_id}', '${context/linkage/attr_name}', isMultiSelectable, '${context/span_identifier}');
+            ">
+            </script>
+            <tal:condition condition="python: view.count != 0">
+            <tal:repeat repeat="t view/query">
+                <tal:define define="
+                    setobject   python:t[0];
+                    linked      python:t[1];
+                    index       repeat/t/index;
+                    alternation python:view.count > 1 and (index%2 == 0 and 'even' or 'odd') or None;
+                    ">
+                    <tal:replace replace="structure python: view.call_subform(view.collection_id, setobject.id, linked, alternation)" />
+                </tal:define>
+            </tal:repeat>
+            </tal:condition>
+            <tal:condition condition="context/editable">
+            <a href="#" title="Edit objects" tal:attributes="onclick string:
+                    return $('#${id}').data('data-object').onEditClick()">
+                <img style="width:20px; height:20px; float:left;" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/edit_object.png" alt="Edit" />
+                <tal:condition condition="python:view.count == 0">Add to</tal:condition>
+                <tal:condition condition="python:view.count != 0">Edit</tal:condition>
+                collection
+            </a>
+            </tal:condition>
+        </tal:condition>
+        <tal:condition condition="python:not context.operational">
+            <div class="container" id="container">
+                <!-- Deactivate the native image dragging behaviour of Firefox -->
+                <script style="text/javascript">
+                    var preventdrag = function(event) {
+                        if (event.preventDefault) {
+                            event.preventDefault();
+                        }
+                    };
+                </script>
+                <img onmousedown="preventdrag" class="resizeimg" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/placeholder.png" style="position:absolute; width:100%; height:100%;">
+                <script style="text/javascript" tal:content="string:
+                    $('.p2-span[id=&quot;$id&quot;] .resizeimg').bind('mousedown', preventdrag);
+                ">
+                </script>
+            </div>
+            <div class="resizable" alt="Resize Handle"
+                tal:attributes="style string:background: url(${view/application_url}/@@/setmanager.ui.skin/control_resizable.gif)">
+            </div>
+        </tal:condition>
+    </div>
+</tal:define>

@@ -1,0 +1,32 @@
+<tal:define define="id              python:view.generate_random_identifier();
+                    source_id       view/source_id;
+                    module          python:context.operational and context.op_setobject_type.__module__ or context.__class__.__module__;
+                    type            python:context.operational and context.op_setobject_type.__name__ or context.__class__.__name__;
+                    data_node_id    python:context.operational and context.op_setobject_id or context.span_identifier;
+                    css_style       context/css_style;
+                    span_type       context/span_type;
+                    span_name       context/span_name;
+                    action          context/action;
+                    info            python:context.get_info();
+                    ">
+   <div class="p2-span" tal:attributes="id                            id;
+                                         data-span-type                span_type;
+                                         data-field-identifier         context/field_identifier;
+                                         style                         css_style;
+                                         ">
+        <script type="text/javascript" tal:content="string:
+           (function(){
+               try{
+                   var info = $$.parseJSON('${info}');
+               }catch(ex){
+                   alert(ex.message);
+               }
+               var sourceId = null;
+               if ('${source_id}' != 'None') sourceId = '${source_id}';
+               $('#${id}').data('data-object', new p2.Span.Checkbox($('#${id}'), sourceId, info));
+           })();
+          ">
+        </script>
+        <input class="input" type="checkbox" tal:attributes="name span_name;" />
+   </div>
+</tal:define>

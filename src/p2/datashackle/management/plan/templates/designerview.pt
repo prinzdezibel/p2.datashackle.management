@@ -1,0 +1,86 @@
+<tal:errormsg tal:condition="context/plan/fatalerror">
+    <div class="setmanager_errormessage" tal:content="context/plan/fatalerror"></div>
+    <form method="GET" tal:attributes="action view/plan/context_url">
+        <input type="submit" value="Check if database is available now">
+        <input type="hidden" value="designer" name="tab">
+    </form>
+</tal:errormsg>
+<tal:viewcontent tal:condition="python:not context.plan.fatalerror">
+    <tal:define define="plan_url context/plan/@@absolute_url; application_url view/parent_application/@@absolute_url;">
+    <div id="designerpagewrapper">
+    <div id="designerpage">
+        
+        <div id="view_area">
+            <div id="header">
+                <input id="globalsavebutton" type="submit" value="Save changes" onClick="javascript:p2.setdesigner.save.apply(p2.setdesigner, [])" disabled>
+                <input id="globalrevertbutton" type="submit" value="Revert changes" onClick="javascript:p2.setdesigner.revert.apply(p2.setdesigner, [])" disabled>
+            </div>
+            <div tal:replace="structure provider:windowmanager">
+                Windowmanager HTML goes here.
+            </div>
+        </div>
+
+        <script type="text/javascript" tal:content="string:
+            p2.setdesigner = new p2.Setdesigner(application_url='${application_url}',
+                                                plan_url='${plan_url}',
+                                                plan_identifier='${context/plan/plan_identifier}',
+                                                table_identifier='${context/plan/table_identifier}',
+                                                formModule = '${context/plan/form_module}',
+                                                formType = '${context/plan/form_type}'
+                                                );
+            ">
+           
+        </script>
+        <tal:repeat repeat="form python:view.forms_for_plan()">
+             <tal:define define="collection_id python:form.collections['widgets']['collection_id']">
+                 <script type="text/javascript" tal:content="structure string:
+                     p2.setdesigner.fetch_form('${form/form_name}',
+                                               '${form/form_name}',
+                                               '${plan_url}/forms/${form/form_name}',
+                                               '${form/width}',
+                                               '${form/height}',
+                                               '${form/form_identifier}',
+                                               '${context/plan/so_module}',
+                                               '${context/plan/so_type}',
+                                               '${form/action}',
+                                               '${collection_id}'
+                                                );
+                    ">
+                 </script>
+            </tal:define>
+         </tal:repeat>
+
+        <div id="toolbox">
+            <h3>Forms</h3>
+            <div class="forms">
+               <ul>
+                <tal:repeat repeat="form python:view.forms_for_plan()">
+                    <tal:define define="index repeat/form/index">
+                    <li>
+                        <div class="form">
+                            <a id="92883733" href="#" 
+                               tal:attributes="onclick string:p2.setdesigner.showForm(this, '${form/form_name}');;return false;;">
+                                <img alt="form icon" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/icon_form.png"/>
+                                <div class="form-name" tal:content="form/form_name"></div>
+                                <div class="clear"></div>
+                            </a>
+                            <script tal:condition="python: index == 0" tal:content="string:
+                                p2.setdesigner.showForm($$('#92883733'), '${form/form_name}');;
+                                $$('#92883733').removeAttr('id');;">
+                            </script>
+                        </div>
+                        
+                    </li>
+                </tal:define>
+                </tal:repeat>
+                </ul>
+            </div>
+            <h3>Widgets</h3>
+            <div style="padding: 10px;" id="composites">
+                <div tal:content="structure view/lookup_archetype_view"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+   </tal:define>
+</tal:viewcontent>

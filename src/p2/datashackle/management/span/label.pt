@@ -1,0 +1,29 @@
+<tal:define define="id              python:view.generate_random_identifier();
+                    source_id       view/source_id;
+                    info            python:context.get_info();
+                    ">
+    <div class="p2-span" tal:attributes="id id;">
+        <script type="text/javascript" tal:content="string:
+            (function(){
+               var info = $$.parseJSON('${info}');
+               var sourceId = null;
+               if ('${source_id}' != 'None') sourceId = '${source_id}';
+               var label = new p2.Span.Label($('#${id}'), sourceId, info);
+               $('#${id}').data('data-object', label);
+             })();
+          ">
+        </script>
+        <tal:condition condition="python: view.mode == 'DESIGNER'">
+            <textarea class="input"
+                tal:content="context/span_value"></textarea>
+            <tal:condition condition="not: context/operational">
+                <div class="resizable" alt="Resize Handle"
+                    tal:attributes="style string:background: url(${view/application_url}/@@/setmanager.ui.skin/control_resizable.gif)">
+                </div>
+            </tal:condition>
+        </tal:condition>
+        <tal:condition condition="python: view.mode != 'DESIGNER'">
+            <span tal:content="context/span_value"></span>
+        </tal:condition>
+    </div>
+</tal:define>

@@ -1,0 +1,42 @@
+<tal:define define="id              python:view.generate_random_identifier();
+                    source_id       view/source_id;
+                    module          python:context.__class__.__module__;
+                    type            python:context.__class__.__name__;
+                    data_node_id    python:context.span_identifier;
+                    css_style       context/css_style;
+                    span_type       context/span_type;
+                    span_name       context/span_name;
+                    action          context/action;
+                    info            python:context.get_info();
+                    ">
+    <div class="p2-span" tal:attributes="id                         id;
+                                         data-span-type             span_type;
+                                         style                      css_style;
+                                         ">
+        <script type="text/javascript" tal:content="string:
+            (function(){
+               try{
+                   var info = $$.parseJSON('${info}');
+               }catch(ex){
+                   alert(ex.message);
+               }
+               var sourceId = null;
+               if ('${source_id}' != 'None') sourceId = '${source_id}';
+               $('#${id}').data('data-object', new p2.Span.Action($('#${id}'), sourceId, info));
+            })();
+          ">
+        </script>
+        <tal:condition condition="not: context/operational">
+            <textarea class="input"
+                tal:content="structure context/span_value"></textarea>
+            <tal:condition condition="not: context/operational">
+                <div class="resizable" alt="Resize Handle"
+                    tal:attributes="style string:background: url(${view/application_url}/@@/setmanager.ui.skin/control_resizable.gif)">
+                </div>
+            </tal:condition>
+        </tal:condition>
+        <tal:condition condition="context/operational">
+            <div style="border:1px solid #000"><input type="submit" class="p2-button" tal:attributes="value context/span_value"></div>
+        </tal:condition>
+    </div>
+</tal:define>

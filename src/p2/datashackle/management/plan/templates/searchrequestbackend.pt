@@ -1,0 +1,27 @@
+<tal:results repeat="result view/searchresults">
+    <span tal:replace="structure python:view.call_form(result['setobject_id'])">DA FORM</span>
+</tal:results>
+<tr>
+    <td colspan="2">
+        <span tal:condition="python:view.currentpage > 1">
+            <a href="javascript:p2.datamanagement.PreviousPage.apply(p2.datamanagement, [])"
+                class="resultstable_nextprev" i18n:translate="Previous page" i18n:domain="p2.setmanager">Previous page
+            </a>
+        </span>
+        <span tal:condition="python:view.currentpage <= 1">
+            <span class="resultstable_nextprevdeactivated" i18n:domain="p2.setmanager" i18n:translate="Previous page" >Previous page</span>
+        </span>
+        |
+        <span tal:content="python:view.currentpage">1</span>
+        |
+        <span tal:condition="python:view.nextpage">
+            <a href="javascript:p2.datamanagement.NextPage.apply(p2.datamanagement, [])"
+                class="resultstable_nextprev" i18n:domain="p2.setmanager" i18n:translate="Next page">
+                Next page
+            </a>
+        </span>
+        <span tal:condition="python:view.nextpage != True">
+            <span class="resultstable_nextprevdeactivated" i18n:domain="p2.setmanager" i18n:translate="Next page">Next page</span>
+        </span>
+    </td>
+</tr>

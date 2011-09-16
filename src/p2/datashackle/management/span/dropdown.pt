@@ -1,0 +1,91 @@
+<tal:define define="id              python:view.generate_random_identifier();
+                    source_id       view/source_id;
+                    data_node_id    python:context.span_identifier;
+                    css_style       context/css_style;
+                    span_type       context/span_type;
+                    info            python:context.get_info();
+                    is_multi_selectable python:context.linkage.is_multi_selectable;
+                    ">
+    <div class="p2-span" tal:attributes="id                         id;
+                                         data-span-type             span_type;
+                                         data-span-operational      context/operational;
+                                         style                      css_style;
+                                         data-node-id               data_node_id;
+                                         data-field-identifier      context/linkage/attr_name;
+                                         ">
+        <select class="input" size="1" style="width: 100%;">
+            <script type="text/javascript" tal:content="string:
+                (function(){
+                   try{
+                       var info = $$.parseJSON('${info}');
+                   }catch(ex){
+                       alert(ex.message);
+                   }
+                   var sourceId = null;
+                   if ('${source_id}' != 'None') sourceId = '${source_id}';
+                   var collectionId = null;
+                   if ('${view/collection_id}' != 'None') collectionId = '${view/collection_id}';
+                   $('#${id}').data('data-object', new p2.Span.Dropdown($('#${id}'), sourceId, info, '${view/targetResource}', collectionId));
+                 })();
+              ">
+            </script>
+            <tal:condition condition="context/operational">
+                    <script type="text/javascript" tal:content="string:
+                    var isMultiSelectable = null;
+                    if ('${is_multi_selectable}' == 'True') isMultiSelectable = true; else isMultiSelectable = false;
+                    p2.datashackle.core.session.registerLinkageNode('${context/setobject/id}', '${view/collection_id}', '${context/linkage/attr_name}', isMultiSelectable, '${context/span_identifier}');
+                    ">
+                    </script>
+                    <tal:condition condition="python:context.required == False">
+                        <option></option>
+                    </tal:condition>
+                    <tal:condition condition="python:view.selected == False and context.required == True">
+                        <option>Please choose</option>
+                    </tal:condition>
+                    <tal:condition condition="python: view.count != 0">
+                    <tal:repeat repeat="t view/query">
+                        <tal:define define="
+                            setobject   python:t[0];
+                            module      python:setobject.__module__;
+                            type        python:setobject.__class__.__name__;
+                            so_id       python:setobject.id;
+                            action      python:setobject.action;
+                            linked      python:t[1];
+                            index       repeat/t/index;
+                            ">
+                            <script type="text/javascript" tal:content="string:
+                              var dataNode = p2.datashackle.core.session.registerDataNode('${module}', '${type}', '${so_id}', '${action}');
+		    	              var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject('${view/collection_id}');
+                              if ('${linked}' == 'true') var linked = true; else var linked = false;
+                              if (linked){
+                                linkageVertex.vertex.link('${so_id}');
+                              }else{
+                                linkageVertex.vertex.unlink('${so_id}');
+                              }
+                            "></script>
+                            <tal:condition condition="python:linked == 'true'">
+                                <option selected="selected"
+                                    tal:content="python:getattr(setobject, context.attr_name)"
+                                    tal:attributes="value so_id">
+                                </option><test2>test</test2>
+                            </tal:condition>
+                            <tal:condition condition="python:linked != 'true'">
+                                <option tal:content="python:getattr(setobject, context.attr_name)"
+                                    tal:attributes="value so_id">
+                                </option><test1>test</test1>
+                            </tal:condition>
+                        </tal:define>
+                    </tal:repeat>
+                    </tal:condition>
+            </tal:condition>
+            <tal:condition condition="python:not context.operational">
+                    <option>One</option>
+                    <option>Two</option>
+                    <option>Three</option>
+                <div class="resizable" alt="Resize Handle"
+                    tal:attributes="style string:background: url(${view/application_url}/@@/setmanager.ui.skin/control_resizable.gif)">
+                </div>
+            </tal:condition>
+            </select>
+    </div>
+</tal:define>

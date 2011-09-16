@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="p2.setmanager">
+    <head>
+        <!-- base href="" tal:attributes="href layout/base" / -->
+        <base href="" tal:attributes="href python:view.application_url() + '/'" />
+        <tal:header content="structure provider:dolmen.header" />
+       </head>
+    <body>
+        <div id="page" class="toggler">
+            <div id="effect" tal:content="structure provider:setmanager.navigation">
+            </div>
+            <div id="togglebar">
+                <a id="togglebar-button" title="" href="#">o</a>
+            </div>
+            <div id="dolmen-site">
+                <div id="dolmen-header">
+                   <div tal:replace="structure provider:dolmen.top" />
+                </div>
+	            <div id="dolmen-above-body"
+	               tal:content="structure provider:dolmen.above.body" />
+	            <div id="dolmen-body">
+                    <div id="dolmen-inner-body"
+	    		       tal:content="structure view/content">
+		    	       Pagelet body will appear here.
+                    </div>
+                </div>
+	            <div id="dolmen-below-body"
+	               tal:content="structure provider:dolmen.below.body" />
+            </div>
+        </div>
+    </body>
+</html>
