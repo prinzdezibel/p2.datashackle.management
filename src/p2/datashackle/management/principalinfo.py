@@ -8,8 +8,8 @@ from zeam.form.base import Fields, action, Action, Actions
 from zeam.form.base.markers import SUCCESS, FAILURE
 from zeam.form.ztk.actions import CancelAction
 
-from p2.datashackle.core import MF as _
-from p2.datashackle.core.interfaces import IUserPreferences
+from p2.datashackle.management import MF as _
+from p2.datashackle.management.interfaces import IUserPreferences
 
 
 class UserPreferencesFormPage(ApplicationForm):

@@ -7,6 +7,7 @@ from grok.util import create_application
 from dolmen.app import security
 from zope.app.appsetup.bootstrap import getInformationFromEvent
 from zope.app.appsetup.interfaces import IDatabaseOpenedWithRootEvent
+from zope.app.appsetup.product import getProductConfiguration
 from zope.component import getUtility
 from zope.app.wsgi.interfaces import WSGIPublisherApplicationCreated
 from zope.site.hooks import setSite
@@ -14,16 +15,14 @@ from zope.principalannotation.utility import PrincipalAnnotationUtility
 from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.securitypolicy.interfaces import IRolePermissionManager
 
+from p2.datashackle.core import setup
 from p2.datashackle.management.folder import PrivateFolder, Folder
 from p2.datashackle.management.generic_set import GenericSet
 from p2.datashackle.management.users import Users
 from p2.container.container import ignore_enumeration
-from p2.datashackle.core import MF as _
-from p2.datashackle.core.interfaces import IDatashackle
+from p2.datashackle.management import MF as _
+from p2.datashackle.management.interfaces import IDatashackle
 from p2.datashackle.core.interfaces import IDbUtility
-
-
-from p2.datashackle.core.interfaces import IDatashackle
 
 
 class Datashackle(grok.Application, content.OrderedContainer):
@@ -59,15 +58,23 @@ def wsgi_app_created(event):
         new_app = create_application(Datashackle, root['Application'], name)
         transaction.commit()
    connection.close()
-
+    
+   config = getProductConfiguration('setmanager')
+   settings = {
+        'provider': config.get('db_provider'),
+        'host': config.get('db_host'),
+        'user': config.get('db_user'),
+        'password': config.get('db_password'),
+        'db': config.get('db_name')}
+   setup(settings)
 
 @grok.subscribe(IDatabaseOpenedWithRootEvent)
 def init_all_applications(event):
     db, connection, root, root_folder = getInformationFromEvent(event)
     for (app_name, app) in root_folder.items():
         setSite(app)
-        getUtility(IDbUtility).updateDatabase(True)
-        
+
+            
 
 @grok.subscribe(grok.IApplicationInitializedEvent)
 def init_application(event):
@@ -81,9 +88,6 @@ def init_application(event):
     # created propertyform
     setSite(application)
         
-    # Initialize database
-    getUtility(IDbUtility).updateDatabase(True)
-   
     configfolder = PrivateFolder()
     configfolder.title = _(u'Configuration')
     application['configuration'] = configfolder

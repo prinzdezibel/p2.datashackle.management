@@ -4,7 +4,10 @@
 
 import grok
 from zope.component import getUtility
-from p2.datashackle.core.interfaces import IJsonInfoQuery, IDatashackle
+
+from p2.datashackle.management.interfaces import IDatashackle
+from p2.datashackle.core.interfaces import IJsonInfoQuery
+
 
 class JsonInfoQuery(grok.View):
     """ This is the JsonInfoQuery view that sits on the application and

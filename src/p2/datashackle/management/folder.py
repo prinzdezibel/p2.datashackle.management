@@ -12,9 +12,9 @@ from dolmen.app.layout import ContextualMenu
 from menhir.contenttype.privatefolder import PrivateFolder
 
 from p2.container.listing import FolderListing
-from p2.datashackle.core import MF as _
-from p2.datashackle.core.app.properties import TranslatableDescriptiveProperties
-from p2.datashackle.core.interfaces import IFolder, IListingDefault
+from p2.datashackle.management import MF as _
+from p2.datashackle.management.properties import TranslatableDescriptiveProperties
+from p2.datashackle.management.interfaces import IFolder, IListingDefault
 
 
 
@@ -29,8 +29,6 @@ class FolderListing(FolderListing):
      """
      grok.context(IListingDefault)
      grok.name('index')
-
-
     
 
 class Folder(TranslatableDescriptiveProperties, dolmen.content.OrderedContainer):

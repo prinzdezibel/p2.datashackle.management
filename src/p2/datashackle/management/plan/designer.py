@@ -12,8 +12,9 @@ from zope.component import getUtility, getMultiAdapter
 from sqlalchemy.sql import not_ 
 
 from p2.javascript.base import *
-from p2.datashackle.core import MF as _
-from p2.datashackle.core.interfaces import IGenericSet, IFormType
+from p2.datashackle.management import MF as _
+from p2.datashackle.management.interfaces import IGenericSet
+from p2.datashackle.core.interfaces import IFormType
 from p2.datashackle.management.resource_library import SetmanagerResources, PlanResources
 from p2.windowmanager.layout import WindowManagerLibrary
 from p2.windowmanager.skin import WindowManagerSkin

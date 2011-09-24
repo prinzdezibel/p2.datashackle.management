@@ -15,7 +15,8 @@ from zope.publisher.publish import mapply
 from grokcore.view.components import View
 from zope.app.appsetup.product import getProductConfiguration
 
-from p2.datashackle.core.interfaces import IDbUtility, IDatashackle
+from p2.datashackle.core.interfaces import IDbUtility
+from p2.datashackle.management.interfaces import IDatashackle
 from p2.datashackle.core.app.exceptions import SetobjectGraphException, UserException
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.models.identity import generate_random_identifier

@@ -9,9 +9,8 @@ import json
 from lxml import etree
 from zope.component import getUtility
 
-from p2.datashackle.core.interfaces import IGenericSet
+from p2.datashackle.management.interfaces import IGenericSet
 from p2.datashackle.core.app.exceptions import UnspecificException, SetobjectGraphException
-from p2.datashackle.core.interfaces import IGenericSet
 from p2.datashackle.core.models.setobject_graph import SetobjectGraph
 from p2.datashackle.management.views import JsonView
 

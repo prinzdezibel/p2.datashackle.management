@@ -4,6 +4,14 @@
 
 import grok
 import logging
+from dolmen.app.container.listing import FolderListing
+from dolmen.app.layout import Add, Edit, Delete, ContextualMenu
+import dolmen.forms.base as form
+from dolmen.forms.crud.interfaces import IFactoryAdding
+from dolmen.forms.crud.utils import getSchemaFields
+from dolmen.menu import menuentry
+from zope.cachedescriptors.property import CachedProperty
+
 
 import dolmen.app.layout as layout
 import dolmen.content
@@ -21,7 +29,8 @@ from p2.datashackle.core.app.exceptions import *
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.sql import table_exists
 from p2.datashackle.core.globals import metadata
-from p2.datashackle.core.interfaces import IGenericSet, IDbUtility
+from p2.datashackle.management.interfaces import IGenericSet
+from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models import identity
 from p2.datashackle.core.models.form import FormType
 from p2.datashackle.core.models.plan import fetch_plan, Plan
@@ -31,7 +40,7 @@ from p2.datashackle.core.models.setobject_types import create_setobject_type
 
 class GenericSetFactory(dolmen.content.Factory):
     """Custom genericset factory allows to specify a custom addform."""
-    dolmen.content.name('p2.datashackle.core.models.generic_set.GenericSet')
+    dolmen.content.name('p2.datashackle.management.generic_set.GenericSet')
     addform = u'genericsetaddform'   
 
  
@@ -127,4 +136,43 @@ def genericset_added(genericset, event):
     plan.set_default(form)
     session.add(plan)
     session.commit()
+
+
+
+@menuentry(ContextualMenu, order=30)
+class EditView(Edit):
+    grok.context(IGenericSet)
+ 
+    @CachedProperty
+    def fields(self):
+        return getSchemaFields(
+            self, self.getContentData().getContent(),
+            '__parent__', 'plan_identifier', 'description')
+
+
+class AddView(Add):
+    """A custom addform to add a GenericSet. It omits the plan_identifier field.
+    """
+    grok.context(IFactoryAdding)
+    # The name the ++add++ traversal adapter uses to lookup the add form as a named multi-adapter.
+    grok.name('genericsetaddform')
+
+    @CachedProperty
+    def fields(self):
+        return getSchemaFields(
+            self, self.context.factory.factory, '__parent__', 'plan_identifier', 'description')
+
+
+@menuentry(ContextualMenu, order=40)
+class DeleteView(Delete):
+    grok.context(IGenericSet)
+    grok.name('delete')
+    grok.title(u"Delete")
+
+@menuentry(ContextualMenu, order=50)
+class ListingView(FolderListing):
+    grok.name('folderlisting')
+    grok.context(IGenericSet)
+
+
 

@@ -25,7 +25,13 @@ p2.Span.Alphanumeric = function(el, sourceId, applicationUrl, info){
         $(el).find('textarea').html(info.span_value);
     }
 
-    this.createInputField(info.multi_line, value, false);
+    if (this.info.field_type == 'text'){
+        this.createInputField(true, value, false);
+    }else{
+        this.createInputField(false, value, false);
+    }
+    
+    this.setStyle();
 
     if (info.archetype == false) {
         this.registerDataNode();
@@ -62,9 +68,9 @@ p2.Span.Alphanumeric.prototype.setMultiline = function(multiline){
     var value = $(this.rootEl).find('.input').val();
     this.createInputField(multiline, value, true);
     if (multiline){
-        this.info.multi_line = true;
+        this.multi_line = true;
     }else{
-        this.info.multi_line = false;
+        this.multi_line = false;
     }
 }
 
@@ -84,17 +90,13 @@ p2.Span.Alphanumeric.prototype.createInputField = function(multiline, value, set
         var textline = $('<input type="text" class="input" />');
         textline.val(value);
         $(this.rootEl).append(textline);
-        if (setHeight) $(this.rootEl).height(17);
+        if (setHeight) $(this.rootEl).height(15);
     }
     
     if (!this.info.operational){
         var resizer = $('<div class="resizable" alt="Resize handle" />');
         resizer.css('background-image', 'url(' + this.applicationUrl + '/@@/setmanager.ui.skin/control_resizable.gif)');
         $(this.rootEl).append(resizer);
-    }
-    if (setHeight){
-        var setobject = p2.datashackle.core.session.lookupDataNode(this.info.data_node_id);
-        this.setStyle();
     }
     
     this.bindResizables();
@@ -106,7 +108,7 @@ p2.Span.Alphanumeric.prototype.resizableMousemove = function(ev, originalX, orig
     var deltaY = ev.clientY - originalY;
     var width = originalWidth + deltaX;
     var height = originalHeight + deltaY;
-    if (this.info.multi_line){
+    if (this.multi_line){
         if (height < 45){
             height = 45;
         }
@@ -127,10 +129,19 @@ p2.Span.Alphanumeric.prototype.getDataID = function(el){
 
 p2.Span.Alphanumeric.prototype.bindMultiline = function(){
     var self = this;
-    var eventName = p2.datashackle.core.buildChangeEventName(this.info.module, this.info.type, this.info.span_identifier, 'multi_line');
+    
+    var eventName = p2.datashackle.core.buildChangeEventName(this.info.module, this.info.type, this.info.span_identifier, 'field_type');
     $(document).bind(eventName, function(e, senderEl, value){
-        self.setMultiline(value); 
+        var index = senderEl[0].selectedIndex;
+        var dropdownText = senderEl[0].children[index].text
+        if (dropdownText == 'text'){
+            self.setMultiline(true);
+        }else{
+            self.setMultiline(false);
+        } 
     });
+
+
 }
 
 p2.Span.Alphanumeric.prototype.registerDataNode = function(){
@@ -153,8 +164,6 @@ p2.Span.Alphanumeric.prototype.registerDataNode = function(){
 
     p2.datashackle.core.handleChangeEvent(inputEl, setobject, this.info.span_type, this.info.attr_name, span_identifier);
    
-    // various custom event bindings - those allow controlling this setobject easily without having a js reference to it
-    
     var fn_ignore = function(e, givendataid) {
         if (dataid == givendataid) {
             //change our action to ignore

@@ -13,7 +13,8 @@ from zope.mimetype.interfaces import IMimeTypeGetter
 
 from p2.datashackle.core.models.media import Media
 from p2.datashackle.core.models.identity import generate_random_identifier
-from p2.datashackle.core.interfaces import IDbUtility, IDatashackle
+from p2.datashackle.core.interfaces import IDbUtility
+from p2.datashackle.management.interfaces import IDatashackle
 
 
 class Upload(grok.View):

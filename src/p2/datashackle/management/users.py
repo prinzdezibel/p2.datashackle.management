@@ -19,8 +19,8 @@ from zope.security.interfaces import IGroupAwarePrincipal
 from p2.datashackle.management.folder import Folder
 from p2.container.listing import FolderListing
 from p2.datashackle.core import globals
-from p2.datashackle.core.interfaces import IUsers, IUserPreferences
-from p2.datashackle.core.models.userpreferences import UserPreferences
+from p2.datashackle.management.interfaces import IUsers, IUserPreferences
+from p2.datashackle.management.userpreferences import UserPreferences
 
 
 
