@@ -1,34 +1,34 @@
-    <script type="text/javascript" tal:content="string:
+<script type="text/javascript" tal:content="string:
         p2.datamanagement = new p2.Datamanagement(plan_url='${context/plan/@@absolute_url}',
                                             planidentifier='${context/plan/plan_identifier}',
                                             parentid='datamanagementfiltertable');">
-    </script>
-    <label for="searchfield">Filter:</label>
-    <input id="searchfield" name="searchfield" type="text" maxsize="30" size="15" />
-    <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Save changes" style="margin-left:100px" id="globalsavebutton"
-    onClick="javascript:p2.datamanagement.save.apply(p2.datamanagement, [])" disabled/>
-    <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Revert changes" style="margin-left:100px" id="globalrevertbutton"
-    onClick="javascript:p2.datamanagement.revert.apply(p2.datamanagement, [])" disabled/>
-    <script type="text/javascript" tal:content="string:
-            $$('#searchfield').bind('changed', function(){p2.datamanagement.SetFilter.apply(p2.datamanagement, 
-            [$$('#searchfield').val()] );});
-            $$('#searchfield').bind('keyup', function(){p2.datamanagement.SetFilter.apply(p2.datamanagement, 
-            [$$('#searchfield').val()] );});
-            $$('#searchfield').attr('value', '');
-            p2.datamanagement.SetFilter.apply(p2.datamanagement, ['']);
-        ">
-     </script>
-
-    <div id="searchresults">&nbsp;</div>
-    <table  class="resultstable">
-        <tbody id="datamanagementfiltertable">
-            <tr>
+</script>
+<div id="edit-data">
+    <div class="search-bar">
+        <input id="searchfield" name="searchfield" type="text" size="40" />
+        <img alt="Search" src="@@/setmanager.ui.skin/search.png" />
+        <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Save changes" style="margin-left:100px" id="globalsavebutton"
+        onClick="javascript:p2.datamanagement.save.apply(p2.datamanagement, [])" disabled/>
+        <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Revert changes" style="margin-left:100px" id="globalrevertbutton"
+        onClick="javascript:p2.datamanagement.revert.apply(p2.datamanagement, [])" disabled/>
+    </div>
+    <div class="action-box">
+        <div style="clear:both; float:left;" class="action-select"><input style="margin-top:8px" type="checkbox" /></div>
+        <div style="float:left; margin: 4px 0 0 15px;">Action:
+            <select>
+                <option value=""></option>
+                <option value="delete">Delete selected</option>
+            </select>
+        </div>
+    </div>
+    <table  class="resultstable" id="datamanagementfiltertable">
+           <tr>
                 <td colspan="2">
                     &nbsp;
                 </td>
             </tr>
-        </tbody>
-        <tbody>
+    </table>
+    <table>
             <tr>
                 <td colspan="3">
                     <input type="submit" i18n:domain="p2.datashackle.core" i18n:attributes="value" value="Add.."
@@ -36,8 +36,17 @@
                     p2.datamanagement, ['datamanagementaddnewtable']);">
                 </td>
             </tr>
-        </tbody>
-        <tbody id="datamanagementaddnewtable">
-            
-        </tbody>
     </table>
+    <table id="datamanagementaddnewtable">
+    </table>
+</div>
+<script type="text/javascript" tal:content="string:
+        $$('#searchfield').bind('changed', function(){p2.datamanagement.SetFilter.apply(p2.datamanagement, 
+        [$$('#searchfield').val()] );});
+        $$('#searchfield').bind('keyup', function(){p2.datamanagement.SetFilter.apply(p2.datamanagement, 
+        [$$('#searchfield').val()] );});
+        $$('#searchfield').attr('value', '');
+        p2.datamanagement.SetFilter.apply(p2.datamanagement, ['']);
+    ">
+</script>
+

@@ -45,7 +45,7 @@ class ObjectPicker(BaseForm, RelationMixin):
         a = 0
         query = self.query_related()
         for (setobject, linked) in query:
-            alternation = a%2 == 0 and 'even' or 'odd'
+            alternation = (a % 2 == 0) and 'even' or 'odd'
             a += 1
             id = generate_random_identifier()
             i.html("""

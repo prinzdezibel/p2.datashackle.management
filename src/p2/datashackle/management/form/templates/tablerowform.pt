@@ -6,6 +6,9 @@
     p2.datamanagement.datarowsettings.getSettingsObject.apply(p2.datamanagement.datarowsettings, ['${setobject_id}']).runtimecreated = true;
 "></script>
 </tal:runtimecreated>
+<td class="action-select">
+    <input type="checkbox" value="${setobject_id}" />
+</td>
 <!-- Echo form content -->
 <td>
     <div class="outerstaticframe" tal:attributes="style string:padding:2px;;margin:3px;id string:formfilterbox_${setobject_id}">
@@ -17,7 +20,7 @@
 <td style="vertical-align:top">
     <!-- Form buttons -->
     <input tal:attributes="onClick string:javascript:p2.datamanagement.DeleteClick.apply(p2.datamanagement, ['${setobject_id}']);
-                    id string:formfilterdelete_${setobject_id}" type="submit" i18n:domain="p2.datashackle.core" i18n:attributes="value" value="Delete">
+                    id string:formfilterdelete_${setobject_id}" type="submit" value="Delete">
     <!-- Mark us as runtime created if needed-->
     <tal:runtimecreated condition="python:view.runtimecreated">
         
