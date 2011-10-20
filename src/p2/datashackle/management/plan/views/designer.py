@@ -48,7 +48,7 @@ class DesignerView(Page):
         binpack.need()
             
     def render(self):
-        template = grokcore.view.PageTemplateFile("templates/designerview.pt")
+        template = grokcore.view.PageTemplateFile("../templates/designerview.pt")
         html = template.render(self)
         return html
 

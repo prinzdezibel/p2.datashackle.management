@@ -1,8 +1,10 @@
-<tal:define define="id              python:view.generate_random_identifier();
-                    source_id       view/source_id;
-                    info            python:context.get_info();
+<tal:define define="id                  python:view.generate_random_identifier();
+                    source_id           view/source_id;
+                    info                python:context.get_info();
+                    span_identifier     python:context.span_identifier;
                     ">
-    <div class="p2-span" tal:attributes="id id;">
+    <div class="p2-span" tal:attributes="id id;
+                                         data-span-identifier span_identifier;">
         <script type="text/javascript" tal:content="string:
             (function(){
                var info = $$.parseJSON('${info}');

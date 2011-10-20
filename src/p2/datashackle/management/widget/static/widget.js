@@ -3,7 +3,7 @@
 
 namespace("p2.Widget");
 
-p2.Widget = function(element, operational, propertyform, sourceId, module, type, dataNodeId, action, cssStyle, archetype){
+p2.Widget = function(element, operational, propertyform, sourceId, module, type, dataNodeId, action, archetype){
     var self = this;
     this.rootEl = element;
     this.operational = operational;
@@ -17,7 +17,6 @@ p2.Widget = function(element, operational, propertyform, sourceId, module, type,
        var dataNode = p2.datashackle.core.session.registerDataNode(this.module, this.type, this.dataNodeId, this.action);
        var coll = p2.datashackle.core.session.graph.lookupGraphObject(this.sourceId).vertex;
        coll.link(this.dataNodeId);
-       dataNode.setAttr('css_style', cssStyle);
     }
 
     this.widget_type = $(this.rootEl).attr('data-widget-type');
@@ -176,6 +175,19 @@ p2.Widget.startDragging = function(ev, ui) {
 
 
 p2.Widget.prototype.initCssPosition = function(rootEl, archetypeEl, archetypeOffset){
+
+    // copy over initial css styles
+    $(archetypeEl).find('.p2-span').each(function(index, sourceEl){
+        var targetEl = $(rootEl).find('.p2-span')[index];
+        $(targetEl).css({
+            width: $(sourceEl).css('width'),
+            height: $(sourceEl).css('height'),
+            left: $(sourceEl).css('left')
+        });
+        var span = $(targetEl).data('data-object');
+        span.setobject.setAttr('css_style', $(targetEl).attr('style'));
+    });
+
 	var archetypeId = $(archetypeEl).attr('id');
 	if($(rootEl).parents().is('.window-container')){
 		var windowPos = $(rootEl).parents('.window-container').offset();

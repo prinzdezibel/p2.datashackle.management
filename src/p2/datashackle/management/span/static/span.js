@@ -114,7 +114,9 @@ p2.Span.prototype.resizableMousemove = function(ev, originalX, originalY, origin
 
 p2.Span.prototype.setStyle = function(){
     // Setting the style does potentially alter the span's dimension. Fire event.
-    $(this.rootEl).attr('style', this.info.css_style);
+    // $(this.rootEl).attr('style', this.info.css_style);
+   
+    
     var width = $(this.rootEl).width();
     var height = $(this.rootEl).height();
     $(this.rootEl).trigger('MSG_SIZE_CHANGE', [width, height]);
@@ -178,9 +180,10 @@ p2.Span.prototype.registerDataNode = function(){
 
 
     if (!this.info.operational){
-        setobject.setAttr('css_style', this.info.css_style);
+        // setobject.setAttr('css_style', this.info.css_style);
         setobject.setAttr('span_name', this.info.span_name);
     }
+    
     this.setobject = setobject;
     return setobject;
 }

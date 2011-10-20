@@ -41,6 +41,6 @@ class EditData(Index):
     def render(self):
         if self.context.plan_identifier == "p2_meta_property_form" or self.context.plan_identifier == "p2_meta_archetype":
             return ""
-        template = grokcore.view.PageTemplateFile("templates/datamanagementview.pt")
+        template = grokcore.view.PageTemplateFile("../templates/datamanagementview.pt")
         html = template.render(self)
         return html

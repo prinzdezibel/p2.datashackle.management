@@ -1,43 +1,78 @@
-# -*- coding: utf-8 -*-
-# Copyright (C), projekt-und-partner.com, 20111
+# -*- coding:utf-8 -*-
+# Copyright(C) projekt-und-partner.com, 2011
 # Author: Michael Jenny
 
-import grok
+from sqlalchemy import orm
+from zope.component import getUtility
 
-from zope.component import getMultiAdapter, getUtility
-from zope.traversing.browser import absoluteurl
+from p2.datashackle.core import model_config
+from p2.datashackle.core.app.exceptions import SetobjectGraphException
+from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
+from p2.datashackle.core.interfaces import IDbUtility
+from p2.datashackle.core.models.linkage import Linkage
+from p2.datashackle.management.span.span import SpanType
 
-from p2.datashackle.core.interfaces import ISpanType, ILocationProvider
-from p2.datashackle.core.app.setobjectreg import setobject_type_registry
-from p2.datashackle.management.relation import RelationMixin, QueryMode
-from p2.datashackle.management.span.span import Span
 
-
-class Dropdown(Span, RelationMixin):
-    grok.name('dropdown')
-    grok.context(ISpanType)
-
-    def __init__(self, context, request):
-        Span.__init__(self, context, request)
-        RelationMixin.__init__(self, show_strip=False)
-
-    def update(self):
-        Span.update(self)
-        if self.context.operational:
-            self.relation_source = self.context.setobject
-            self.relation = self.context
-            RelationMixin.update(self)
-        self.targetResource = ''
-        if self.context.operational:
-            self.query = self.query_related(query_mode=QueryMode.SHARED)
-            self.count = self.query.count()
-            # Is already an item selected?
-            self.selected = False
-            for (_, linked) in self.query:
-                if linked == 'true':
-                    self.selected = True
-                    break
+@model_config(tablename='p2_span_dropdown', maporder=2)
+class Dropdown(SpanType):
+   
+    width = 95
+ 
+    def __init__(self, span_name=None, objid=None):
+        self.linkage = Linkage(
+            cardinality='n:1',
+            ref_type='object',
+            target_module='',
+        )
+        self.css_style = "left:" + str(self.label_width) + "px; width:" + str(self.width) + "px;"
+        super(Dropdown, self).__init__(span_name, objid)
     
-    def render(self):
-        self.template = grok.PageTemplateFile('dropdown.pt')
-        return self._render_template()
+    def onbefore_post_order_traverse(self, setobject, mode):
+        if self.required == True and getattr(setobject, self.linkage.attr_name) is None and mode == 'save':
+            raise SetobjectGraphException("Please select a value for '" + self.widget.spans['label'].span_value + "'.")
+
+    def post_order_traverse(self, mode):
+        if mode == 'save':
+            self.linkage.source_module = self.op_setobject_type.__module__
+            self.linkage.source_classname =  self.op_setobject_type.__name__
+            self.linkage.check_if_complete()
+            self.linkage.init_link()
+     
+    def __setattr__(self, name, value):
+        SpanType.__setattr__(self, name, value)
+        if name == 'linkage':
+            if self.plan_identifier != None and value != None:
+                # Get the table identifier from our plan identifier and set it as the linkage's target class
+                table = setobject_table_registry.lookup_by_table('p2_plan')
+                plan = getUtility(IDbUtility).engine.execute(table.select(table.c.plan_identifier == self.plan_identifier)).first()
+                plan_module = plan['so_module']
+                plan_type = plan['so_type']
+                table_identifier = setobject_type_registry.lookup(plan_module, plan_type).get_table_name()
+                oldtargetclass = None
+                try:
+                    oldtargetclass = self.linkage.target_classname
+                except AttributeError:
+                    pass
+                if oldtargetclass == None or oldtargetclass == "":
+                    self.linkage.target_classname = table_identifier
+        
+    def _get_info(self):
+        info = {}
+        if self.operational:
+            info['linkage_id'] = self.linkage.id
+            info['attr_name'] = self.attr_name
+        return info
+
+    @classmethod
+    def map_computed_properties(cls):
+        cls.sa_map_dispose()
+        table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        inherits = SpanType._sa_class_manager.mapper
+        orm.mapper(Dropdown,
+                   table,
+                   inherits=inherits,
+                   polymorphic_identity='dropdown',
+                   properties=cls.mapper_properties
+                   )
+        
+

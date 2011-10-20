@@ -20,8 +20,8 @@ from p2.datashackle.management.interfaces import IDatashackle
 from p2.datashackle.core.app.exceptions import SetobjectGraphException, UserException
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.models.identity import generate_random_identifier
-from p2.datashackle.core.models.setobject_graph import SetobjectGraph
-from p2.datashackle.core.models.span.relation import Relation
+from p2.datashackle.management.span.relation import Relation
+from p2.datashackle.management.setobject_graph import SetobjectGraph
 
 
 class BaseView(grok.View):

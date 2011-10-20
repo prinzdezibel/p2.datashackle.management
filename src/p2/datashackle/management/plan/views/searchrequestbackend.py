@@ -54,6 +54,6 @@ class SearchbackendView(grok.View):
         return
          
     def render(self):
-        template = grokcore.view.PageTemplateFile("templates/searchrequestbackend.pt")
+        template = grokcore.view.PageTemplateFile("../templates/searchrequestbackend.pt")
         html = template.render(self)
         return html

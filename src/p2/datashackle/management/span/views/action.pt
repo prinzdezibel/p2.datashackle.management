@@ -8,10 +8,12 @@
                     span_name       context/span_name;
                     action          context/action;
                     info            python:context.get_info();
+                    span_identifier python:context.span_identifier;
                     ">
-    <div class="p2-span" tal:attributes="id                         id;
-                                         data-span-type             span_type;
-                                         style                      css_style;
+    <div class="p2-span" tal:attributes="id                     id;
+                                         data-span-type         span_type;
+                                         style                  css_style;
+                                         data-span-identifier   span_identifier;
                                          ">
         <script type="text/javascript" tal:content="string:
             (function(){

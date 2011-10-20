@@ -1,12 +1,5 @@
-<tal:errormsg tal:condition="context/plan/fatalerror">
-    <div class="setmanager_errormessage" tal:content="context/plan/fatalerror"></div>
-    <form method="GET" tal:attributes="action view/plan/context_url">
-        <input type="submit" value="Check if database is available now">
-        <input type="hidden" value="designer" name="tab">
-    </form>
-</tal:errormsg>
-<tal:viewcontent tal:condition="python:not context.plan.fatalerror">
     <tal:define define="plan_url context/plan/@@absolute_url; application_url view/parent_application/@@absolute_url;">
+    <!-- link tal:condition="context/plan/stylesheet_exists" rel="stylesheet" type="text/css" tal:attributes="href string:fanstatic/management_styles/${context/plan/stylesheet_name}"/ -->
     <div id="designerpagewrapper">
     <div id="designerpage">
         
@@ -83,4 +76,3 @@
     </div>
     </div>
    </tal:define>
-</tal:viewcontent>

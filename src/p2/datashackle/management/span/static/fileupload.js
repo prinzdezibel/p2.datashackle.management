@@ -10,7 +10,7 @@ p2.Span.Fileupload = function(el, sourceId, applicationUrl, info){
     this.sourceId = sourceId;
     this.applicationUrl = applicationUrl;
     
-    $(el).attr('style', info.css_style);
+//    $(el).attr('style', info.css_style);
     $(el).attr('data-span-type', info.span_type);
     
     var uploadField = $(el).find('input[type="file"]');

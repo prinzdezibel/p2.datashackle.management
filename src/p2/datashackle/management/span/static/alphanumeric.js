@@ -193,7 +193,9 @@ p2.Span.Alphanumeric.prototype.registerDataNode = function(){
          this.setStyle();
          setobject.setAttr('span_name', this.info.span_name);
     }   
- 
+
+    this.setobject = setobject; 
+
     return setobject;
 }
 

@@ -10,7 +10,6 @@ from dolmen.app.layout.master import Header
 from p2.javascript.base import *
 from skin import ISetmanagerLayer
 
-
 class SetmanagerLibrary(resource.ResourceLibrary):
     grok.name("setmanager.ui.skin")
     grok.layer(ISetmanagerLayer)

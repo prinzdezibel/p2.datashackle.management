@@ -1,22 +1,22 @@
 <tal:define define="id                      python:view.generate_random_identifier();
                     source_id               view/source_id;
-                    css_style               context/css_style;
                     operational             context/operational;
                     module                  python:operational and context.op_setobject_type.__module__ or context.__class__.__module__;
                     type                    python:operational and context.op_setobject_type.__name__ or context.__class__.__name__;
                     data_node_id            python:operational and context.op_setobject_id or context.widget_identifier;
                     action                  python:operational and context.setobject.action or context.action;
+                    widget_identifier       python:context.widget_identifier;
                     archetype               python:context.is_archetype();
+                    widget_type             python:context.widget_type;
                     ">
-    <div class="p2-widget" tal:attributes="style                        css_style;
-                                           id                           id;
-                                           data-widget-identifier       context/widget_identifier;
-                                           data-widget-type             context/widget_type;
+    <div class="p2-widget" tal:attributes="id                           id;
+                                           data-widget-identifier       widget_identifier;
+                                           data-widget-type             widget_type;
                                            data-node-id                 data_node_id;
                                            data-module                  module;
                                            data-type                    type;
                                            data-source-id               source_id;
-                                           data-operational             context/operational;
+                                           data-operational             operational;
                                            ">
         <tal:define define="script_id               python:view.generate_random_identifier();">
             <div style="visibility: hidden;" tal:attributes="id script_id">
@@ -30,7 +30,7 @@
                      <tal:replace replace="string:
                          var propertyform = new ${context/js_propertyform_constructor}('${view/application_url}/configuration/meta/p2_widget/forms/${context/widget_type}', '${source_id}', '${data_node_id}');
 
-                         $('#${id}').data('data-object', new p2.Widget(rootEl, operational, propertyform, '${source_id}', '${module}', '${type}', '${data_node_id}', '${action}', '${css_style}', '${archetype}'));
+                         $('#${id}').data('data-object', new p2.Widget(rootEl, operational, propertyform, '${source_id}', '${module}', '${type}', '${data_node_id}', '${action}', '${archetype}'));
                          ">
                       </tal:replace>
                       <tal:is_not_archetype condition="not:archetype">

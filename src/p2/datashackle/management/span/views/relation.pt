@@ -1,16 +1,16 @@
-<tal:define define="id              python:view.generate_random_identifier();
-                    source_id       view/source_id;
-                    data_node_id    python:context.span_identifier;
-                    css_style       context/css_style;
-                    span_type       context/span_type;
-                    info            python:context.get_info();
-                    is_multi_selectable python:context.linkage.is_multi_selectable;
+<tal:define define="id                      python:view.generate_random_identifier();
+                    source_id               view/source_id;
+                    data_node_id            python:context.span_identifier;
+                    span_type               context/span_type;
+                    info                    python:context.get_info();
+                    is_multi_selectable     python:context.linkage.is_multi_selectable;
+                    span_identifier         python:context.span_identifier;
                     ">
     <div class="p2-span" tal:attributes="id                         id;
                                          data-span-type             span_type;
                                          data-span-operational      context/operational;
-                                         style                      css_style;
                                          data-node-id               data_node_id;
+                                         data-span-identifier       span_identifier;
                                          " tabIndex="-1">
         <script type="text/javascript" tal:content="string:
             (function(){

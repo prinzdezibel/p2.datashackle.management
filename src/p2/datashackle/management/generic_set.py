@@ -29,12 +29,12 @@ from p2.datashackle.core.app.exceptions import *
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.sql import table_exists
 from p2.datashackle.core.globals import metadata
-from p2.datashackle.management.interfaces import IGenericSet
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models import identity
-from p2.datashackle.core.models.form import FormType
-from p2.datashackle.core.models.plan import fetch_plan, Plan
 from p2.datashackle.core.models.setobject_types import create_setobject_type
+from p2.datashackle.management.interfaces import IGenericSet
+from p2.datashackle.management.form.form import FormType
+from p2.datashackle.management.plan.plan import fetch_plan, Plan
 
    
 

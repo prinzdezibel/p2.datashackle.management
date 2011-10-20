@@ -3,10 +3,13 @@
 # Author:  Jonas Thiem <jonas.thiem%40projekt-und-partner.com>
 
 import grok
+import json
+import sqlalchemy
 from zope.component import getUtility
 
+from p2.datashackle.core.interfaces import IPlan, IDbUtility 
+from p2.datashackle.management.plan.plan import Plan
 from p2.datashackle.management.interfaces import IDatashackle
-from p2.datashackle.core.interfaces import IJsonInfoQuery
 
 
 class JsonInfoQuery(grok.View):
@@ -20,6 +23,17 @@ class JsonInfoQuery(grok.View):
     grok.name('jsoninfoquery')
     grok.context(IDatashackle)
     
+    def get_plan_table_info(self):
+        """ Dump a JSON dictionary which associates all plan identifiers with their respective table identifiers """
+        dictionary = {}
+        session = getUtility(IDbUtility).Session()
+        plans = session.query(Plan).all()
+        for plan in plans:
+            dictionary[plan.plan_identifier] = plan.table_identifier
+        return json.dumps(dictionary)
+    
     def render(self):
         self.response.setHeader('Content-Type', 'application/json')
-        return getUtility(IJsonInfoQuery).get_plan_table_info()
+        return self.get_plan_table_info()
+
+

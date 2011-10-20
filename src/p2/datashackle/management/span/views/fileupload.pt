@@ -2,8 +2,10 @@
                     source_id       view/source_id;
                     info            python:context.get_info();
                     media_id        context/media_id;
+                    span_identifier python:context.span_identifier;
                     ">
-    <div class="p2-span" tal:attributes="id id;">
+    <div class="p2-span" tal:attributes="id id;
+                                         data-span-identifier span_identifier;">
         <div style="float:left;" id="progress_report_name"></div>
         <!-- div id="progress_report_status" style="font-style: italic;"></div -->
         <!-- div class="progress_report_bar" style="background-color: blue; width: 0; height: 5px;"></div -->

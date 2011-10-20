@@ -10,9 +10,9 @@ from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.interfaces import IFormType, IDbUtility
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.scopedmarkup import ScopedMarkup
-from p2.datashackle.management.form.base import BaseForm
 from p2.datashackle.core.models.identity import generate_random_identifier
-from p2.datashackle.core.models.span.relation import Relation
+from p2.datashackle.management.form.views.base import BaseForm
+from p2.datashackle.management.span.relation import Relation
  
  
 grok.templatedir('templates')

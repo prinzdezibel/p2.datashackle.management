@@ -3,16 +3,16 @@
                     module          python:context.operational and context.op_setobject_type.__module__ or context.__class__.__module__;
                     type            python:context.operational and context.op_setobject_type.__name__ or context.__class__.__name__;
                     data_node_id    python:context.operational and context.op_setobject_id or context.span_identifier;
-                    css_style       context/css_style;
                     span_type       context/span_type;
                     span_name       context/span_name;
                     action          context/action;
                     info            python:context.get_info();
+                    span_identifier python:context.span_identifier;
                     ">
    <div class="p2-span" tal:attributes="id                            id;
                                          data-span-type                span_type;
                                          data-field-identifier         context/field_identifier;
-                                         style                         css_style;
+                                         data-span-identifier          span_identifier;
                                          ">
         <script type="text/javascript" tal:content="string:
            (function(){

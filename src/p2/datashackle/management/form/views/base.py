@@ -14,7 +14,7 @@ from p2.datashackle.management.views import AjaxView
        
 class BaseForm(AjaxView):
     grok.context(IFormType)
-    template = grok.PageTemplateFile('templates/baseform.pt')
+    template = grok.PageTemplateFile('../templates/baseform.pt')
     strip_width = 15
 
     def __init__(self, context, request):

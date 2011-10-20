@@ -262,7 +262,7 @@ p2.Setdesigner.prototype.findParentFormVertex = function(vertexId){
             if (go.parent == null) {return undefined;}
             go = go.parent;
         } while (!go.vertex instanceof p2.Setobject)
-    } while (go.vertex.type != "FormType" || go.vertex.module != "p2.datashackle.core.models.form")
+    } while (go.vertex.type != "FormType" || go.vertex.module != "p2.datashackle.management.form.form")
     return go.vertex;
 }
 

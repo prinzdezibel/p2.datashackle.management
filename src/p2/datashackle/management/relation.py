@@ -10,8 +10,9 @@ from zope.component import getUtility, getMultiAdapter
 from p2.datashackle.core.globals import metadata
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.interfaces import IDbUtility, ILocationProvider
-from p2.datashackle.core.models.span.relation import Relation
 from p2.datashackle.core.models.table import Table
+from p2.datashackle.management.span.relation import Relation
+
 
 class QueryMode(object):
     """Specify the relation items that are honored in the query returned from a query_related()
