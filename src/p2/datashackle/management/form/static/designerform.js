@@ -11,8 +11,6 @@ p2.DesignerForm = function(module,
                            windowId,
                            windowTitle,
                            schemeHostPath,
-                           width,
-                           height,
                            operational,
                            dataNodeId,
                            soModule,
@@ -27,8 +25,6 @@ p2.DesignerForm = function(module,
     this.viewSave = '@@committoserver';
     this.module = module;
     this.type = type;
-    this.width = width;
-    this.height = height;
     this.windowTitle = windowTitle;
     this.operational = operational;
     this.soModule = soModule;
@@ -45,8 +41,6 @@ p2.DesignerForm = function(module,
                     maximizeButton: false,
                     closeButton : false,
                     minimizeButton: false,
-                    width: width,
-                    height: height,
                     close: function(){
                         self._onClose(formName);
                     }
@@ -67,8 +61,6 @@ p2.DesignerForm.prototype.initNode = function(node) {
     node.setAttr('so_type', this.soType);
     node.setAttr('so_module', this.soModule);
     node.setAttr('form_name', this.windowTitle);
-    node.setAttr('width', this.width);
-    node.setAttr('height', this.height);
 }
 
 p2.DesignerForm.prototype.opened = function(element){
@@ -77,10 +69,12 @@ p2.DesignerForm.prototype.opened = function(element){
     this.initNode(dataNode);
      // register for window size changes
      $(this.rootEl).bind('MSG_WINDOW_SIZE_CHANGED', function(e, width, height){
-          $(self.rootEl).find('.p2-form').width(width);
-          $(self.rootEl).find('.p2-form').height(height);
-          dataNode.setAttr('width', width);
-          dataNode.setAttr('height', height);
+         var form = $(self.rootEl).find('.p2-form');
+         form.css({
+            width: width + 'px',
+            height: height + 'px'
+         });
+         dataNode.setAttr('css_style', $(form).attr('style'));
      });
 }
 

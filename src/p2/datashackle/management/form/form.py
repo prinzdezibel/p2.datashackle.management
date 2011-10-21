@@ -17,7 +17,6 @@ from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.core.interfaces import IFormType, IDbUtility
 from p2.datashackle.management.setobject_graph import SetobjectGraph
 from p2.datashackle.management.widget.widget_factory import create_widget
-from p2.datashackle.management.setobject_mixins import CssStylesheetAwareness
 
 
 class LocationHelper(object):
@@ -27,22 +26,19 @@ class LocationHelper(object):
         self.__name__ = 'forms'
 
 @model_config(tablename='p2_form', maporder=2)
-class FormType(SetobjectType, CssStylesheetAwareness):
+class FormType(SetobjectType):
     # In order to find default views via /index rather than
     # Zope3's /index.html we need to implement interfaces.IContext
     # The form gains location awareness (grok.url() capability) through implementing ILocation
     grok.implements(IFormType, interfaces.IContext, ILocation)
 
-    def __init__(self, form_name=None, plan=None, objid=None, width=200, height=200):
+    def __init__(self, form_name=None, plan=None, objid=None):
         # BEGIN sqlalchemy instrumented attributes
         # self.form_identifier initialized through SetobjectType base class.
         self.plan = plan
         self.form_name = form_name
         self.widgets = dict()
         # END sqlalchemy instrumented attributes
-        
-        self.width = width
-        self.height = height
         
         if self.plan != None:    
             self.plan_identifier = plan.id
@@ -88,13 +84,13 @@ class FormType(SetobjectType, CssStylesheetAwareness):
         return self.plan.is_archetype()
     
     def set_attribute(self, attribute, value, mode):
-        if attribute == 'height' or \
-                attribute == 'width':
-            stylesheet = self.plan.stylesheet
-            self.update_css_rules(stylesheet, value)
+        if attribute == 'css_style':
+            selector = 'div[data-form-identifier="' + self.id + '"]'
+            self.plan.update_css_rule(selector, value)
         else:
             SetobjectType.set_attribute(self, attribute, value, mode)
-        
+       
+ 
 class WidgetTraverser(grok.Traverser):
     grok.context(FormType)
 

@@ -30,8 +30,6 @@
                      p2.setdesigner.fetch_form('${form/form_name}',
                                                '${form/form_name}',
                                                '${plan_url}/forms/${form/form_name}',
-                                               '${form/width}',
-                                               '${form/height}',
                                                '${form/form_identifier}',
                                                '${context/plan/so_module}',
                                                '${context/plan/so_type}',

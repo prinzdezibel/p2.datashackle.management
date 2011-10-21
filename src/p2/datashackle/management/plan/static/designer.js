@@ -98,9 +98,8 @@ p2.Setdesigner.prototype.newForm = function(formName){
      var scheme_host_path = p2.setdesigner.plan_url + '/forms/' + formName;
      return p2.setdesigner.fetch_form(formName,
                                formName,
-                               scheme_host_path,
-                               200,
-                               200);
+                               scheme_host_path
+     );
 
 }
 
@@ -108,8 +107,6 @@ p2.Setdesigner.prototype.fetch_form = function(
         form_name,
         windowTitle,
         schemeHostPath,
-        width,
-        height,
         dataNodeId,
         soModule,
         soType,
@@ -125,8 +122,6 @@ p2.Setdesigner.prototype.fetch_form = function(
                                      form_name,
                                      windowTitle,
                                      schemeHostPath,
-                                     width,
-                                     height,
                                      operational = false,
                                      dataNodeId,
                                      soModule,
@@ -134,7 +129,7 @@ p2.Setdesigner.prototype.fetch_form = function(
                                      action,
                                      collectionId
                                      );
-	this._append_window(form_name, form, width, height);
+	this._append_window(form_name, form);
 	return form;
 }
 
@@ -174,7 +169,7 @@ p2.Setdesigner.prototype.setSiteSize = function(size){
 }
 
 // Append window to DOM and intialise window
-p2.Setdesigner.prototype._append_window = function(formName, window, width,	height){
+p2.Setdesigner.prototype._append_window = function(formName, window){
     var self = this;
 	var windowAndButton = p2.WindowManager.prototype.registerWindow.call(self, formName, window);	
 

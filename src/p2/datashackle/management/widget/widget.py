@@ -19,12 +19,11 @@ from p2.datashackle.core.app.exceptions import UnspecificException
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.core.models.identity import generate_random_identifier
-from p2.datashackle.management.setobject_mixins import CssStylesheetAwareness
 from p2.datashackle.management.span.span_factory import create_span
 
 
 @model_config(tablename='p2_widget')
-class WidgetType(SetobjectType, CssStylesheetAwareness):
+class WidgetType(SetobjectType):
     grok.implements(IWidgetType, interfaces.IContext, ILocation)
     
     js_widget_constructor = 'p2.Widget'
@@ -106,8 +105,8 @@ class WidgetType(SetobjectType, CssStylesheetAwareness):
 
     def set_attribute(self, attribute, value, mode):
         if attribute == 'css_style':
-            stylesheet = self.form.plan.stylesheet
-            self.update_css_rules(stylesheet, value)
+            selector = 'div[data-widget-identifier="' + self.id + '"]'
+            self.form.plan.update_css_rule(selector, value)
         else:
             SetobjectType.set_attribute(self, attribute, value, mode)
            

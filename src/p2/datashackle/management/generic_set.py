@@ -129,13 +129,21 @@ def genericset_added(genericset, event):
     plan.so_type = so_classname
     form = FormType(objid=None,
         plan=plan,
-        form_name='default_form',
-        width=550,
-        height=200)
+        form_name='default_form'
+    )
     plan.register_form(form)
     plan.set_default(form)
     session.add(plan)
     session.commit()
+    
+    # write css styles
+    selector = 'div[data-form-identifier="' + form.id + '"]'
+    plan.update_css_rule(selector, 'width: 550px; height: 200px')
+    # add strip-selector rule for forms
+    style="left: 15px"
+    selector = 'div[data-form-identifier="' + form.id + '"].selector-strip'
+    plan.update_css_rule(selector, 'left: 15px')
+    plan.write_stylesheet()        
 
 
 

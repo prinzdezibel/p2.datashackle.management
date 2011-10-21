@@ -17,11 +17,10 @@ from p2.datashackle.core.app.exceptions import *
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry
 from p2.datashackle.core.interfaces import *
 from p2.datashackle.core.models.setobject_types import SetobjectType
-from p2.datashackle.management.setobject_mixins import CssStylesheetAwareness
 
 
 @model_config(tablename='p2_span')
-class SpanType(SetobjectType, CssStylesheetAwareness):
+class SpanType(SetobjectType):
     grok.implements(ISpanType)
     
     label_width = 95
@@ -124,8 +123,8 @@ class SpanType(SetobjectType, CssStylesheetAwareness):
     
     def set_attribute(self, attribute, value, mode):
         if attribute == 'css_style':
-            stylesheet = self.widget.form.plan.stylesheet
-            self.update_css_rules(stylesheet, value)
+            selector = 'div[data-span-identifier="' + self.id + '"]'
+            self.widget.form.plan.update_css_rule(selector, value)
         else:
             SetobjectType.set_attribute(self, attribute, value, mode)
    

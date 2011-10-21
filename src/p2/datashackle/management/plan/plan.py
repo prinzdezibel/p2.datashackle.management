@@ -20,6 +20,8 @@ from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.core.interfaces import ILocationProvider, IPlan, IDbUtility 
 from p2.datashackle.management.form.form import FormType
+from p2.datashackle.management.widget.widget import WidgetType
+from p2.datashackle.management.span.span import SpanType
 
         
 def fetch_plan(genericset):
@@ -78,11 +80,6 @@ class Plan(SetobjectType):
         else:
             self.stylesheet = cssutils.css.CSSStyleSheet()
 
-    def write_stylesheet(self):
-        cssfile = open(self.stylesheet_filepath, 'w+')
-        cssfile.write(self.stylesheet.cssText)
-        cssfile.close()
- 
     def set_default(self, form):
         self.default_form = form
 
@@ -113,6 +110,41 @@ class Plan(SetobjectType):
         """The table on which this plan is operating."""
         so_type = setobject_type_registry.lookup(self.so_module, self.so_type)
         return so_type.get_table_name()
+ 
+    def update_css_rule(self, selector_text, value):
+        declarations = value.split(';')
+        for declaration in declarations:
+            colon = declaration.find(':')
+            if colon == -1:
+                # nothing found
+                continue
+            css_name = declaration[:colon]
+            css_value = declaration[colon + 1:]
+            css_property = cssutils.css.Property(name=css_name, value=css_value)
+            found = False
+            # Check if selector already exists
+            for css_rule in self.stylesheet.cssRules:
+                if not isinstance(css_rule, cssutils.css.CSSStyleRule):
+                    continue
+                for selector in css_rule.selectorList:
+                    if selector_text == selector.selectorText:
+                        found = True
+                        #css_rule.style[css_property] = css_value
+                        css_rule.style.setProperty(css_property)
+            if not found:
+                declaration = cssutils.css.CSSStyleDeclaration()
+                declaration.setProperty(css_property)
+                #declaration[css_property] = css_value
+                css_rule = cssutils.css.CSSStyleRule(
+                    selectorText=selector_text,
+                    style=declaration
+                )
+                self.stylesheet.add(css_rule)
+    
+    def write_stylesheet(self):
+        cssfile = open(self.stylesheet_filepath, 'w+')
+        cssfile.write(self.stylesheet.cssText)
+        cssfile.close()
  
 
 class FormDirectory(object):

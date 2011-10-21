@@ -8,13 +8,12 @@
 		            linked		        view/linked;
                     ">
     <link tal:condition="context/plan/stylesheet_exists" rel="stylesheet" type="text/css" tal:attributes="href string:fanstatic/management_styles/${context/plan/stylesheet_name}"/>
-    <div tal:attributes="id                         id;
+    <div tal:attributes="id              id;
                                          data-action                request/URL;
                                          data-form-identifier       context/form_identifier;
     									 data-node-id               data_node_id;
     									 data-source-id             source_id;
-                                         style                      view/style;
-                                         class                      python:'p2-form ' + (view.alternation != None and view.alternation or '');
+                                         class                      view/css_class;
                                          " tabIndex="-1">
         <tal:define define="script_id               view/generate_random_identifier;">
             <div tal:attributes="id script_id">

@@ -808,8 +808,10 @@ textarea {
 
 #view_area .window-content .p2-form {
 	background: url("abscissa.gif") repeat scroll 0 0 transparent;
-	width: 100%;
+	/*
+    width: 100%;
 	height: 100%;
+*/
 }
 
 
