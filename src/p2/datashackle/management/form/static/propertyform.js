@@ -4,7 +4,7 @@
 namespace("p2");
 
 p2.PropertyForm = function(scheme_host_path, sourceId, setobjectId){
-    if (!setobjectId) throw new Error("PropertyForm constructor: setobjectId is obligatory!");
+    // if (!setobjectId) throw new Error("PropertyForm constructor: setobjectId is obligatory!");
 	var self = this;
     this.scheme_host_path = scheme_host_path;
 	this.rootEl = $('<div></div>');

@@ -15,8 +15,8 @@ from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setob
 from p2.datashackle.management.span.span import SpanType
 
 
-@model_config(tablename='p2_span_relation', maporder=3)
-class Relation(SpanType):
+@model_config(tablename='p2_span_embeddedform', maporder=3)
+class EmbeddedForm(SpanType):
     
     height = 50
     width = 50
@@ -25,7 +25,7 @@ class Relation(SpanType):
         self.linkage = Linkage()
         self.css_style = "left:" + str(self.label_width) + "px; width:" + \
             str(self.width) + "px; height:" + str(self.height) + "px;"
-        super(Relation, self).__init__(span_name, objid)
+        super(EmbeddedForm, self).__init__(span_name, objid)
     
     def __setattr__(self, name, value):
         SpanType.__setattr__(self, name, value)
@@ -60,12 +60,12 @@ class Relation(SpanType):
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        relation_table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        embeddedform_table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
         inherits = SpanType._sa_class_manager.mapper
-        orm.mapper(Relation,
-                   relation_table, # We want joined table inheritance for the relation span (additional table for relation specific fields)
+        orm.mapper(EmbeddedForm,
+                   embeddedform_table, # We want joined table inheritance for the embeddedform span (additional table for embeddedform specific fields)
                    inherits=inherits,
-                   polymorphic_identity='relation',
+                   polymorphic_identity='embeddedform',
                    properties=cls.mapper_properties
                    )
         

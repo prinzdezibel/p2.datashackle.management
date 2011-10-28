@@ -115,6 +115,13 @@ def init_application(event):
     set_.table_identifier = 'p2_plan'
     set_.table_key_field = 'plan_identifier'
     metaconfig['p2_plan'] = set_
+
+    set_ = GenericSet()
+    set_.title = u'p2_form'
+    set_.plan_identifier = 'p2_form'
+    set_.table_identifier = 'p2_form'
+    set_.table_key_field = 'form_identifier'
+    metaconfig['p2_form'] = set_
  
     archetypes = GenericSet()
     archetypes.title = _(u'p2_archetype')
@@ -146,11 +153,11 @@ def init_application(event):
     metaconfig['p2_span'] = set_
     
     set_ = GenericSet()
-    set_.title = u'p2_span_relation'
-    set_.plan_identifier = 'p2_span_relation'
-    set_.table_identifier = 'p2_span_relation'
+    set_.title = u'p2_span_embeddedform'
+    set_.plan_identifier = 'p2_span_embeddedform'
+    set_.table_identifier = 'p2_span_embeddedform'
     set_.table_key_field = 'span_identifier'
-    metaconfig['p2_span_relation'] = set_
+    metaconfig['p2_span_embeddedform'] = set_
     
     set_ = GenericSet()
     set_.title = u'p2_span_fileupload'

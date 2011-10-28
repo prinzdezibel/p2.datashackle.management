@@ -3,12 +3,12 @@
 
 namespace("p2");
 
-p2.Setdesigner = function(application_url, plan_url, plan_identifier, table_identifier, formModule, formType)
+p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_identifier, formModule, formType)
 {
     this.plan_identifier = plan_identifier;
     this.table_identifier = table_identifier;
     this.plan_url = plan_url;
-    this.application_url = application_url;
+    this.applicationUrl = applicationUrl;
     this.formModule = formModule;
     this.formType = formType;
     
@@ -127,7 +127,8 @@ p2.Setdesigner.prototype.fetch_form = function(
                                      soModule,
                                      soType,
                                      action,
-                                     collectionId
+                                     collectionId,
+                                     this.applicationUrl
                                      );
 	this._append_window(form_name, form);
 	return form;

@@ -11,13 +11,13 @@ from p2.windowmanager.layout import WindowManagerLibrary
 class FormLibrary(resource.Library):
     resource.path('form/static')
 form = resource.ResourceInclusion(FormLibrary, "form.js", depends=[jquery, jBase])
-
 propertyform = resource.ResourceInclusion(FormLibrary, "propertyform.js", depends=[jquery, jBase])
 dropdownpropertyform = resource.ResourceInclusion(FormLibrary, "dropdownpropertyform.js", depends=[jquery, jBase])
 relationpropertyform = resource.ResourceInclusion(FormLibrary, "relationpropertyform.js", depends=[jquery, jBase])
 fileuploadpropertyform = resource.ResourceInclusion(FormLibrary, "fileuploadpropertyform.js", depends=[jquery, jBase])
 changeableform = resource.ResourceInclusion(FormLibrary, "changeableform.js", depends=[jquery, jBase])
-designerform = resource.ResourceInclusion(FormLibrary, "designerform.js", depends=[jquery, form, jBase, WindowManagerLibrary])
+designerform = resource.ResourceInclusion(FormLibrary, "designerform.js",
+    depends=[jquery, form, jBase, WindowManagerLibrary])
 objectpicker = resource.ResourceInclusion(FormLibrary, "objectpicker.js", depends=[jquery])
 
 class PlanResources(resource.ResourceLibrary):

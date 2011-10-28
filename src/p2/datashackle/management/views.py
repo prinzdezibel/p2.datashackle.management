@@ -20,7 +20,7 @@ from p2.datashackle.management.interfaces import IDatashackle
 from p2.datashackle.core.app.exceptions import SetobjectGraphException, UserException
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.models.identity import generate_random_identifier
-from p2.datashackle.management.span.relation import Relation
+from p2.datashackle.management.span.embeddedform import EmbeddedForm
 from p2.datashackle.management.setobject_graph import SetobjectGraph
 
 
@@ -85,7 +85,7 @@ class AjaxView(BaseView):
         if relation_id != None:
             if self.relation_source_id == None:
                 raise Exception("relation_id parameter must be accompanied by relation_source_id.")
-            self.relation = session.query(Relation).filter_by(span_identifier=relation_id).one()
+            self.relation = session.query(EmbeddedForm).filter_by(span_identifier=relation_id).one()
             source_type = setobject_type_registry.lookup(self.relation.linkage.source_module, self.relation.linkage.source_classname)
             self.relation_source = session.query(source_type).filter(source_type.get_primary_key_attr() == self.relation_source_id).one()   
         

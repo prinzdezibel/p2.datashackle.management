@@ -16,7 +16,8 @@ p2.DesignerForm = function(module,
                            soModule,
                            soType,
                            action,
-                           collectionId
+                           collectionId,
+                           applicationUrl
                            ){
     var self = this;
     this.schemeHostPath = schemeHostPath;
@@ -33,6 +34,7 @@ p2.DesignerForm = function(module,
     this.action = action;
     // collection_id of the form's widget collection
     this.collectionId = collectionId;
+    this.applicationUrl = applicationUrl;
 
     var defaults = {windowTitle: windowTitle,
                     windowId: windowId,
@@ -47,7 +49,7 @@ p2.DesignerForm = function(module,
                     };
     var dataNode = p2.datashackle.core.session.registerDataNode(this.module, this.type, this.dataNodeId, this.action);
     p2.datashackle.core.session.registerLinkageNode(this.dataNodeId, this.collectionId, 'widgets', isMultiSelectable=true);
-       
+    
     var openFn = function(){
             var args = Array.prototype.slice.call(arguments, 0);
             args = args.concat([function(){p2.DesignerForm.prototype.opened.apply(self, arguments)}]);
@@ -55,6 +57,15 @@ p2.DesignerForm = function(module,
 
     p2.Formloader.call(this, schemeHostPath, 'DESIGNER', sourceId=null, dataNodeId);
     p2.Window.call(this, parentEl, windowId, openFn, defaults);
+   
+    var propertyform = new p2.PropertyForm(
+        this.applicationUrl + '/configuration/meta/p2_form/forms/form_properties', 
+        sourceId=null, 
+        dataNodeId
+    );
+    $(this.rootEl).children('div.window-titleBar').click(function(){
+        propertyform.open();
+    });    
 }
 
 p2.DesignerForm.prototype.initNode = function(node) {

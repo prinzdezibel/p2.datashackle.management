@@ -110,7 +110,7 @@ class SpanType(SetobjectType):
         # Map base class
         #    
         # with_polymorphic="*":  This loads attributes from tables that use
-        # joined table inheritance (p2_span_relation) as well.
+        # joined table inheritance (p2_span_embeddedform) as well.
         # when doing something like query(SpanType).filter(RelationSpan.span_identifier = relation_span_id)
         span_mapper = orm.mapper(
             cls,

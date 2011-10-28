@@ -11,7 +11,7 @@ from p2.datashackle.core.globals import metadata
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.interfaces import IDbUtility, ILocationProvider
 from p2.datashackle.core.models.table import Table
-from p2.datashackle.management.span.relation import Relation
+from p2.datashackle.management.span.embeddedform import EmbeddedForm
 
 
 class QueryMode(object):
@@ -162,7 +162,7 @@ class RelationMixin(object):
         assert(self.relation != None)
         assert(self.relation_source != None)
         session = getUtility(IDbUtility).Session()
-        relation = session.query(Relation).filter_by(span_identifier=self.relation.id).one()
+        relation = session.query(EmbeddedForm).filter_by(span_identifier=self.relation.id).one()
         plan_identifier = relation.plan_identifier
         if not plan_identifier or len(plan_identifier) == 0:
             raise Exception("plan_identifier is obligatory for relation.")

@@ -70,7 +70,8 @@ p2.RelationPropertyform.prototype.initialize = function()
     }
     //ok, let's fetch the list of plan identifiers and their respective table identifiers
     self.plan_table_list = undefined;
-    $.ajax({url:p2.setdesigner.application_url + "/@@jsoninfoquery" ,
+    
+    $.ajax({url:p2.setdesigner.applicationUrl + "/@@jsoninfoquery" ,
         async: false,
         dataType: "json",
         type: "GET",

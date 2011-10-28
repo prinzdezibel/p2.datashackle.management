@@ -191,4 +191,23 @@ class Fileupload(WidgetType):
                   properties=Fileupload.mapper_properties,
                   )
 
+@model_config(tablename='p2_widget', maporder=2)
+class EmbeddedForm(WidgetType):
+    grok.implements(IWidgetType)
+
+    js_propertyform_constructor = 'p2.RelationPropertyform'
+    
+    def __init__(self, objid=None):
+        super(EmbeddedForm, self).__init__(objid)
+        self.register_span('label', 'label')
+        self.register_span('embeddedform', 'piggyback')
+
+    @classmethod
+    def map_computed_properties(cls):
+        cls.sa_map_dispose()
+        inherits = WidgetType._sa_class_manager.mapper
+        orm.mapper(EmbeddedForm,
+            inherits=inherits,
+            properties=EmbeddedForm.mapper_properties,
+            polymorphic_identity='embeddedform')
 

@@ -4,7 +4,7 @@
 
 from p2.datashackle.core.app.exceptions import *
 from p2.datashackle.management.span.alphanumeric import Alphanumeric
-from p2.datashackle.management.span.relation import Relation
+from p2.datashackle.management.span.embeddedform import EmbeddedForm
 from p2.datashackle.management.span.fileupload import Fileupload
 from p2.datashackle.management.span.label import Label
 from p2.datashackle.management.span.checkbox import Checkbox
@@ -19,8 +19,8 @@ def lookup_span_type(span_type):
         return Label
     elif str(span_type) == 'checkbox':
         return Checkbox
-    elif str(span_type) == 'relation':
-        return Relation
+    elif str(span_type) == 'embeddedform':
+        return EmbeddedForm
     elif str(span_type) == 'action':
         return Action
     elif str(span_type) == 'fileupload':

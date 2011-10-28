@@ -12,8 +12,8 @@ from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.span.views.span import Span
 
-class Relation(Span, RelationMixin):
-    grok.name('relation')
+class EmbeddedForm(Span, RelationMixin):
+    grok.name('embeddedform')
     grok.context(ISpanType)
 
     def __init__(self, context, request):
@@ -38,5 +38,5 @@ class Relation(Span, RelationMixin):
             self.targetResource = absoluteurl.absoluteURL(form, self.request)
            
     def render(self):
-        self.template = grok.PageTemplateFile('relation.pt')
+        self.template = grok.PageTemplateFile('embeddedform.pt')
         return self._render_template()

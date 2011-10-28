@@ -4,10 +4,9 @@
 
 from zope.component import getUtility
 
-from p2.datashackle.management.widget.relation import Relation
 from p2.datashackle.management.widget.dropdown import Dropdown
-from p2.datashackle.management.widget.widget import Labeltext, Checkbox, Action, Fileupload
-
+from p2.datashackle.management.widget.widget import Labeltext, \
+    Checkbox, Action, Fileupload, EmbeddedForm
 
 def lookup_widget_type(widgettype):
     widgettype = str(widgettype).lower()
@@ -15,8 +14,8 @@ def lookup_widget_type(widgettype):
         return Labeltext
     elif widgettype == 'checkbox':
         return Checkbox
-    elif widgettype == 'relation':
-        return Relation
+    elif widgettype == 'embeddedform':
+        return EmbeddedForm
     elif widgettype == 'action':
         return Action
     elif widgettype == 'relation':
