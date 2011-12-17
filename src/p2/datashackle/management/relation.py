@@ -2,20 +2,21 @@
 # Copyright (C), projekt-und-partner.com, 2011
 # Author: Michael Jenny
 
-from sqlalchemy import func
+import sqlalchemy.types
+from sqlalchemy import func, Table
 from sqlalchemy.sql import or_, not_, and_, desc
-from sqlalchemy.sql.expression import case, literal_column, column
+from sqlalchemy.sql.expression import case, column, literal_column, select
+from sqlalchemy.orm import aliased
 from zope.component import getUtility, getMultiAdapter
 
 from p2.datashackle.core.globals import metadata
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.interfaces import IDbUtility, ILocationProvider
-from p2.datashackle.core.models.table import Table
 from p2.datashackle.management.span.embeddedform import EmbeddedForm
 
 
 class QueryMode(object):
-    """Specify the relation items that are honored in the query returned from a query_related()
+    """Specify the relation items that are honored in the query returned from a query()
        call on a RelationMixin."""
     SHARED = 1 # Honor all entries from target table
     EXCLUSIVE = 2 # Honor only entries from target table that are linked to current setobject
@@ -26,35 +27,56 @@ class RelationMixin(object):
     """View mixin that requires that self.relation_source and self.relation are populated when calling its methods,
        whereas self.relation is the relation widget this is used on and self.relation_source the setobject the widget
        operates on."""
+    
+    # The id of the linkage which is used to determine related items
     collection_id = None
 
     def __init__(self, show_strip):
         self.show_strip = show_strip
  
     def update(self):
-        self.is_multi_selectable = self.relation.linkage.is_multi_selectable
-        self.collection_id = self.relation_source.collections[self.relation.linkage.attr_name]['collection_id']
+        self.is_multi_selectable = self.relation.linkage.relation.cardinality.id == 'ONE_TO_MANY'
+        try:
+            self.collection_id = self.relation_source.collections[self.relation.linkage.attr_name]['collection_id']
+        except KeyError:
+            raise Exception("Attribute %s does not exist on object %s. Check "\
+                "if form_id of embeddedform_widget is matching the linkage " \
+                "id." % (self.relation.linkage.attr_name, self.relation_source))
 
-    def query_related(self, query_mode=None, filter_clause=None):
-        """ Generate an SQL query to obtain the related items of a relation widget's relation through this mixin. """
-        assert(self.relation != None)
-        assert(self.relation_source != None)
+
+    def query_not_joined(self, filter_clause):
+        session = getUtility(IDbUtility).Session()
+        plan_id = self.relation.plan_identifier
+        from p2.datashackle.management.plan.plan import Plan
+        plan = session.query(Plan).get(plan_id)
+        target_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)        
+        query = session.query(target_type)
+        query = query.add_column(
+            literal_column("'false'").label('linked')
+        )
+        if filter_clause:
+            query = query.filter(filter_clause)
+        return query
+
+
+    def query_joined(self, query_mode, filter_clause):
         if query_mode == None:
-            if self.relation.linkage.shareable == True:
-                query_mode=QueryMode.SHARED
-            else:
+            if self.relation.linkage.cardinality.id == 'ONE(FK)_TO_ONE' or \
+                    self.relation.linkage.cardinality.id == 'ONE_TO_ONE(FK)':
                 query_mode=QueryMode.WITH_UNLINKED
-        
-        #print "QueryMode: " + str(query_mode) + ", Source: " + self.relation.linkage.source_classname + ", Target: " + self.relation.linkage.target_classname
+            else:
+                query_mode=QueryMode.SHARED
 
         source_type = setobject_type_registry.lookup(self.relation.linkage.source_module, self.relation.linkage.source_classname)
         target_type = setobject_type_registry.lookup(self.relation.linkage.target_module, self.relation.linkage.target_classname)        
         session = getUtility(IDbUtility).Session()
-        self.relation.linkage.compute_cardinality()
-        
+
+        if target_type == source_type:
+            target_type = aliased(source_type)        
+
         # Check if it is an xref relation
         xref_object = None
-        if self.relation.linkage.source_cardinality != 1 and self.relation.linkage.target_cardinality != 1:
+        if self.relation.linkage.cardinality.id == 'MANY_TO_MANY':
             xref_object = setobject_type_registry.lookup_by_table(self.relation.linkage.xref_table)
                 
         # Compose query for various modes:
@@ -64,17 +86,18 @@ class RelationMixin(object):
             # For n:m, we need to outerjoin the xref table first:
             if not xref_object == None:
                 query = query.outerjoin((xref_object,
-                    target_type.get_primary_key_attr() == getattr(xref_object, self.relation.linkage.foreignkeycol2)
+                    target_type.get_primary_key_attr() == getattr(xref_object, self.relation.linkage.relation.foreignkeycol2)
                 ))
             
             # Simply join with our source table from the target table. The join condition ensures we either get linked elements, or the source table's primary key field will be null/None.
             if xref_object == None:
-                if self.relation.linkage.is_foreignkey_on_target_table() == True:
-                    joincondition = getattr(source_type,source_type.get_primary_key_attr_name()) == getattr(target_type, self.relation.linkage.foreignkeycol)
+                if self.relation.linkage.cardinality.id == 'ONE_TO_MANY' or \
+                        self.relation.linkage.cardinality.id == 'ONE_TO_ONE(FK)':
+                    joincondition = getattr(source_type,source_type.get_primary_key_attr_name()) == getattr(target_type, self.relation.linkage.relation.foreignkeycol)
                 else:
-                    joincondition = getattr(source_type,self.relation.linkage.foreignkeycol) == target_type.get_primary_key_attr()
+                    joincondition = getattr(source_type,self.relation.linkage.relation.foreignkeycol) == target_type.get_primary_key_attr()
             else:
-                joincondition = getattr(source_type,source_type.get_primary_key_attr_name()) == getattr(xref_object, self.relation.linkage.foreignkeycol)
+                joincondition = getattr(source_type,source_type.get_primary_key_attr_name()) == getattr(xref_object, self.relation.linkage.relation.foreignkeycol)
             
             query = query.outerjoin((source_type, joincondition))
             
@@ -89,7 +112,9 @@ class RelationMixin(object):
             )
             
             # For 1:n/1:1(fk), don't allow entries linked to someone else to show up (since they cannot have their foreign key point at two things).
-            if xref_object == None and self.relation.linkage.is_foreignkey_on_target_table() == True:
+            if xref_object == None and (
+                    self.relation.linkage.cardinality.id == 'ONE_TO_MANY' or \
+                    self.relation.linkage.cardinality.id == 'ONE_TO_ONE(FK)'):
                 query = query.filter(or_(
                     getattr(source_type, source_type.get_primary_key_attr_name()) == self.relation_source.id,
                     getattr(source_type, source_type.get_primary_key_attr_name()) == None
@@ -102,14 +127,14 @@ class RelationMixin(object):
                 # Inner join should be sufficient
                 if xref_object is None:
                     # The join condition is also explicitely required here for cases with many relations to the same table
-                    if self.relation.linkage.is_foreignkey_on_target_table() == True:
-                        query = session.query(target_type).join((source_type, source_type.get_primary_key_attr() == getattr(target_type, self.relation.linkage.foreignkeycol)))
+                    if self.relation.linkage.cardinality.id == 'ONE_TO_MANY':
+                        query = session.query(target_type).join((source_type, source_type.get_primary_key_attr() == getattr(target_type, self.relation.linkage.relation.foreignkeycol)))
                     else:
-                        query = session.query(target_type).join((source_type, target_type.get_primary_key_attr() == getattr(source_type, self.relation.linkage.foreignkeycol)))
+                        query = session.query(target_type).join((source_type, target_type.get_primary_key_attr() == getattr(source_type, self.relation.linkage.relation.foreignkeycol)))
                 else:
                     #n:m, we need to specify the join condition:
-                    query = session.query(target_type).join((xref_object, target_type.id == getattr(xref_object, self.relation.linkage.foreignkeycol2)))
-                    query = query.join((source_type, and_(source_type.id == getattr(xref_object, self.relation.linkage.foreignkeycol),
+                    query = session.query(target_type).join((xref_object, target_type.id == getattr(xref_object, self.relation.linkage.relation.foreignkeycol2)))
+                    query = query.join((source_type, and_(source_type.id == getattr(xref_object, self.relation.linkage.relation.foreignkeycol),
                                                         source_type.id == self.relation_source.get_primary_key_attr())
                                       ))
             elif query_mode == QueryMode.WITH_UNLINKED:
@@ -118,19 +143,19 @@ class RelationMixin(object):
                     query = session.query(target_type).outerjoin(source_type)
                 else:
                     #n:m, we need to specify the join condition:
-                    query = session.query(target_type).outerjoin((xref_object, target_type.id == getattr(xref_object, self.relation.linkage.foreignkeycol2)))
-                    query = query.join((source_type, or_(and_(source_type.id == getattr(xref_object, self.relation.linkage.foreignkeycol),
+                    query = session.query(target_type).outerjoin((xref_object, target_type.id == getattr(xref_object, self.relation.linkage.relation.foreignkeycol2)))
+                    query = query.join((source_type, or_(and_(source_type.id == getattr(xref_object, self.relation.linkage.relation.foreignkeycol),
                                                         source_type.id == self.relation_source.get_primary_key_attr()),
                                                         source_type.id == None)
                                       ))
             
             if xref_object is None:
-                if self.relation.linkage.is_foreignkey_on_target_table() == True:
+                if self.relation.linkage.cardinality.id == 'ONE_TO_MANY':
                     # Foreignkey on target_type side
-                    foreignkey_attr = getattr(target_type, self.relation.linkage.foreignkeycol)
+                    foreignkey_attr = getattr(target_type, self.relation.linkage.relation.foreignkeycol)
                 else:
                     # Foreignkey on source_type side
-                    foreignkey_attr = getattr(source_type, self.relation.linkage.foreignkeycol)
+                    foreignkey_attr = getattr(source_type, self.relation.linkage.relation.foreignkeycol)
                    
                 query = query.add_column(case([(foreignkey_attr == None, 'false')], else_='true').label('linked')) 
                 
@@ -138,8 +163,8 @@ class RelationMixin(object):
                     query = query.filter(or_(source_type.get_primary_key_attr() == self.relation_source.id, foreignkey_attr == None))
             else:
                 # n:m relation
-                foreignkeycolumn1 = getattr(xref_object, self.relation.linkage.foreignkeycol)
-                foreignkeycolumn2 = getattr(xref_object, self.relation.linkage.foreignkeycol2)
+                foreignkeycolumn1 = getattr(xref_object, self.relation.linkage.relation.foreignkeycol)
+                foreignkeycolumn2 = getattr(xref_object, self.relation.linkage.relation.foreignkeycol2)
                 query = query.add_column(case([(
                     (or_(foreignkeycolumn1 == None,
                     foreignkeycolumn2 == None))
@@ -156,7 +181,18 @@ class RelationMixin(object):
             query = query.filter(filter_clause)
         
         return query
-    
+
+
+    def query(self, query_mode=None, filter_clause=None):
+        """ Generate an SQL query to obtain the related items of a relation widget's relation through this mixin. """
+        assert(self.relation != None)
+        assert(self.relation_source != None)
+        
+        if self.relation.linkage.cardinality.id == 'NONE':
+            return self.query_not_joined(filter_clause)
+        else:
+            return self.query_joined(query_mode, filter_clause)
+
     def call_subform(self, source_id, setobject_id, linked, alternation):
         """Render subform for a given relation  and setobject."""
         assert(self.relation != None)
@@ -192,7 +228,7 @@ class RelationMixin(object):
         self.request.form['mode'] = 'OPERATIONAL'
         self.request.form['source_id'] = source_id
         self.request.form['linked'] = linked
-        self.request.form['show_strip'] = self.show_strip == True and 'true' or 'false'
+        self.request.form['show_strip'] = self.show_strip and 'true' or 'false'
         if alternation != None:
             self.request.form['alternation'] = alternation
         else:

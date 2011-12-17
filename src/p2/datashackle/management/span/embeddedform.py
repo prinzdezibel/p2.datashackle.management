@@ -5,12 +5,14 @@
 from sqlalchemy import orm
 from zope.component import getUtility
 
-from p2.datashackle.core import model_config
+from p2.datashackle.core import model_config, Session
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
+from p2.datashackle.core.app.exceptions import UserException
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.core.models.linkage import Linkage
 from zope.component import getUtility
+
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.management.span.span import SpanType
 
@@ -21,36 +23,61 @@ class EmbeddedForm(SpanType):
     height = 50
     width = 50
  
-    def __init__(self, span_name=None, objid=None):
+    def __init__(self, span_name=None):
         self.linkage = Linkage()
+
+        self.form_name = 'default_form'
         self.css_style = "left:" + str(self.label_width) + "px; width:" + \
             str(self.width) + "px; height:" + str(self.height) + "px;"
-        super(EmbeddedForm, self).__init__(span_name, objid)
-    
-    def __setattr__(self, name, value):
-        SpanType.__setattr__(self, name, value)
-        if name == 'linkage':
-            if self.plan_identifier != None and value != None:
-                # Get the table identifier from our plan identifier and set it as the linkage's target class
-                table = setobject_table_registry.lookup_by_table('p2_plan')
-                plan = getUtility(IDbUtility).engine.execute(table.select(table.c.plan_identifier == self.plan_identifier)).first()
-                assert(plan != None)
-                plan_module = plan['so_module']
-                plan_type = plan['so_type']
-                table_identifier = setobject_type_registry.lookup(plan_module, plan_type).get_table_name()
-                oldtargetclass = None
-                try:
-                    oldtargetclass = self.linkage.target_classname
-                except AttributeError:
-                    pass
-                if oldtargetclass == None or oldtargetclass == "":
-                    self.linkage.target_classname = table_identifier
+        super(EmbeddedForm, self).__init__(span_name)
+   
+    #def set_attribute(self, attribute, value, mode):
+    #    super(EmbeddedForm, self).set_attribute(attribute, value, mode)
+    #    if attribute == 'linkage':
+    #        # Set computed linkage values
+    #        value.source_module = self.__module__
+    #        value.source_classname = self.__class__.__name__
+    #        plan_id = self.plan_identifier
+    #        session = Session()
+    #        from p2.datashackle.management.plan.plan import Plan
+    #        plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
+    #        value.target_module = plan.so_module
+    #        value.target_classname = plan.so_type
+    #    elif attribute == 'relation':
+    #        value.source_table = self.get_table_name()
+    #        plan_id = self.plan_identifier
+    #        session = Session()
+    #        from p2.datashackle.management.plan.plan import Plan
+    #        plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
+    #        value.target_table = plan.get_table_name()
 
     def post_order_traverse(self, mode):
         if mode == 'save':
-            self.linkage.check_if_complete()
-            self.linkage.init_link()
- 
+            from p2.datashackle.management.plan.plan import Plan
+            plan_id = self.plan_identifier
+            session = Session()
+            plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
+            source_type = self.op_setobject_type
+            target_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)
+            
+            # Set computed values on inner objects
+            self.linkage.source_module = source_type.__module__
+            self.linkage.source_classname = source_type.__name__
+            self.linkage.target_module = plan.so_module
+            self.linkage.target_classname = plan.so_type
+
+            self.linkage.relation.source_table = source_type.get_table_name() 
+            self.linkage.relation.target_table = target_type.get_table_name()            
+
+            if self.characteristic.id == 'ADJACENCY_LIST':
+                # Ensure given linkage id that identifies which relation
+                # is used to represent the tree structure
+                if not self.adjacency_linkage:
+                    raise UserException("Missing value. For tree types the linkage id is mandatory.")
+
+            if self.linkage.relation.cardinality.id != 'NONE':
+                self.linkage.relation.create_relation(self.characteristic.id)
+
     def _get_info(self):
         info = {}
         if self.operational:
@@ -69,4 +96,3 @@ class EmbeddedForm(SpanType):
                    properties=cls.mapper_properties
                    )
         
-

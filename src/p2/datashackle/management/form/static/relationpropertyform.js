@@ -48,26 +48,7 @@ p2.RelationPropertyform.prototype.initialize = function()
         cardinalitywidget.bind('keyup', func);
         cardinalitywidget.bind('blur', func);
     }
-    if (this.gettargetforminput() == "") {
-        this.gettargetforminput().val("default_form");
-    }
-    if (this.getcardinalityinput() == "") {
-        this.getcardinalityinput().val("n:1");
-    }
-    //add source table field to the setobject manually (we don't allow the user to influence/set this since that would be pointless)
-    setobjectid = cardinalitywidget.parent().parent().attr('data-node-id');
-    formsetobject = p2.setdesigner.findParentFormVertex(setobjectid);
-    setobject = p2.datashackle.core.session.graph.queryGraphObject(setobjectid);
-    if (!formsetobject) {
-        alert("relationpropertyform.js: form node not found");return;
-    }
-    if (setobject) {
-        setobject.vertex.setAttr('source_module', formsetobject.getAttr("so_module"));
-        setobject.vertex.setAttr('source_classname', formsetobject.getAttr("so_type"));
-        setobject.vertex.offerSetAttr('target_module', 'p2.datashackle.core.models.setobject_types');
-    }else{
-        alert("relationpropertyform.js: setobject node not found");return;
-    }
+
     //ok, let's fetch the list of plan identifiers and their respective table identifiers
     self.plan_table_list = undefined;
     

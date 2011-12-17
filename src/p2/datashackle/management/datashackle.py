@@ -130,13 +130,19 @@ def init_application(event):
     archetypes.table_key_field = 'id'
     metaconfig['p2_archetypes'] = archetypes
     
-    
     linkageforms = GenericSet()
     linkageforms.title = u'p2_linkage'
     linkageforms.plan_identifier = 'p2_linkage'
     linkageforms.table_identifier = 'p2_linkage'
     linkageforms.table_key_field = 'id'
     metaconfig['p2_linkage'] = linkageforms
+    
+    set_ = GenericSet()
+    set_.title = u'p2_relation'
+    set_.plan_identifier = 'p2_relation'
+    set_.table_identifier = 'p2_relation'
+    set_.table_key_field = 'id'
+    metaconfig['p2_relation'] = set_
 
     widget = GenericSet()
     widget.title = u'p2_widget'

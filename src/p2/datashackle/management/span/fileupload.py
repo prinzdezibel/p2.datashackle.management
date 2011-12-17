@@ -9,6 +9,8 @@ from p2.datashackle.core import model_config
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models.setobject_types import SetobjectType, setobject_table_registry
 from p2.datashackle.core.models.linkage import Linkage
+from p2.datashackle.core.models.media import Media
+from p2.datashackle.core.models.relation import Relation
 from p2.datashackle.management.span.span import SpanType
 
 
@@ -30,15 +32,21 @@ class Fileupload(SpanType):
                    properties=Fileupload.mapper_properties,
                   )
 
-    def __init__(self, span_name=None, objid=None):
+    def __init__(self, span_name=None):
         self.css_style = "left:" + str(self.label_width) + "px; width:" + str(self.fileupload_label_width) + "px; height:" + str(self.fileupload_label_height) + "px; "
-        self.linkage = Linkage(cardinality="n:1", ref_type="object")
-        super(Fileupload, self).__init__(span_name, objid)
+        
+        self.relation = Relation('MANY_TO_ONE')
+        self.linkage = Linkage()
+        # Set the linkage's relation to this form's relation
+        self.linkage.relation = self.relation
+        super(Fileupload, self).__init__(span_name)
     
     def post_order_traverse(self, mode):
         if mode == 'save':
-            self.linkage.check_if_complete()
-            self.linkage.init_link()    
+            source_type = self.op_setobject_type
+            self.relation.source_table = source_type.get_table_name()
+            self.relation.target_table = Media.get_table_name()
+            self.relation.create_relation('LIST')
     
     def _get_info(self):
         info = {}

@@ -26,13 +26,13 @@ class Upload(grok.View):
         if not isinstance(size, tuple) or len(size) != 2:
             raise ValueError('Size must be a (width, height) tuple.')
 
+        original_file.seek(0)
         original_image = Image.open(original_file)
         image = original_image.copy()
         image.thumbnail(size, Image.ANTIALIAS)
         thumbnailIO = StringIO()
         image.save(thumbnailIO, original_image.format, quality=90)
         thumbnailIO.seek(0)
-        original_file.seek(0)
         return thumbnailIO
         
     def update(self):
@@ -44,19 +44,10 @@ class Upload(grok.View):
         thumbnail_width = int(self.request.getHeader('X-thumbnail-width'))
         thumbnail_height = int(self.request.getHeader('X-thumbnail-height'))
         self.filename = self.request.getHeader('X-File-Name')
-        mime_type = getUtility(IMimeTypeGetter)(name=self.filename, data=upload_file)
-        
-        thumbnail_file = None
-        if mime_type in ('image/jpeg', 'image/png', 'image/gif'):
-            thumbnail_file = self.create_thumbnail(upload_file, (thumbnail_width, thumbnail_height))
-
-        if not mime_type:
-            mime_type = upload_file.headers('Content-Type')
 
         self.identifier = generate_random_identifier()
         media = Media()
         media.id = self.identifier
-        media.mime_type = mime_type
         media.size = size
         media.filename = self.filename
         
@@ -68,8 +59,6 @@ class Upload(grok.View):
             self.message = 'The selected file is too big. Please contact your system administrator.'
             self.title = 'Upload failed.'
             upload_file.close()
-            if thumbnail_file:
-                thumbnail_file.close()
             return    
         
         # Read data:
@@ -87,14 +76,19 @@ class Upload(grok.View):
                 self.message = 'The selected file is bigger than specified.'
                 self.title = 'Upload failed.'
                 upload_file.close()
-                if thumbnail_file:
-                    thumbnail_file.close()
                 return
             chunk = upload_file.read()
-        upload_file.close()
         
-        self.has_thumbnail = thumbnail_file and True or False
-        if thumbnail_file:
+        mime_type = getUtility(IMimeTypeGetter)(name=self.filename, data=media.data)
+        if not mime_type:
+            mime_type = upload_file.headers('Content-Type')
+        media.mime_type = mime_type
+        
+        thumbnail_file = None
+        self.has_thumbnail = False
+        if mime_type in ('image/jpeg', 'image/png', 'image/gif'):
+            thumbnail_file = self.create_thumbnail(upload_file, (thumbnail_width, thumbnail_height))
+            self.has_thumbnail = True
             chunk = thumbnail_file.read()
             while chunk != '':
                 if media.thumbnail == None:
@@ -102,6 +96,8 @@ class Upload(grok.View):
                 media.thumbnail += chunk
                 chunk = thumbnail_file.read()
             thumbnail_file.close()       
+        
+        upload_file.close()
         
         session = db_util.Session()    
         session.add(media)
@@ -138,7 +134,6 @@ class Serve(grok.View):
             self.request.response.setStatus(404)
             return
         # Media found
-        
         mime_type = self.media.mime_type
         self.request.response.setHeader('Content-Type', mime_type)
         

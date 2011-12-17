@@ -3,7 +3,8 @@
                     data_node_id            python:context.span_identifier;
                     span_type               context/span_type;
                     info                    python:context.get_info();
-                    is_multi_selectable     python:context.linkage.is_multi_selectable;
+                    is_linked               python:context.linkage.relation.cardinality.id != 'NONE';
+                    is_multi_selectable     python:context.linkage.relation.cardinality.id == 'ONE_TO_MANY';
                     span_identifier         python:context.span_identifier;
                     ">
     <div class="p2-span" tal:attributes="id                         id;
@@ -34,7 +35,9 @@
             <script type="text/javascript" tal:content="string:
                 var isMultiSelectable = null;
                 if ('${is_multi_selectable}' == 'True') isMultiSelectable = true; else isMultiSelectable = false;
-                p2.datashackle.core.session.registerLinkageNode('${context/setobject/id}', '${view/collection_id}', '${context/linkage/attr_name}', isMultiSelectable, '${context/span_identifier}');
+                if ('${is_linked}' == 'True'){
+                    p2.datashackle.core.session.registerLinkageNode('${context/setobject/id}', '${view/collection_id}', '${context/linkage/attr_name}', isMultiSelectable, '${context/span_identifier}');
+                }
             ">
             </script>
             <tal:condition condition="python: view.count != 0">

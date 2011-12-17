@@ -29,7 +29,7 @@ class Dropdown(Span, RelationMixin):
             RelationMixin.update(self)
         self.targetResource = ''
         if self.context.operational:
-            self.query = self.query_related(query_mode=QueryMode.SHARED)
+            self.query = super(Dropdown, self).query(query_mode=QueryMode.SHARED)
             self.count = self.query.count()
             # Is already an item selected?
             self.selected = False

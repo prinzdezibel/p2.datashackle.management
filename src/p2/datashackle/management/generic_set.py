@@ -20,7 +20,7 @@ from dolmen.app.content import icon
 from dolmen.forms.crud.crudforms import Add,Edit
 from dolmen.forms.crud.interfaces import IFactoryAdding
 from megrok import resource
-from sqlalchemy import Table, String, Column
+from sqlalchemy import String, Column, Table
 from zope.catalog.interfaces import ICatalog
 from zope.component import getUtility
 from zope.schema.fieldproperty import FieldProperty
@@ -124,10 +124,10 @@ def genericset_added(genericset, event):
         so_classname = so_type.__name__
 
     session = getUtility(IDbUtility).Session()
-    plan = Plan(objid=plan_identifier)
+    plan = Plan(plan_identifier)
     plan.so_module = so_module
     plan.so_type = so_classname
-    form = FormType(objid=None,
+    form = FormType(
         plan=plan,
         form_name='default_form'
     )

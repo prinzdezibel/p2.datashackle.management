@@ -67,7 +67,6 @@
                 ">
             </script>
         </tal:define>
-        <!-- tal:replace replace="structure python:view.render_widgets()"></tal:replace -->
         <tal:repeat tal:repeat="widget context/widget_collection">
             <tal:replace replace="structure python:widget.lookup_view(view.request, view.mode)()" />
         </tal:repeat>

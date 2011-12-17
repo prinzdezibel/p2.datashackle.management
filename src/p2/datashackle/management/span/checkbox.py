@@ -26,9 +26,9 @@ class Checkbox(SpanType):
                     properties=cls.mapper_properties,
                   )
 
-    def __init__(self, span_name=None, objid=None):
+    def __init__(self, span_name=None):
         self.css_style = "left:" + str(self.label_width) + "px;"
-        super(Checkbox, self).__init__(span_name, objid)
+        super(Checkbox, self).__init__(span_name)
 
     def _get_info(self):
         info = {}

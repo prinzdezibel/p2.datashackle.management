@@ -20,8 +20,8 @@ class Label(SpanType):
                     properties=cls.mapper_properties,
                   )
     
-    def __init__(self, span_name=None, objid=None):
+    def __init__(self, span_name=None):
         self.field_type = 'text'
         self.css_style = "width:" + str(self.label_width) + "px;"
-        super(Label, self).__init__(span_name, objid)
+        super(Label, self).__init__(span_name)
 

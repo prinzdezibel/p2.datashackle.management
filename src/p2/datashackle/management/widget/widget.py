@@ -29,8 +29,8 @@ class WidgetType(SetobjectType):
     js_widget_constructor = 'p2.Widget'
     js_propertyform_constructor = 'p2.PropertyForm'
     
-    def __init__(self, objid=None):
-        super(WidgetType, self).__init__(objid)
+    def __init__(self):
+        super(WidgetType, self).__init__()
         self.spans = dict()
         self.css_style = ''
         self.tab_order = 0
@@ -66,9 +66,9 @@ class WidgetType(SetobjectType):
         for (key, value) in self.spans.iteritems():
             self.spans[key].make_operational(setobject)
       
-    def register_span(self, span_type, span_name, span_identifier=None):
+    def register_span(self, span_type, span_name):
         if not span_name in self.spans:
-            self.spans[span_name] = create_span(span_type, span_name, span_identifier)
+            self.spans[span_name] = create_span(span_type, span_name)
             self.spans[span_name].widget = self
         return self.spans[span_name]
         
@@ -115,8 +115,8 @@ class WidgetType(SetobjectType):
 class Action(WidgetType):
     grok.implements(IWidgetType)   
      
-    def __init__(self, objid=None):
-        super(Action, self).__init__(objid)
+    def __init__(self):
+        super(Action, self).__init__()
         self.register_span(span_type='action', span_name='button')
 
     @classmethod
@@ -134,8 +134,8 @@ class Action(WidgetType):
 class Checkbox(WidgetType):
     grok.implements(IWidgetType)   
  
-    def __init__(self, objid=None):
-        super(Checkbox, self).__init__(objid)
+    def __init__(self):
+        super(Checkbox, self).__init__()
         self.register_span('label', 'label')
         self.register_span('checkbox', 'piggyback')
 
@@ -153,8 +153,8 @@ class Checkbox(WidgetType):
 class Labeltext(WidgetType):
     grok.implements(IWidgetType)   
     
-    def __init__(self, objid=None):
-        super(Labeltext, self).__init__(objid)
+    def __init__(self):
+        super(Labeltext, self).__init__()
         self.register_span('label', 'label')
         self.register_span('alphanumeric', 'piggyback')
 
@@ -176,8 +176,8 @@ class Fileupload(WidgetType):
     js_propertyform_constructor = 'p2.FileuploadPropertyform'
     js_widget_constructor = 'p2.Widget.Fileupload'
     
-    def __init__(self, objid=None):
-        super(Fileupload, self).__init__(objid)
+    def __init__(self):
+        super(Fileupload, self).__init__()
         self.register_span('label', 'label')
         self.register_span('fileupload', 'piggyback')
    
@@ -197,8 +197,8 @@ class EmbeddedForm(WidgetType):
 
     js_propertyform_constructor = 'p2.RelationPropertyform'
     
-    def __init__(self, objid=None):
-        super(EmbeddedForm, self).__init__(objid)
+    def __init__(self):
+        super(EmbeddedForm, self).__init__()
         self.register_span('label', 'label')
         self.register_span('embeddedform', 'piggyback')
 

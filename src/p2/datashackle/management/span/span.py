@@ -25,8 +25,8 @@ class SpanType(SetobjectType):
     
     label_width = 95
  
-    def __init__(self, span_name=None, objid=None):
-        super(SpanType, self).__init__(objid)
+    def __init__(self, span_name=None):
+        super(SpanType, self).__init__()
         # BEGIN sqlalchemy instrumented attributes
         # self.span_identifier initialized through SetobjectType base class.
         self.widget = None

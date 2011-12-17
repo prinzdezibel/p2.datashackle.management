@@ -32,20 +32,20 @@ class FormType(SetobjectType):
     # The form gains location awareness (grok.url() capability) through implementing ILocation
     grok.implements(IFormType, interfaces.IContext, ILocation)
 
-    def __init__(self, form_name=None, plan=None, objid=None):
+    def __init__(self, form_name=None, plan=None):
         # BEGIN sqlalchemy instrumented attributes
         # self.form_identifier initialized through SetobjectType base class.
         self.plan = plan
         self.form_name = form_name
         self.widgets = dict()
         # END sqlalchemy instrumented attributes
-        
+ 
         if self.plan != None:    
             self.plan_identifier = plan.id
             self.so_type = plan.so_type
             self.so_module = plan.so_module
         
-        super(FormType, self).__init__(objid)
+        super(FormType, self).__init__()
  
     @orm.reconstructor    
     def reconstruct(self):
@@ -54,18 +54,29 @@ class FormType(SetobjectType):
         self.so_type = self.plan.so_type
         super(FormType, self).reconstruct()
 
+
     def common_init(self):
         super(FormType, self).common_init()
         self.__name__ =  self.form_name # Location awareness
         self.__parent__ = LocationHelper(self.plan) # Location awareness
         self.operational = False
-        self.op_setobject_type = setobject_type_registry.get(self.so_module, self.so_type)
+        if hasattr(self, 'so_type') and hasattr(self, 'so_module'):
+            self.op_setobject_type = setobject_type_registry.get(
+                self.so_module, self.so_type
+            )
     
     def post_order_traverse(self, mode):
         super(FormType, self).post_order_traverse(mode)
-        self.op_setobject_type = setobject_type_registry.get(self.so_module, self.so_type)
-        if self.op_setobject_type == None:
-            raise Exception("Type '%s.%s' does not exist. Check p2_plan table and/or ensure that class type exists in appropriate module and restart server." % (self.so_module, self.so_type))
+        if hasattr(self, 'so_type') and hasattr(self, 'so_module'):
+            self.op_setobject_type = setobject_type_registry.get(
+                self.so_module, self.so_type
+            )
+            if self.op_setobject_type == None:
+                raise Exception("Type '%s.%s' does not exist. Check p2_plan " \
+                    "table and/or ensure that class type exists in " \
+                    "appropriate module and restart server." \
+                    % (self.so_module, self.so_type)
+                )
 
     def widget_collection(self):
         for widget in self.widgets.itervalues():

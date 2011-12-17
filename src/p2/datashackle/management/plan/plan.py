@@ -38,26 +38,20 @@ class Plan(SetobjectType):
     # Zope3's /index.html we need to implement interfaces.IContext
     grok.implements(IPlan, IContext, ILocation)
  
-    def __init__(self, objid=None):
-        
-        # BEGIN sqlalchemy instrumented attributes
-        #self.plan_identifier # initialized through SetobjectType base class.
+    def __init__(self, id):
+        self.id = id
         self.forms = dict()
-        #self.so_module = so_module
-        #self.so_type = so_type
-        # END sqlalchemy instrumented attributes
         
         #util = getUtility(ILocationProvider)
         #genericset = util.get_genericset(objid)
         #self.table_identifier = genericset.table_identifier
-        super(Plan, self).__init__(objid=objid)
+        super(Plan, self).__init__()
         
     @orm.reconstructor          
     def reconstruct(self):
         util = getUtility(ILocationProvider)
         genericset = util.get_genericset(self.plan_identifier) # Requires that genericset.plan_identifier
                                                                # (yes, genericset.plan_identifier, not self.plan_identifier)
-                                                               # is already indexed.
         if genericset != None:
             self.make_locatable(genericset.__name__, genericset.__parent__)
         #so_type = setobject_type_registry.get(self.so_module, self.so_type)
@@ -69,7 +63,7 @@ class Plan(SetobjectType):
         super(Plan, self).common_init()
         self.form_type = FormType.__name__
         self.form_module = FormType.__module__
-        #self.fatalerror = None
+            
         config = getProductConfiguration("setmanager")
         style_dir = config.get('management_styles')
         self.stylesheet_name = str(self.id) + '.css'
@@ -77,8 +71,9 @@ class Plan(SetobjectType):
         self.stylesheet_exists = os.path.exists(self.stylesheet_filepath)
         if self.stylesheet_exists:
             self.stylesheet = cssutils.parseFile(self.stylesheet_filepath, encoding='utf-8')
-        else:
+        elif not hasattr(self, 'stylesheet'):
             self.stylesheet = cssutils.css.CSSStyleSheet()
+
 
     def set_default(self, form):
         self.default_form = form

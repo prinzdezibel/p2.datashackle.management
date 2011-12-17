@@ -3,7 +3,7 @@
                     data_node_id    python:context.span_identifier;
                     span_type       context/span_type;
                     info            python:context.get_info();
-                    is_multi_selectable python:context.linkage.is_multi_selectable;
+                    is_multi_selectable python:context.linkage.relation.cardinality.id == 'ONE_TO_MANY';
                     span_identifier python:context.span_identifier;
                     ">
     <div class="p2-span" tal:attributes="id                         id;

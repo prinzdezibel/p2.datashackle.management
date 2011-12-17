@@ -17,8 +17,8 @@ class Dropdown(WidgetType):
     
     js_propertyform_constructor = 'p2.DropdownPropertyform'
     
-    def __init__(self, objid=None):
-        super(Dropdown, self).__init__(objid)
+    def __init__(self):
+        super(Dropdown, self).__init__()
         self.register_span('label', 'label')
         self.register_span('dropdown', 'piggyback')
 

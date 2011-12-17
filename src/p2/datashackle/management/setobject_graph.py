@@ -118,8 +118,7 @@ class SetobjectGraph(object):
                 callback(node)
             attr_name = node.get('attr_name')
             linkage = setobject.collections[attr_name]['linkage']
-            reftype = linkage.ref_type
-            if setobject.action != 'new' and reftype == 'object':
+            if setobject.action != 'new' and linkage.relation.cardinality.id == 'MANY_TO_ONE':
                 # Set the attribute to None. If it's still linked, it will be done
                 # so in do_linkage, but if not anymore, the attribute is deleted here.
                 setattr(setobject, attr_name, None)
@@ -148,9 +147,9 @@ class SetobjectGraph(object):
         if action == 'new' and node.getparent().tag == 'coll':
             attr_name = node.getparent().get('attr_name')
             linkage = parent_setobject.collections[attr_name]['linkage']
-            reftype = linkage.ref_type
-            if reftype == 'object':
-                if linked == 'true' and getattr(parent_setobject, attr_name, None) != None:
+            if not linkage.use_list:
+                if linked == 'true' and \
+                        getattr(parent_setobject, attr_name, None) != None:
                     setobject = getattr(parent_setobject, attr_name)
                     setobject.id = objid
             else:
@@ -175,7 +174,8 @@ class SetobjectGraph(object):
                 self.session.flush()
             elif action == 'new':
                 assert(self.session.query(so_type).get(objid) is None)
-                setobject = so_type(objid=objid)
+                setobject = so_type()
+                setobject.id = objid
                 self.session.add(setobject)
                 self.session.flush()
             elif action == 'delete':
@@ -188,7 +188,6 @@ class SetobjectGraph(object):
         
         self.do_linkage(node, setobject, parent_setobject)
         if action != 'delete':
-            # do_linkage wipes out backrefs and such, this confuses e.g. the widget on initialization
             setobject.pre_order_traverse()
         
         setobject = self.session.query(so_type).get(objid)
@@ -215,9 +214,25 @@ class SetobjectGraph(object):
             span_identifier = collection_node.get('span_identifier')
             linkage = parent_setobject.collections[attr_name]['linkage']
             refkey = linkage.ref_key
-            reftype = linkage.ref_type
  
-            if reftype == 'object':
+            if linkage.use_list:
+                coll = getattr(parent_setobject, attr_name)
+                # Refkey: If there's a refkey the value of the key is searched within the object's properties.
+                # If there's no refkey specified, we use the objid itself.
+                key = None
+                if refkey == None:
+                    key = node.get('objid')
+                else:
+                    key = getattr(setobject, refkey)
+                # Do actual linkage
+                if linked == 'true':
+                    coll[key] = setobject
+                elif linked == 'false':
+                    if key in coll:
+                        del coll[key]
+                else:
+                    raise UnspecificException("Invalid link state.")
+            else:
                 if linked == 'true':
                     span_identifier = node.get('span_identifier')
                     if span_identifier is not None:
@@ -235,23 +250,6 @@ class SetobjectGraph(object):
                         value=setobject,    
                         mode=self.mode
                     )
-            else:
-                coll = getattr(parent_setobject, attr_name)
-                # Refkey: If there's a refkey the value of the key is searched within the object's properties.
-                # If there's no refkey specified, we use the objid itself.
-                key = None
-                if refkey == None:
-                    key = node.get('objid')
-                else:
-                    key = getattr(setobject, refkey)
-                # Do actual linkage
-                if linked == 'true':
-                    coll[key] = setobject
-                elif linked == 'false':
-                    if key in coll:
-                        del coll[key]
-                else:
-                    raise UnspecificException("Invalid link state.")
             # This flush is necessary. Otherwise it seems that if another reference to THIS object is
             # subsquently deleted via del coll[key], this linkage will not be persisted.
             self.session.flush()

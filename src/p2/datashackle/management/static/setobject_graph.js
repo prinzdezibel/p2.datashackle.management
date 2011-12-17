@@ -154,12 +154,25 @@ p2.SetobjectGraph.prototype.insertEdge = function(sourceVertexId, targetVertexId
     if (sourceAdjlist.vertex instanceof p2.Setobject && targetAdjlist.vertex instanceof p2.Setobject)debugger;
  
     if (!this.edgeExists(sourceVertex, targetVertex)){
+             
         // Put directed edge into graph
         sourceAdjlist.adjacent.push(new p2.Edge(targetVertex));
 
         // Set parent node for targetVertexId
         targetAdjlist.parent = sourceAdjlist;
     
+        // check if newly created edge introduced a circle. This
+        // is not a good thing to do. Remove the edge again.
+        var parent = sourceAdjlist;
+        while (parent = parent.parent){
+            if (parent == targetAdjlist){
+                // circle detected
+                var index = sourceAdjlist.adjacent.length - 1;
+                sourceAdjlist.adjacent.splice(index, 1);
+                targetAdjlist.parent = null;
+            }
+        }    
+
         this.ecount++;
     }
 }
@@ -187,7 +200,7 @@ p2.SetobjectGraph.prototype.toXml = function(root_vertex_id) {
     }else{
         //cycle through all graph members and generate the xml for them
         generatedxml = "";
-        i = 0;
+        var i = 0;
         while (i < this.adjlists.length) {
              // Other nodes that setobjects are ignored. E.g we are not interested in p2.CollectionVertex as standalone object.
              if (this.adjlists[i].vertex instanceof p2.Setobject) {

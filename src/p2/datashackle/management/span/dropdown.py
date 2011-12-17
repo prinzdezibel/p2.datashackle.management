@@ -18,14 +18,13 @@ class Dropdown(SpanType):
    
     width = 95
  
-    def __init__(self, span_name=None, objid=None):
-        self.linkage = Linkage(
-            cardinality='n:1',
-            ref_type='object',
-            target_module='',
-        )
+    def __init__(self, span_name=None):
+        self.relation = Relation('MANY_TO_ONE')
+        self.linkage = Linkage()
+        # Set the linkage's relation to this form's relation
+        self.linkage.relation = self.relation
         self.css_style = "left:" + str(self.label_width) + "px; width:" + str(self.width) + "px;"
-        super(Dropdown, self).__init__(span_name, objid)
+        super(Dropdown, self).__init__(span_name)
     
     def onbefore_post_order_traverse(self, setobject, mode):
         if self.required == True and getattr(setobject, self.linkage.attr_name) is None and mode == 'save':
@@ -33,10 +32,23 @@ class Dropdown(SpanType):
 
     def post_order_traverse(self, mode):
         if mode == 'save':
-            self.linkage.source_module = self.op_setobject_type.__module__
-            self.linkage.source_classname =  self.op_setobject_type.__name__
-            self.linkage.check_if_complete()
-            self.linkage.init_link()
+            from p2.datashackle.management.plan.plan import Plan
+            plan_id = self.plan_identifier
+            session = Session()
+            plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
+            source_type = self.op_setobject_type
+            target_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)
+    
+            # set relation value
+            self.relation.source_table = source_type.get_table_name()
+            self.relation.target_table = target_type.get_table_name()
+            self.relation.create_relation('LIST')
+            
+            # Set computed linkage values
+            self.linkage.source_module = source_type.__module__
+            self.linkage.source_classname = source_type.__name__
+            self.linkage.target_module = plan.so_module
+            self.linkage.target_classname = plan.so_type
      
     def __setattr__(self, name, value):
         SpanType.__setattr__(self, name, value)

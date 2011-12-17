@@ -31,7 +31,7 @@ def lookup_span_type(span_type):
         raise UnspecificException("Unknown span_type: " + str(span_type))
    
 
-def create_span(span_type_name, span_name, span_identifier):
+def create_span(span_type_name, span_name):
     span_type = lookup_span_type(span_type_name)
-    span = span_type(span_name, span_identifier)
+    span = span_type(span_name)
     return span

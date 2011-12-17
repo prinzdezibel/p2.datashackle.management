@@ -28,7 +28,7 @@ def lookup_widget_type(widgettype):
         raise UnspecificException("Unknown widgettype.")
 
         
-def create_widget(widget_type, widget_identifier=None):
+def create_widget(widget_type):
     widget_type = lookup_widget_type(widget_type)
-    widget = widget_type(widget_identifier)
+    widget = widget_type()
     return widget

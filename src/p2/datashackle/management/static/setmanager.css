@@ -1151,4 +1151,7 @@ textarea {
     height: 100%;
 }
 
-
+.p2-form {
+    width: 100px;
+    height: 20px;
+}

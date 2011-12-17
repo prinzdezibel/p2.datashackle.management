@@ -33,16 +33,20 @@ class ObjectPicker(BaseForm, RelationMixin):
        
     def render(self):
         relation_id = self.relation.id
+        if self.relation.linkage.relation.cardinality.id == 'ONE_TO_MANY':
+            multi_selection = 'true'
+        else:
+            multi_selection = 'false'
         i = ScopedMarkup()
         i.script('var objectPicker = new p2.ObjectPicker(\'%s\', \'%s\', %s, \'%s\');' % (
             self.relation_source.id,
             relation_id,
-            self.is_multi_selectable and 'true' or 'false',
+            multi_selection,
             self.collection_id
         ))
         i.html('<div style="position: relative">')
         a = 0
-        query = self.query_related()
+        query = super(ObjectPicker, self).query()
         for (setobject, linked) in query:
             alternation = (a % 2 == 0) and 'even' or 'odd'
             a += 1

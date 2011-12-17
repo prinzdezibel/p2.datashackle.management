@@ -8,7 +8,6 @@ from zope.component import getMultiAdapter, getUtility
 from zope.traversing.browser import absoluteurl
 
 from p2.datashackle.core.interfaces import ISpanType, ILocationProvider
-from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.span.views.span import Span
 
@@ -22,13 +21,17 @@ class EmbeddedForm(Span, RelationMixin):
     
     def update(self):
         Span.update(self)
+        self.targetResource = ''
         if self.context.operational:
             self.relation_source = self.context.setobject
             self.relation = self.context
             RelationMixin.update(self)
-        self.targetResource = ''
-        if self.context.operational:
-            self.query = self.query_related(query_mode=QueryMode.EXCLUSIVE, filter_clause=self.relation.filter_clause)
+        
+            self.query = super(EmbeddedForm, self).query(
+                query_mode=QueryMode.EXCLUSIVE,
+                filter_clause=self.relation.filter_clause
+            )
+
             self.count = self.query.count()
             target_form = self.context.form_name
             target_plan = self.context.plan_identifier

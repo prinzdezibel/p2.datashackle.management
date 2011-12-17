@@ -68,7 +68,13 @@ class AjaxView(BaseView):
              raise Exception("Mode must have one of the values ARCHETYPE, DESIGNER, OPERATIONAL")
         
         self.so_type = setobject_type_registry.lookup(module, classname)
-        if setobject_id != None and setobject_id == '':
+        if setobject_id == '':
+            # If newly created setobject is of type FormType, we supplement its 
+            # state. 
+            #if module == 'p2.datashackle.management.form.form' and \
+            #        classname == 'FormType':
+            #    setobject = self.so_type(plan=self.context.plan)
+            #else:
             setobject = self.so_type()
             session.add(setobject)
             setobject_id = setobject.id
