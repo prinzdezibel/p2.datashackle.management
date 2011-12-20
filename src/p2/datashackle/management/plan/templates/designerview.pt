@@ -1,5 +1,4 @@
     <tal:define define="plan_url context/plan/@@absolute_url; application_url view/parent_application/@@absolute_url;">
-    <!-- link tal:condition="context/plan/stylesheet_exists" rel="stylesheet" type="text/css" tal:attributes="href string:fanstatic/management_styles/${context/plan/stylesheet_name}"/ -->
     <div id="designerpagewrapper">
     <div id="designerpage">
         
@@ -28,7 +27,7 @@
              <tal:define define="collection_id python:form.collections['widgets']['collection_id']">
                  <script type="text/javascript" tal:content="structure string:
                      p2.setdesigner.fetch_form('${form/form_name}',
-                                               '${form/form_name}',
+                                               '${form/form_name} [${form/form_identifier}]' ,
                                                '${plan_url}/forms/${form/form_name}',
                                                '${form/form_identifier}',
                                                '${context/plan/so_module}',
@@ -42,6 +41,10 @@
          </tal:repeat>
 
         <div id="toolbox">
+            <h3>Plan</h3>
+            <ul>
+                <li tal:content="string:Identifier: ${context/plan/plan_identifier}"></li>
+            </ul>
             <h3>Forms</h3>
             <div class="forms">
                <ul>
@@ -52,7 +55,7 @@
                             <a id="92883733" href="#" 
                                tal:attributes="onclick string:p2.setdesigner.showForm(this, '${form/form_name}');;return false;;">
                                 <img alt="form icon" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/icon_form.png"/>
-                                <div class="form-name" tal:content="form/form_name"></div>
+                                <div class="form-name" tal:content="string:${form/form_name} [${form/form_identifier}]"></div>
                                 <div class="clear"></div>
                             </a>
                             <script tal:condition="python: index == 0" tal:content="string:

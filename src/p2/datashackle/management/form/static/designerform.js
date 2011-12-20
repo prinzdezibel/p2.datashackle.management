@@ -57,7 +57,8 @@ p2.DesignerForm = function(module,
 
     p2.Formloader.call(this, schemeHostPath, 'DESIGNER', sourceId=null, dataNodeId);
     p2.Window.call(this, parentEl, windowId, openFn, defaults);
-   
+  
+/* Property form for form windows *//* 
     var propertyform = new p2.PropertyForm(
         this.applicationUrl + '/configuration/meta/p2_form/forms/form_properties', 
         sourceId=null, 
@@ -66,12 +67,12 @@ p2.DesignerForm = function(module,
     $(this.rootEl).children('div.window-titleBar').click(function(){
         propertyform.open();
     });    
+*/
 }
 
 p2.DesignerForm.prototype.initNode = function(node) {
     node.setAttr('so_type', this.soType);
     node.setAttr('so_module', this.soModule);
-    node.setAttr('form_name', this.windowTitle);
 }
 
 p2.DesignerForm.prototype.opened = function(element){

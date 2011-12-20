@@ -28,8 +28,7 @@ class EmbeddedForm(Span, RelationMixin):
             RelationMixin.update(self)
         
             self.query = super(EmbeddedForm, self).query(
-                query_mode=QueryMode.EXCLUSIVE,
-                filter_clause=self.relation.filter_clause
+                query_mode=QueryMode.EXCLUSIVE
             )
 
             self.count = self.query.count()

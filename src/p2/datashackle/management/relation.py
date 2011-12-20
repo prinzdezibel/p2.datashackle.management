@@ -44,7 +44,7 @@ class RelationMixin(object):
                 "id." % (self.relation.linkage.attr_name, self.relation_source))
 
 
-    def query_not_joined(self, filter_clause):
+    def query_not_joined(self):
         session = getUtility(IDbUtility).Session()
         plan_id = self.relation.plan_identifier
         from p2.datashackle.management.plan.plan import Plan
@@ -54,12 +54,12 @@ class RelationMixin(object):
         query = query.add_column(
             literal_column("'false'").label('linked')
         )
-        if filter_clause:
-            query = query.filter(filter_clause)
+        if self.relation.filter_clause:
+            query = query.filter(self.relation.filter_clause)
         return query
 
 
-    def query_joined(self, query_mode, filter_clause):
+    def query_joined(self, query_mode):
         if query_mode == None:
             if self.relation.linkage.cardinality.id == 'ONE(FK)_TO_ONE' or \
                     self.relation.linkage.cardinality.id == 'ONE_TO_ONE(FK)':
@@ -177,21 +177,21 @@ class RelationMixin(object):
                 query = query.filter(getattr(source_type, source_type.get_primary_key_attr_name()) == self.relation_source.id)
 
         # Check for additional constraints on relation widget
-        if filter_clause != None and len(filter_clause) > 0:
-            query = query.filter(filter_clause)
+        if self.relation.filter_clause != None and len(self.relation.filter_clause) > 0:
+            query = query.filter(self.relation.filter_clause)
         
         return query
 
 
-    def query(self, query_mode=None, filter_clause=None):
+    def query(self, query_mode=None):
         """ Generate an SQL query to obtain the related items of a relation widget's relation through this mixin. """
         assert(self.relation != None)
         assert(self.relation_source != None)
         
         if self.relation.linkage.cardinality.id == 'NONE':
-            return self.query_not_joined(filter_clause)
+            return self.query_not_joined()
         else:
-            return self.query_joined(query_mode, filter_clause)
+            return self.query_joined(query_mode)
 
     def call_subform(self, source_id, setobject_id, linked, alternation):
         """Render subform for a given relation  and setobject."""

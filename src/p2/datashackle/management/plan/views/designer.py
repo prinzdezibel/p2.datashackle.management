@@ -45,7 +45,6 @@ class DesignerView(Page):
         WindowManagerSkin.need()
         SetmanagerResources.need()
         PlanResources.need()
-        binpack.need()
             
     def render(self):
         template = grokcore.view.PageTemplateFile("../templates/designerview.pt")

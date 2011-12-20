@@ -41,7 +41,6 @@ p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_ident
     });
 	
 	var availableWidth = $('#dolmen-site').width() - $('#toolbox').width();
-	this.binPacker = new p2.BinPacker(availableWidth, windowPadding);
 	
 	var self = this;
 	$(document).bind('global-mark-dirty', function (e) {self.changed.apply(self, []);});
@@ -201,27 +200,8 @@ p2.Setdesigner.prototype._append_window = function(formName, window){
 		}
 	});
 	
-	// add piece to bin packer for later layouting.
-	//var piece = new p2.BinPacker.Piece(formName, width, height);
-	//this.binPacker.addPiece(piece); 
 }
 
-p2.Setdesigner.prototype.showAll = function(){
-	var pp = this.binPacker.generatePackingPlan();
-	for(var a = 0; a < pp.length; ++a){
-		var layer = pp[a];
-		for(var i = 0; i < layer.placements.length; i++){
-			var placement = layer.placements[i];
-			var formName = placement.piece.id;
-			var window = this.windows[formName];
-			$(window.rootEl).addClass("active");
-			window.move(
-					placement.x,
-					placement.y);
-			window.bringToForeground();
-		}
-	}
-}
 
 p2.Setdesigner.fetchArchetypeHelper = function(ev){
 	var $archetype = $(ev.currentTarget).find('.window-container');

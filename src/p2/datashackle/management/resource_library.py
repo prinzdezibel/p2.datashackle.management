@@ -39,7 +39,7 @@ span = resource.ResourceInclusion(SpanResources, "span.js", depends=[jquery, jBa
 fileuploadspan = resource.ResourceInclusion(SpanResources, "fileupload.js", depends=[html5_upload, span])
 alphanumericspan = resource.ResourceInclusion(SpanResources, "alphanumeric.js", depends=[span])
 actionspan = resource.ResourceInclusion(SpanResources, "action.js", depends=[span])
-relationspan = resource.ResourceInclusion(SpanResources, "relation.js", depends=[span])
+relationspan = resource.ResourceInclusion(SpanResources, "relation.js", depends=[span, jsTree])
 span_label = resource.ResourceInclusion(SpanResources, "label.js", depends=[span])
 checkboxspan = resource.ResourceInclusion(SpanResources, "checkbox.js", depends=[span])
 dropdownspan = resource.ResourceInclusion(SpanResources, "dropdown.js", depends=[span])

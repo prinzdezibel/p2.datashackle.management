@@ -63,17 +63,27 @@ class Plan(SetobjectType):
         super(Plan, self).common_init()
         self.form_type = FormType.__name__
         self.form_module = FormType.__module__
-            
+
+        # If plan operates on a sys table, the styles are fetched from
+        # package p2.datashackle.management. If we deal with a user table,
+        # the styles are served from a user configured directory.
+        stylesheet_name = str(self.id) + '.css'
         config = getProductConfiguration("setmanager")
-        style_dir = config.get('management_styles')
-        self.stylesheet_name = str(self.id) + '.css'
-        self.stylesheet_filepath = os.path.join(style_dir, self.stylesheet_name)
+        if self.is_operating_on_sys_table():
+            style_dir = os.path.join(config.get('sys_staticresource_path'), 'models')
+            self.stylesheet_url = 'fanstatic/sys_staticresource/models/' + stylesheet_name 
+        else:
+            style_dir = config.get('user_styles_path')
+            self.stylesheet_url = 'fanstatic/user_styles/' + stylesheet_name 
+        self.stylesheet_filepath = os.path.join(style_dir, stylesheet_name)
         self.stylesheet_exists = os.path.exists(self.stylesheet_filepath)
         if self.stylesheet_exists:
             self.stylesheet = cssutils.parseFile(self.stylesheet_filepath, encoding='utf-8')
         elif not hasattr(self, 'stylesheet'):
             self.stylesheet = cssutils.css.CSSStyleSheet()
 
+    def is_operating_on_sys_table(self):
+        return self.table_identifier.startswith('p2_')
 
     def set_default(self, form):
         self.default_form = form

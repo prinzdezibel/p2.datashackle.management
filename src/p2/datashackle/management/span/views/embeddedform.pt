@@ -29,9 +29,6 @@
           ">
         </script>
         <tal:condition condition="context/operational">
-            <tal:condition condition="python: view.count == 0">
-                <p>No objects.</p>
-            </tal:condition>
             <script type="text/javascript" tal:content="string:
                 var isMultiSelectable = null;
                 if ('${is_multi_selectable}' == 'True') isMultiSelectable = true; else isMultiSelectable = false;
@@ -40,26 +37,56 @@
                 }
             ">
             </script>
-            <tal:condition condition="python: view.count != 0">
-            <tal:repeat repeat="t view/query">
-                <tal:define define="
-                    setobject   python:t[0];
-                    linked      python:t[1];
-                    index       repeat/t/index;
-                    alternation python:view.count > 1 and (index%2 == 0 and 'even' or 'odd') or None;
-                    ">
-                    <tal:replace replace="structure python: view.call_subform(view.collection_id, setobject.id, linked, alternation)" />
-                </tal:define>
-            </tal:repeat>
+            <tal:condition condition="python:context.characteristic.id == 'ADJACENCY_LIST'">
+                <div tal:attributes="id string:tree_${context/span_identifier}">
+                </div>
+                <script type="text/javascript" tal:content="string:
+                    $$(function () {
+                        try{ 
+                            // $$('#tree_${context/span_identifier}').jstree('set_theme', 'classic');
+                        	$$('#tree_${context/span_identifier}').jstree({ 
+                        		'html_data' : {
+                        			'ajax' : {
+                        				'url' : 'datashackle/stammbaum/forms/default_form/@@baseform?setobject_id=51745158&mode=OPERATIONAL',
+                        				'data' : function (n) { 
+                        					return { id : n.attr ? n.attr('id') : 0 }; 
+                        				}
+                        			}
+                                  },
+          	                    'plugins' : [ 'core', 'html_data' ]
+                        	});
+                        }
+                        catch (ex){alert(ex);}
+
+                                            
+                    });
+                "></script>
             </tal:condition>
-            <tal:condition condition="context/editable">
-            <a href="#" title="Edit objects" tal:attributes="onclick string:
-                    return $('#${id}').data('data-object').onEditClick()">
-                <img style="width:20px; height:20px; float:left;" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/edit_object.png" alt="Edit" />
-                <tal:condition condition="python:view.count == 0">Add to</tal:condition>
-                <tal:condition condition="python:view.count != 0">Edit</tal:condition>
-                collection
-            </a>
+            <tal:condition condition="python:context.characteristic.id == 'LIST'">
+                <tal:condition condition="python: view.count == 0">
+                    <p>No objects.</p>
+                </tal:condition>
+                <tal:condition condition="python: view.count != 0">
+                <tal:repeat repeat="t view/query">
+                    <tal:define define="
+                        setobject   python:t[0];
+                        linked      python:t[1];
+                        index       repeat/t/index;
+                        alternation python:view.count > 1 and (index%2 == 0 and 'even' or 'odd') or None;
+                        ">
+                        <tal:replace replace="structure python: view.call_subform(view.collection_id, setobject.id, linked, alternation)" />
+                    </tal:define>
+                </tal:repeat>
+                </tal:condition>
+                <tal:condition condition="context/editable">
+                <a href="#" title="Edit objects" tal:attributes="onclick string:
+                        return $('#${id}').data('data-object').onEditClick()">
+                    <img style="width:20px; height:20px; float:left;" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/edit_object.png" alt="Edit" />
+                    <tal:condition condition="python:view.count == 0">Add to</tal:condition>
+                    <tal:condition condition="python:view.count != 0">Edit</tal:condition>
+                    collection
+                </a>
+                </tal:condition>
             </tal:condition>
         </tal:condition>
         <tal:condition condition="python:not context.operational">
