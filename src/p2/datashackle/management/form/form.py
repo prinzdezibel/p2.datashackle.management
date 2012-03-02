@@ -38,6 +38,7 @@ class FormType(SetobjectType):
         self.plan = plan
         self.form_name = form_name
         self.widgets = dict()
+        self.css = ''
         # END sqlalchemy instrumented attributes
  
         if self.plan != None:    
@@ -97,12 +98,12 @@ class FormType(SetobjectType):
         """ Check whether we are on an archetype form """
         return self.plan.is_archetype()
     
-    def set_attribute(self, attribute, value, mode):
-        if attribute == 'css_style':
-            selector = 'div[data-form-identifier="' + self.id + '"]'
-            self.plan.update_css_rule(selector, value)
-        else:
-            SetobjectType.set_attribute(self, attribute, value, mode)
+    #def set_attribute(self, attribute, value, mode):
+    #    if attribute == 'css_style':
+    #        selector = 'div[data-form-identifier="' + self.id + '"]'
+    #        self.plan.update_css_rule(selector, value)
+    #    else:
+    #        SetobjectType.set_attribute(self, attribute, value, mode)
        
  
 class FormTraverser(grok.Traverser):

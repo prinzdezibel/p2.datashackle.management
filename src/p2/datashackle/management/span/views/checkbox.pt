@@ -13,6 +13,7 @@
                                          data-span-type                span_type;
                                          data-field-identifier         context/field_identifier;
                                          data-span-identifier          span_identifier;
+                                         style      python:context.css;
                                          ">
         <script type="text/javascript" tal:content="string:
            (function(){

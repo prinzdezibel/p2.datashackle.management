@@ -86,7 +86,7 @@ p2.DesignerForm.prototype.opened = function(element){
             width: width + 'px',
             height: height + 'px'
          });
-         dataNode.setAttr('css_style', $(form).attr('style'));
+         dataNode.setAttr('css', $(form).attr('style'));
      });
 }
 

@@ -7,14 +7,16 @@
                     action              python:context.operational and context.setobject.action or context.action;
 		            linked		        view/linked;
                     ">
-    <link tal:condition="context/plan/stylesheet_exists" rel="stylesheet" type="text/css" tal:attributes="href context/plan/stylesheet_url"/>
+    <!-- link tal:condition="context/plan/stylesheet_exists" rel="stylesheet" type="text/css" tal:attributes="href context/plan/stylesheet_url"/ -->
     <div tal:attributes="id              id;
-                                         data-action                request/URL;
-                                         data-form-identifier       context/form_identifier;
-    									 data-node-id               data_node_id;
-    									 data-source-id             source_id;
-                                         class                      view/css_class;
-                                         " tabIndex="-1">
+                         data-action                request/URL;
+                         data-form-identifier       context/form_identifier;
+                         style                      python:context.css;               
+                         data-node-id               data_node_id;
+    					 data-source-id             source_id;
+                         class                      python:'p2-form';
+                         " 
+            tabIndex="-1">
         <tal:define define="script_id               view/generate_random_identifier;">
             <div tal:attributes="id script_id">
                   <tal:replace replace="string:

@@ -44,7 +44,6 @@ class SetobjectGraph(object):
             self.session = getUtility(IDbUtility).Session()
             raise
 
-
     def update_collections(self):
         self._each_collection(self.xml_root, None)
 
@@ -100,7 +99,7 @@ class SetobjectGraph(object):
             attribute = node.get('name')
             value = node.text
             span_identifier = node.get('span_identifier')
-            # Not all props have span_identifiers (e.g. css_style), because
+            # Not all props have span_identifiers (e.g. css), because
             # these are not visualized as spans
             if span_identifier is not None:
                 session = getUtility(IDbUtility).Session()

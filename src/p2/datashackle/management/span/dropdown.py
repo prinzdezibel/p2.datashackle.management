@@ -23,7 +23,7 @@ class Dropdown(SpanType):
         self.linkage = Linkage()
         # Set the linkage's relation to this form's relation
         self.linkage.relation = self.relation
-        self.css_style = "left:" + str(self.label_width) + "px; width:" + str(self.width) + "px;"
+        self.css = "left:" + str(self.label_width) + "px; width:" + str(self.width) + "px;"
         super(Dropdown, self).__init__(span_name)
     
     def onbefore_post_order_traverse(self, setobject, mode):

@@ -4,6 +4,7 @@
                     span_identifier     python:context.span_identifier;
                     ">
     <div class="p2-span" tal:attributes="id id;
+                                         style      python:context.css;
                                          data-span-identifier span_identifier;">
         <script type="text/javascript" tal:content="string:
             (function(){

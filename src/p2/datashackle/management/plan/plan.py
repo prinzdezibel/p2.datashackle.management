@@ -7,7 +7,7 @@ import logging
 import os
 import types
 
-import cssutils
+#import cssutils
 from grokcore.content.interfaces import IContext
 from sqlalchemy import orm
 from zope.app.appsetup.product import getProductConfiguration
@@ -69,20 +69,20 @@ class Plan(SetobjectType):
         # If plan operates on a sys table, the styles are fetched from
         # package p2.datashackle.management. If we deal with a user table,
         # the styles are served from a user configured directory.
-        stylesheet_name = str(self.id) + '.css'
-        config = getProductConfiguration("setmanager")
-        if self.is_operating_on_sys_table():
-            style_dir = os.path.join(config.get('sys_staticresource_path'), 'models')
-            self.stylesheet_url = 'fanstatic/sys_staticresource/models/' + stylesheet_name 
-        else:
-            style_dir = config.get('user_styles_path')
-            self.stylesheet_url = 'fanstatic/user_styles/' + stylesheet_name 
-        self.stylesheet_filepath = os.path.join(style_dir, stylesheet_name)
-        self.stylesheet_exists = os.path.exists(self.stylesheet_filepath)
-        if self.stylesheet_exists:
-            self.stylesheet = cssutils.parseFile(self.stylesheet_filepath, encoding='utf-8')
-        elif not hasattr(self, 'stylesheet'):
-            self.stylesheet = cssutils.css.CSSStyleSheet()
+        #stylesheet_name = str(self.id) + '.css'
+        #config = getProductConfiguration("setmanager")
+        #if self.is_operating_on_sys_table():
+        #    style_dir = os.path.join(config.get('sys_staticresource_path'), 'models')
+        #    self.stylesheet_url = 'fanstatic/sys_staticresource/models/' + stylesheet_name 
+        #else:
+        #    style_dir = config.get('user_styles_path')
+        #    self.stylesheet_url = 'fanstatic/user_styles/' + stylesheet_name 
+        #self.stylesheet_filepath = os.path.join(style_dir, stylesheet_name)
+        #self.stylesheet_exists = os.path.exists(self.stylesheet_filepath)
+        #if self.stylesheet_exists:
+        #    self.stylesheet = cssutils.parseFile(self.stylesheet_filepath, encoding='utf-8')
+        #elif not hasattr(self, 'stylesheet'):
+        #    self.stylesheet = cssutils.css.CSSStyleSheet()
 
     def is_operating_on_sys_table(self):
         return self.table_identifier.startswith('p2_')
@@ -118,40 +118,40 @@ class Plan(SetobjectType):
         so_type = setobject_type_registry.lookup(self.so_module, self.so_type)
         return so_type.get_table_name()
  
-    def update_css_rule(self, selector_text, value):
-        declarations = value.split(';')
-        for declaration in declarations:
-            colon = declaration.find(':')
-            if colon == -1:
-                # nothing found
-                continue
-            css_name = declaration[:colon]
-            css_value = declaration[colon + 1:]
-            css_property = cssutils.css.Property(name=css_name, value=css_value)
-            found = False
-            # Check if selector already exists
-            for css_rule in self.stylesheet.cssRules:
-                if not isinstance(css_rule, cssutils.css.CSSStyleRule):
-                    continue
-                for selector in css_rule.selectorList:
-                    if selector_text == selector.selectorText:
-                        found = True
-                        #css_rule.style[css_property] = css_value
-                        css_rule.style.setProperty(css_property)
-            if not found:
-                declaration = cssutils.css.CSSStyleDeclaration()
-                declaration.setProperty(css_property)
-                #declaration[css_property] = css_value
-                css_rule = cssutils.css.CSSStyleRule(
-                    selectorText=selector_text,
-                    style=declaration
-                )
-                self.stylesheet.add(css_rule)
-    
-    def write_stylesheet(self):
-        cssfile = open(self.stylesheet_filepath, 'w+')
-        cssfile.write(self.stylesheet.cssText)
-        cssfile.close()
+    #def update_css_rule(self, selector_text, value):
+    #    declarations = value.split(';')
+    #    for declaration in declarations:
+    #        colon = declaration.find(':')
+    #        if colon == -1:
+    #            # nothing found
+    #            continue
+    #        css_name = declaration[:colon]
+    #        css_value = declaration[colon + 1:]
+    #        css_property = cssutils.css.Property(name=css_name, value=css_value)
+    #        found = False
+    #        # Check if selector already exists
+    #        for css_rule in self.stylesheet.cssRules:
+    #            if not isinstance(css_rule, cssutils.css.CSSStyleRule):
+    #                continue
+    #            for selector in css_rule.selectorList:
+    #                if selector_text == selector.selectorText:
+    #                    found = True
+    #                    #css_rule.style[css_property] = css_value
+    #                    css_rule.style.setProperty(css_property)
+    #        if not found:
+    #            declaration = cssutils.css.CSSStyleDeclaration()
+    #            declaration.setProperty(css_property)
+    #            #declaration[css_property] = css_value
+    #            css_rule = cssutils.css.CSSStyleRule(
+    #                selectorText=selector_text,
+    #                style=declaration
+    #            )
+    #            self.stylesheet.add(css_rule)
+    #
+    #def write_stylesheet(self):
+    #    cssfile = open(self.stylesheet_filepath, 'w+')
+    #    cssfile.write(self.stylesheet.cssText)
+    #    cssfile.close()
  
 
 class FormDirectory(object):

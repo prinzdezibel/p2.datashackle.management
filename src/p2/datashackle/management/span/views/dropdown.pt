@@ -12,6 +12,7 @@
                                          data-node-id               data_node_id;
                                          data-field-identifier      context/linkage/attr_name;
                                          data-span-identifier       span_identifier;
+                                         style                      python:context.css;
                                          ">
         <select class="input" size="1" style="width: 100%;">
             <script type="text/javascript" tal:content="string:

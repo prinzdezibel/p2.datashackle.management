@@ -29,7 +29,7 @@ class EmbeddedForm(SpanType):
         so = setobject_type_registry.lookup_by_table('p2_embform_characteristic')
         self.characteristic = session.query(so).get('LIST')
         self.form_name = 'default_form'
-        self.css_style = "left:" + str(self.label_width) + "px; width:" + \
+        self.css = "left:" + str(self.label_width) + "px; width:" + \
             str(self.width) + "px; height:" + str(self.height) + "px;"
         super(EmbeddedForm, self).__init__(span_name)
    
