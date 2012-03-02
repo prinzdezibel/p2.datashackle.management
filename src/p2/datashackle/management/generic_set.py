@@ -106,9 +106,9 @@ def genericset_added(genericset, event):
         # Newly created setobjects live always in 'p2.datashackle.core.models.setobject_types'
         # and the class name equals the table identifier.
         so_module = 'p2.datashackle.core.models.setobject_types'
-        so_classname = genericset.table_identifier
+        so_type = genericset.table_identifier
         # Register table type
-        setobject_table_registry.register_type(so_module, so_classname, table_identifier, table_type)
+        setobject_table_registry.register_type(so_module, so_type, table_identifier, table_type)
         
         # Even if the user gives a specialized class and module we create a 
         # generic so_type first, because the specialized class definition will not exist until the
@@ -119,14 +119,14 @@ def genericset_added(genericset, event):
         table_type.create()
     else:
         # find so_type class for table
-        so_type = setobject_type_registry.lookup_by_table(table_identifier)
-        so_module = so_type.__module__
-        so_classname = so_type.__name__
+        so = setobject_type_registry.lookup_by_table(table_identifier)
+        so_module = so.__module__
+        so_type = so.__name__
 
     session = getUtility(IDbUtility).Session()
-    plan = Plan(plan_identifier)
-    plan.so_module = so_module
-    plan.so_type = so_classname
+    plan = Plan(plan_identifier, so_module, so_type)
+    #plan.so_module = so_module
+    #plan.so_type = so_type
     form = FormType(
         plan=plan,
         form_name='default_form'

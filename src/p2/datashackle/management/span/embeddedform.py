@@ -25,7 +25,9 @@ class EmbeddedForm(SpanType):
  
     def __init__(self, span_name=None):
         self.linkage = Linkage()
-
+        session = Session()
+        so = setobject_type_registry.lookup_by_table('p2_embform_characteristic')
+        self.characteristic = session.query(so).get('LIST')
         self.form_name = 'default_form'
         self.css_style = "left:" + str(self.label_width) + "px; width:" + \
             str(self.width) + "px; height:" + str(self.height) + "px;"

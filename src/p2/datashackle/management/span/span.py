@@ -40,11 +40,20 @@ class SpanType(SetobjectType):
         self.operational = False # Designer mode or user mode?
         self.op_setobject_id = None
         self.op_setobject_type = None
-  
+    
+    @orm.reconstructor 
+    def reconstruct(self):
+        super(SpanType, self).reconstruct()
+        self.update_location_info(self.widget, self.span_name)
+        
     def make_operational(self, setobject):
         self.operational = True
         self.setobject = setobject
         self.op_setobject_id = setobject.id
+    
+    def update_location_info(self, parent, name):
+        self.__parent__ = parent
+        self.__name__ = name
     
     def onbefore_set_payload_attribute(self, setobject, attribute, value, mode):
         """This method is called when an attribute of this span's payload (a user setobject

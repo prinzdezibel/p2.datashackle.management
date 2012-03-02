@@ -38,8 +38,10 @@ class Plan(SetobjectType):
     # Zope3's /index.html we need to implement interfaces.IContext
     grok.implements(IPlan, IContext, ILocation)
  
-    def __init__(self, id):
+    def __init__(self, id, so_module, so_type):
         self.id = id
+        self.so_module = so_module
+        self.so_type = so_type
         self.forms = dict()
         
         #util = getUtility(ILocationProvider)

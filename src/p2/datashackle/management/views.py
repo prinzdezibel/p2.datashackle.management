@@ -43,6 +43,7 @@ class AjaxView(BaseView):
             del(self.request.form['graph'])
         self.source_id = self.request.form.get('source_id')
         if self.source_id != None:
+            # Delete request's source_id, as subforms should not see it.
             del(self.request.form['source_id'])
     	self.linked = self.request.form.get('linked')
         if self.linked != None:
@@ -52,7 +53,8 @@ class AjaxView(BaseView):
     	if self.source_id != None and self.linked == None:
     		raise Exception("source_id parameter must be accompanied by linked parameter")
     	if self.linked != None and self.source_id == None:
-    		raise Exception("linked parameter must be accompanied by linked source_id parameter.")
+            import pdb; pdb.set_trace()
+            raise Exception("linked parameter must be accompanied by linked source_id parameter.")
     	self.relation_source_id = self.request.form.get('relation_source_id')
         
         db_utility = getUtility(IDbUtility)
@@ -69,19 +71,13 @@ class AjaxView(BaseView):
         
         self.so_type = setobject_type_registry.lookup(module, classname)
         if setobject_id == '':
-            # If newly created setobject is of type FormType, we supplement its 
-            # state. 
-            #if module == 'p2.datashackle.management.form.form' and \
-            #        classname == 'FormType':
-            #    setobject = self.so_type(plan=self.context.plan)
-            #else:
             setobject = self.so_type()
             session.add(setobject)
             setobject_id = setobject.id
             session.flush()
         
         if self.graph_xml != None and self.graph_xml != '':
-            graph = SetobjectGraph(self.plan_id, self.request, self.graph_xml)        
+            graph = SetobjectGraph(self.request, self.graph_xml)        
             graph.link(self.source_id, module, classname, setobject_id, self.linked)
             
         if setobject_id != None:

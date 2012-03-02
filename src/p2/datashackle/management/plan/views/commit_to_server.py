@@ -27,7 +27,7 @@ class CommitToServer(JsonView):
         graph_xml = self.request.form['graph']
 
         try:
-            graph = SetobjectGraph(self.context.plan.plan_identifier, self.request, graph_xml)
+            graph = SetobjectGraph(self.request, graph_xml)
             graph.save()
             self.jsonresponse['result'] = 'OK'
         except SetobjectGraphException, ex:

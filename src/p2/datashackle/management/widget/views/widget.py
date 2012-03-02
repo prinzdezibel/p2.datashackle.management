@@ -22,10 +22,18 @@ class Widget(BaseView):
             self.source_id = self.context.form.collections['widgets']['collection_id']
     
    
-class ArchetypeWidget(AjaxView, Widget):
+class ArchetypeWidget(AjaxView):
     grok.name('archetypewidget')
-    
+    grok.context(IWidgetType)
+
+    template = grok.PageTemplateFile('widget.pt')
+
     def update(self):
-        AjaxView.update(self)
-        Widget.update(self)
+        super(ArchetypeWidget, self).update()
+   
+        self.context = self.setobject
+        
+
+
+
 

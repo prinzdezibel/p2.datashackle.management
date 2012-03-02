@@ -30,11 +30,11 @@ class WidgetType(SetobjectType):
     js_propertyform_constructor = 'p2.PropertyForm'
     
     def __init__(self):
-        super(WidgetType, self).__init__()
         self.spans = dict()
         self.css_style = ''
         self.tab_order = 0
         self.widget_type = self.__class__.__name__.lower()
+        super(WidgetType, self).__init__()
 
     @orm.reconstructor 
     def reconstruct(self):
@@ -45,12 +45,16 @@ class WidgetType(SetobjectType):
         super(WidgetType, self).common_init()
         self.operational = False
 
+    def update_location_info(self, parent, name):
+        self.__parent__ = parent
+        self.__name__ = name
+        
+
     def pre_order_traverse(self):
         if self.form == None:
             raise Exception("Can't finish initialization without the form attribute set.")
-        # Make locatable
-        self.__parent__ = self.form
-        self.__name__ = self.id
+        self.update_location_info(self.form, self.id)
+        
         # set op_setobject_type from parent form's attributes
         self.op_setobject_type = setobject_type_registry.lookup(self.form.so_module, self.form.so_type)
         
@@ -109,7 +113,7 @@ class WidgetType(SetobjectType):
             self.form.plan.update_css_rule(selector, value)
         else:
             SetobjectType.set_attribute(self, attribute, value, mode)
-           
+     
 
 @model_config(tablename='p2_widget', maporder=2)
 class Action(WidgetType):
@@ -210,4 +214,12 @@ class EmbeddedForm(WidgetType):
             inherits=inherits,
             properties=EmbeddedForm.mapper_properties,
             polymorphic_identity='embeddedform')
+
+
+class WidgetTraverser(grok.Traverser):
+    grok.context(IWidgetType)
+
+    def traverse(self, name):
+        return self.context.spans[name]
+        
 

@@ -22,13 +22,14 @@ from p2.datashackle.management.span.span import SpanType
 
 class SetobjectGraph(object):
     
-    def __init__(self, plan_identifier, request, raw_xml):
-        self.plan_identifier = plan_identifier
+    #def __init__(self, plan_identifier, request, raw_xml):
+    def __init__(self, request, raw_xml):
+        #self.plan_identifier = plan_identifier
         self.session = getUtility(IDbUtility).Session()
         # deferred import
-        from p2.datashackle.management.plan.plan import Plan
-        self.plan = self.session.query(Plan).filter_by(plan_identifier=self.plan_identifier).one()
-        self.table_identifier = self.plan.table_identifier
+        #from p2.datashackle.management.plan.plan import Plan
+        #self.plan = self.session.query(Plan).filter_by(plan_identifier=self.plan_identifier).one()
+        #self.table_identifier = self.plan.table_identifier
         self.request = request
         self.xml_root = etree.fromstring(raw_xml)
  
@@ -43,7 +44,6 @@ class SetobjectGraph(object):
             self.session = getUtility(IDbUtility).Session()
             raise
 
-        self.plan.write_stylesheet()        
 
     def update_collections(self):
         self._each_collection(self.xml_root, None)

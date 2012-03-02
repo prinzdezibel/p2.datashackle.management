@@ -230,9 +230,8 @@ p2.Widget.appendNew = function(element, archetypeEl, form){
     sourceId = form.collectionId;
     formId = form.setobjectId;
     var archetypeId = $(archetypeEl).attr('data-widget-identifier');
-    var widgetUrl = 'configuration/meta/p2_archetypes/forms/archetypes/' + archetypeId;
+    var widgetUrl = 'configuration/meta/p2_archetypes/forms/archetypes/' + archetypeId + '/@@archetypewidget';
 
-    var type = $(archetypeEl).attr('data-type');
     var vertex = p2.datashackle.core.session.graph.findRootVertex(sourceId);
     var graph = p2.datashackle.core.session.graph.toXml(formId);
     var data = {graph: graph};
@@ -251,8 +250,9 @@ p2.Widget.appendNew = function(element, archetypeEl, form){
             data: {'source_id': sourceId,
                    'setobject_id': '',
                    'linked': 'true',
-                   'type': type,
-                   'graph': graph},
+                   'graph': graph,
+                   'mode': 'DESIGNER'
+                  },
             success: function(contentHtml, textStatus, xhr){
                 // Append it to DOM document.
                 var $contentHtml = $(contentHtml);

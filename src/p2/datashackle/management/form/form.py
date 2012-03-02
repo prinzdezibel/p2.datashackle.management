@@ -67,6 +67,9 @@ class FormType(SetobjectType):
     
     def post_order_traverse(self, mode):
         super(FormType, self).post_order_traverse(mode)
+        if mode == 'save':
+            self.plan.write_stylesheet()        
+            
         if hasattr(self, 'so_type') and hasattr(self, 'so_module'):
             self.op_setobject_type = setobject_type_registry.get(
                 self.so_module, self.so_type
@@ -102,22 +105,9 @@ class FormType(SetobjectType):
             SetobjectType.set_attribute(self, attribute, value, mode)
        
  
-class WidgetTraverser(grok.Traverser):
+class FormTraverser(grok.Traverser):
     grok.context(FormType)
 
     def traverse(self, name):
-        """Traversing individual widgets is done when a widget_identifier is given next."""
-
-        db_utility = getUtility(IDbUtility)
-        session = db_utility.Session()
-        type = self.request.form['type']
-        widget = create_widget(type)
-        session.add(widget)
-        session.flush()
-        view = getMultiAdapter((widget, self.request), name="archetypewidget")
-        # When dropping an archetype widget to the designer, it generates a widget request based on the archetype
-        # form. Because this is going to be a new widget, we create an instance of the archetype.
-        self.request.form['setobject_id'] = widget.id
-        self.request.form['mode'] = 'DESIGNER'
-        view.plan_id = self.context.plan.plan_identifier
-        return view
+        """Traversing over form to the widgets when a widget_identifier is given next."""
+        return self.context.widgets[name]

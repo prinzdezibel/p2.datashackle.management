@@ -1,0 +1,31 @@
+<tal:define define="id                      python:view.generate_random_identifier();
+                    source_id               view/source_id;
+                    data_node_id            python:context.span_identifier;
+                    span_type               context/span_type;
+                    info                    python:context.get_info();
+                    is_linked               python:view.node_id != None;
+                    span_identifier         python:context.span_identifier;
+                    ">
+                    <tal:condition condition="python:bool(view.count)">
+                        
+                        <tal:repeat repeat="t python:view.query">
+                            <tal:define define="
+                                setobject   python:t[0];
+                                linked      python:t[1];
+                                index       repeat/t/index;
+                            ">
+                               <li>
+                                   <a href="javascript:">
+                                   <tal:replace replace="structure python:view.call_subform(source_id, setobject.id)" />
+                                    </a>
+                                    <ul></ul>
+                                </li>
+                                <!-- script type="text/javascript" tal:content="string:
+                                    p2.datashackle.core.session.registerLinkageNode('${setobject/id}', '${view/node_id}', ${view/adjacency_attr_name}', isMultiSelectable=false, spanIdentifier=null);
+                                ">
+                                </script -->
+                                
+                            </tal:define>
+                        </tal:repeat>
+                    </tal:condition>
+</tal:define>
