@@ -12,6 +12,7 @@
                                          data-span-operational      context/operational;
                                          data-node-id               data_node_id;
                                          data-span-identifier       span_identifier;
+                                         style                      python:context.css;
                                          " tabIndex="-1">
         <script type="text/javascript" tal:content="string:
             (function(){

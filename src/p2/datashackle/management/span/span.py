@@ -33,6 +33,7 @@ class SpanType(SetobjectType):
         self.span_name = span_name
         self.span_type = self.__class__.__name__.lower()
         self.visible = True
+        self.css = ''
         # END sqlalchemy instrumented attributes
      
     def common_init(self):
@@ -80,7 +81,7 @@ class SpanType(SetobjectType):
                 'module': self.operational and self.op_setobject_type and self.op_setobject_type.__module__ or self.__class__.__module__,
                 'type': self.operational and self.op_setobject_type and self.op_setobject_type.__name__ or self.__class__.__name__,
                 'data_node_id': self.operational and self.op_setobject_id or self.span_identifier,
-#                'css_style': self.css_style,
+                'css': self.css,
                 'span_type': self.span_type,
                 'span_name': self.span_name,
                 'action': self.operational and self.setobject.action or self.action,
@@ -121,12 +122,12 @@ class SpanType(SetobjectType):
             with_polymorphic='*', 
        )
     
-    def set_attribute(self, attribute, value, mode):
-        if attribute == 'css_style':
-            selector = 'div[data-span-identifier="' + self.id + '"]'
-            self.widget.form.plan.update_css_rule(selector, value)
-        else:
-            SetobjectType.set_attribute(self, attribute, value, mode)
+    #def set_attribute(self, attribute, value, mode):
+    #    if attribute == 'css_style':
+    #        selector = 'div[data-span-identifier="' + self.id + '"]'
+    #        self.widget.form.plan.update_css_rule(selector, value)
+    #    else:
+    #        SetobjectType.set_attribute(self, attribute, value, mode)
    
  
 @model_config(tablename='p2_span_action', maporder=2) 

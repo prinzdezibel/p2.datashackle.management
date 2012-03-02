@@ -32,7 +32,7 @@ class Alphanumeric(SpanType):
         ft = setobject_type_registry.lookup('p2.datashackle.core.models.setobject_types', 'p2_fieldtype')
         sess = getUtility(IDbUtility).Session()
         self.field_type = sess.query(ft).filter_by(field_type='textline').one()
-        self.css_style = "left:" + str(self.label_width) + "px; width:" + str(self.label_width) + "px;"
+        self.style = "left:" + str(self.label_width) + "px; width:" + str(self.label_width) + "px;"
         super(Alphanumeric, self).__init__(span_name)
 
     def _get_info(self):

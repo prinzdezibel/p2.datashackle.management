@@ -185,7 +185,7 @@ p2.Widget.prototype.initCssPosition = function(rootEl, archetypeEl, archetypeOff
             left: $(sourceEl).css('left')
         });
         var span = $(targetEl).data('data-object');
-        span.setobject.setAttr('css_style', $(targetEl).attr('style'));
+        span.setobject.setAttr('css', $(targetEl).attr('style'));
     });
 
 	var archetypeId = $(archetypeEl).attr('id');
@@ -216,7 +216,7 @@ p2.Widget.prototype.adaptCssValue = function(element){
     var style= $(element).attr('style');
     if (!this.operational){
         var setobject = p2.datashackle.core.session.registerDataNode(this.module, this.type, this.dataNodeId, this.action);
-        setobject.setAttr('css_style', style);
+        setobject.setAttr('css', style);
     }
 }
 

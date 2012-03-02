@@ -22,7 +22,6 @@ class BaseForm(AjaxView):
     
     def update(self):
         super(BaseForm, self).update()
-        self.css_class = 'p2-form'
         alternation = self.request.form.get('alternation')
         if alternation:
             self.css_class += ' ' + alternation

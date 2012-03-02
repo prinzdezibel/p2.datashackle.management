@@ -19,11 +19,12 @@ class Alphanumeric(Span):
     def render(self):
         id = self.generate_random_identifier()
         i = ScopedMarkup()
-        i.html('<div class="p2-span" id="%s" data-span-type="%s" data-field-identifier="%s" data-span-identifier="%s">' % (
+        i.html('<div class="p2-span" id="%s" data-span-type="%s" data-field-identifier="%s" data-span-identifier="%s" style="%s">' % (
             id,
             self.context.span_type,
             self.context.field_identifier,
-            self.context.span_identifier
+            self.context.span_identifier,
+            self.context.css
         ))
         i.script('var info = $.parseJSON(%s);' % i.literal(self.context.get_info()))
         if self.source_id != None:

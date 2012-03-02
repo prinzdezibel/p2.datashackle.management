@@ -33,7 +33,7 @@ class Fileupload(SpanType):
                   )
 
     def __init__(self, span_name=None):
-        self.css_style = "left:" + str(self.label_width) + "px; width:" + str(self.fileupload_label_width) + "px; height:" + str(self.fileupload_label_height) + "px; "
+        self.css = "left:" + str(self.label_width) + "px; width:" + str(self.fileupload_label_width) + "px; height:" + str(self.fileupload_label_height) + "px; "
         
         self.relation = Relation('MANY_TO_ONE')
         self.linkage = Linkage()

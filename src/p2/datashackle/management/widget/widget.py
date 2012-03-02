@@ -6,7 +6,6 @@ import copy
 import grok
 import json
 
-from cssutils import css
 from grokcore.content import interfaces
 from sqlalchemy import orm
 from sqlalchemy.sql import and_, or_
@@ -32,7 +31,7 @@ class WidgetType(SetobjectType):
     def __init__(self):
         super(WidgetType, self).__init__()
         self.spans = dict()
-        self.css_style = ''
+        self.css = ''
         self.tab_order = 0
         self.widget_type = self.__class__.__name__.lower()
 
@@ -103,12 +102,12 @@ class WidgetType(SetobjectType):
             properties=WidgetType.mapper_properties
             )
 
-    def set_attribute(self, attribute, value, mode):
-        if attribute == 'css_style':
-            selector = 'div[data-widget-identifier="' + self.id + '"]'
-            self.form.plan.update_css_rule(selector, value)
-        else:
-            SetobjectType.set_attribute(self, attribute, value, mode)
+    #def set_attribute(self, attribute, value, mode):
+    #    if attribute == 'css_style':
+    #        selector = 'div[data-widget-identifier="' + self.id + '"]'
+    #        self.form.plan.update_css_rule(selector, value)
+    #    else:
+    #        SetobjectType.set_attribute(self, attribute, value, mode)
            
 
 @model_config(tablename='p2_widget', maporder=2)

@@ -22,6 +22,6 @@ class Label(SpanType):
     
     def __init__(self, span_name=None):
         self.field_type = 'text'
-        self.css_style = "width:" + str(self.label_width) + "px;"
+        self.css = "width:" + str(self.label_width) + "px;"
         super(Label, self).__init__(span_name)
 

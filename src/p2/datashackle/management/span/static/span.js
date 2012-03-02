@@ -79,13 +79,13 @@ p2.Span.prototype.resizableMousedown = function(ev){
                 $(next).css('margin-left', 0);
                 $(next).css('left', left + pos.left + 'px');
                 var graphnode = p2.datashackle.core.session.graph.lookupGraphObject($(next).data('data-object').info.data_node_id);
-                graphnode.vertex.setAttr('css_style', $(next).attr('style'));
+                graphnode.vertex.setAttr('css', $(next).attr('style'));
             }
         }
 
 	    // set new css value in setobject graph
         var setobject = p2.datashackle.core.session.lookupDataNode(self.info.data_node_id);
-        setobject.setAttr('css_style', $(self.rootEl).attr('style'));
+        setobject.setAttr('css', $(self.rootEl).attr('style'));
 	});
 };
 
@@ -114,7 +114,7 @@ p2.Span.prototype.resizableMousemove = function(ev, originalX, originalY, origin
 
 p2.Span.prototype.setStyle = function(){
     // Setting the style does potentially alter the span's dimension. Fire event.
-    // $(this.rootEl).attr('style', this.info.css_style);
+    // $(this.rootEl).attr('style', this.info.css);
    
     
     var width = $(this.rootEl).width();
@@ -180,7 +180,7 @@ p2.Span.prototype.registerDataNode = function(){
 
 
     if (!this.info.operational){
-        // setobject.setAttr('css_style', this.info.css_style);
+        // setobject.setAttr('css', this.info.css);
         setobject.setAttr('span_name', this.info.span_name);
     }
     

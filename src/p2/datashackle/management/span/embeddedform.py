@@ -27,7 +27,7 @@ class EmbeddedForm(SpanType):
         self.linkage = Linkage()
 
         self.form_name = 'default_form'
-        self.css_style = "left:" + str(self.label_width) + "px; width:" + \
+        self.css = "left:" + str(self.label_width) + "px; width:" + \
             str(self.width) + "px; height:" + str(self.height) + "px;"
         super(EmbeddedForm, self).__init__(span_name)
    

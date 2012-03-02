@@ -177,7 +177,9 @@ class RelationMixin(object):
                 query = query.filter(getattr(source_type, source_type.get_primary_key_attr_name()) == self.relation_source.id)
 
         # Check for additional constraints on relation widget
-        if self.relation.filter_clause != None and len(self.relation.filter_clause) > 0:
+        if hasattr(self.relation, 'filter_clause') and \
+                self.relation.filter_clause != None and \
+                len(self.relation.filter_clause) > 0:
             query = query.filter(self.relation.filter_clause)
         
         return query

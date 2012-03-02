@@ -5,6 +5,7 @@
                     span_identifier python:context.span_identifier;
                     ">
     <div class="p2-span" tal:attributes="id id;
+                                         style      python:context.css;
                                          data-span-identifier span_identifier;">
         <div style="float:left;" id="progress_report_name"></div>
         <!-- div id="progress_report_status" style="font-style: italic;"></div -->

@@ -17,6 +17,7 @@
                                            data-type                    type;
                                            data-source-id               source_id;
                                            data-operational             operational;
+                                           style                        python:context.css;
                                            ">
         <tal:define define="script_id               python:view.generate_random_identifier();">
             <div style="visibility: hidden;" tal:attributes="id script_id">
