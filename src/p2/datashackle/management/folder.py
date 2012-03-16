@@ -12,7 +12,6 @@ from dolmen.app.layout import ContextualMenu
 from menhir.contenttype.privatefolder import PrivateFolder
 
 from p2.container.listing import FolderListing
-from p2.datashackle.management import MF as _
 from p2.datashackle.management.properties import TranslatableDescriptiveProperties
 from p2.datashackle.management.interfaces import IFolder, IListingDefault
 
@@ -35,7 +34,7 @@ class Folder(TranslatableDescriptiveProperties, dolmen.content.OrderedContainer)
     icon('folder.png')
     grok.implements(IFolder)
     dolmen.content.schema(IFolder)
-    dolmen.content.name(_(u"Folder"))
+    dolmen.content.name(u"Folder")
     
     
 

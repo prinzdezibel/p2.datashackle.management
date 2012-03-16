@@ -1,0 +1,30 @@
+/***************************
+ *  j Q u e r y    U I     *
+ ***************************/
+
+
+jquery-ui-1.7.2.custom.min.js
+
+Date:   11/20/2009
+
+Includes:
+    
+    UI Core
+    
+    Interactions
+        Draggable
+        Droppable
+        Selectable
+        Sortable
+    
+    Widgets
+        Dialog
+     
+    Effects
+        Core
+        Slide
+        Highlight
+    
+    
+Theme:
+    No theme

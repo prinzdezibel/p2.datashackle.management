@@ -136,14 +136,14 @@ def genericset_added(genericset, event):
     session.add(plan)
     session.commit()
     
-    # write css styles
-    selector = 'div[data-form-identifier="' + form.id + '"]'
-    plan.update_css_rule(selector, 'width: 550px; height: 200px')
-    # add strip-selector rule for forms
-    style="left: 15px"
-    selector = 'div[data-form-identifier="' + form.id + '"].selector-strip'
-    plan.update_css_rule(selector, 'left: 15px')
-    plan.write_stylesheet()        
+    ## write css styles
+    #selector = 'div[data-form-identifier="' + form.id + '"]'
+    #plan.update_css_rule(selector, 'width: 550px; height: 200px')
+    ## add strip-selector rule for forms
+    #style="left: 15px"
+    #selector = 'div[data-form-identifier="' + form.id + '"].selector-strip'
+    #plan.update_css_rule(selector, 'left: 15px')
+    #plan.write_stylesheet()        
 
 
 

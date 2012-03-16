@@ -26,7 +26,9 @@ setup(name='p2.datashackle.management',
           'setuptools',
           # -*- Extra requirements: -*-
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points={
+          'fanstatic.libraries': [
+              'foobar = p2.datashackle.management:management_library',
+               ],
+      }
       )

@@ -121,7 +121,7 @@ p2.Widget.prototype.makeDraggable = function(){
 		helper: 'original',
 		scroll: false,
 		cancel: '', // this is necessary. otherwise one will not be able to move textareas that catches the focus when dragging the widget
-		grid: [15, 15],
+		/* grid: [15, 15], */
 		// cursor: 'move',
 		start: function() {
 			//return p2.Widget.startDragging.apply(self, arguments);

@@ -68,8 +68,6 @@ class FormType(SetobjectType):
     
     def post_order_traverse(self, mode):
         super(FormType, self).post_order_traverse(mode)
-        if mode == 'save':
-            self.plan.write_stylesheet()        
             
         if hasattr(self, 'so_type') and hasattr(self, 'so_module'):
             self.op_setobject_type = setobject_type_registry.get(

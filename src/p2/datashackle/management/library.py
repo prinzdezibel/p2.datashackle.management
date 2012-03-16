@@ -4,18 +4,24 @@
 
 import grok
 from zope.interface import Interface
-from hurry.jquery import jquery
 from megrok import resource
 from dolmen.app.layout.master import Header
-from p2.javascript.base import *
 from skin import ISetmanagerLayer
+
+from js.jquery import jquery
+
+from p2.datashackle.management.resource_library import FormLibrary, \
+    SetmanagerLayoutResources    
+from p2.datashackle.management import xmlDOM, jqueryui, p2_js, cookies_js, \
+    multiple_inheritance_js, window_js, windowmanager_js
+
 
 class SetmanagerLibrary(resource.ResourceLibrary):
     grok.name("setmanager.ui.skin")
     grok.layer(ISetmanagerLayer)
     resource.path('static')
     resource.resource('setmanager.css')
-    resource.resource('dropdown.js', depends=[jquery])
+    resource.resource('dropdown.js', depends=[])
 
 
 class SetmanagerResourceViewlet(grok.Viewlet):
@@ -23,7 +29,18 @@ class SetmanagerResourceViewlet(grok.Viewlet):
     grok.layer(ISetmanagerLayer)
     grok.context(Interface)
     
-    def render(self):
+    def update(self):
+        multiple_inheritance_js.need()
+        p2_js.need()
+        cookies_js.need()
+        jquery.need()
+        jqueryui.need()
+        window_js.need()
+        windowmanager_js.need()
         SetmanagerLibrary.need()
+        xmlDOM.need()
+        SetmanagerLayoutResources.need()
+ 
+    def render(self):
         return u""
     

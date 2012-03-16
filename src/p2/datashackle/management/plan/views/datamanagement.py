@@ -14,7 +14,7 @@ from p2.datashackle.management import MF as _
 from p2.datashackle.management.resource_library import SetmanagerResources, PlanResources 
 from p2.datashackle.core.interfaces import IPlan
 from p2.datashackle.management.interfaces import IGenericSet
-from p2.windowmanager.layout import WindowManagerLibrary
+#from p2.windowmanager.layout import WindowManagerLibrary
 from p2.windowmanager.skin import WindowManagerSkin
 
 
@@ -30,12 +30,12 @@ class EditData(Index):
         super(EditData, self).update()
         self.new_setobject = "%s/newobjectview" % (
                                          grok.url(self.request, self.context))
-        SetmanagerResources.need()
-        
+         
         # Needed libraries for view
-        WindowManagerLibrary.need()
+#        WindowManagerLibrary.need()
         WindowManagerSkin.need()
         PlanResources.need()
+        SetmanagerResources.need()
 
 
     def render(self):
