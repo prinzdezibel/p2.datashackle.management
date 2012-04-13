@@ -19,14 +19,15 @@ class BaseForm(AjaxView):
     def __init__(self, context, request):
         super(BaseForm, self).__init__(context, request)
         self.plan_id = self.context.plan.plan_identifier    
-    
+        self.extra_classes = ''
+ 
     def update(self):
         super(BaseForm, self).update()
         alternation = self.request.form.get('alternation')
         if alternation:
-            self.css_class += ' ' + alternation
+            self.extra_classes += ' ' + alternation
         if self.request.form.get('show_strip') == 'true':    
-            self.css_class += ' selector-strip'
+            self.extra_classes += ' selector-strip'
 
         if self.mode == 'OPERATIONAL' and self.setobject != None:
             self.context = self.context.make_operational(self.setobject)

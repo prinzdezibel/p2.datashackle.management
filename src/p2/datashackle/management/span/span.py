@@ -11,6 +11,7 @@ from sqlalchemy import orm
 from zope.component import getMultiAdapter, queryMultiAdapter, getUtility
 from zope.app.appsetup.interfaces import IDatabaseOpenedWithRootEvent
 from zope.catalog.interfaces import ICatalog
+from zope.location.interfaces import ILocation
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.exceptions import *
@@ -21,7 +22,7 @@ from p2.datashackle.core.models.setobject_types import SetobjectType
 
 @model_config(tablename='p2_span')
 class SpanType(SetobjectType):
-    grok.implements(ISpanType)
+    grok.implements(ISpanType, ILocation)
     
     label_width = 95
  
@@ -45,17 +46,25 @@ class SpanType(SetobjectType):
     @orm.reconstructor 
     def reconstruct(self):
         super(SpanType, self).reconstruct()
-        self.update_location_info(self.widget, self.span_name)
+        #self.update_location_info(self.widget, self.span_name)
         
     def make_operational(self, setobject):
         self.operational = True
         self.setobject = setobject
         self.op_setobject_id = setobject.id
     
-    def update_location_info(self, parent, name):
-        self.__parent__ = parent
-        self.__name__ = name
-    
+    #def update_location_info(self, parent, name):
+    #    self.__parent__ = parent
+    #    self.__name__ = name
+
+    @property
+    def __parent__(self):
+        return self.widget
+       
+    @property 
+    def __name__(self):
+        return self.span_name   
+ 
     def onbefore_set_payload_attribute(self, setobject, attribute, value, mode):
         """This method is called when an attribute of this span's payload (a user setobject
         or a native object attribute like a string) is going to be set.

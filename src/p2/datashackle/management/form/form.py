@@ -55,11 +55,18 @@ class FormType(SetobjectType):
         self.so_type = self.plan.so_type
         super(FormType, self).reconstruct()
 
+    @property
+    def __parent__(self):
+        return LocationHelper(self.plan)
+       
+    @property 
+    def __name__(self):
+        return self.form_name
 
     def common_init(self):
         super(FormType, self).common_init()
-        self.__name__ =  self.form_name # Location awareness
-        self.__parent__ = LocationHelper(self.plan) # Location awareness
+        #self.__name__ =  self.form_name # Location awareness
+        #self.__parent__ = LocationHelper(self.plan) # Location awareness
         self.operational = False
         if hasattr(self, 'so_type') and hasattr(self, 'so_module'):
             self.op_setobject_type = setobject_type_registry.get(

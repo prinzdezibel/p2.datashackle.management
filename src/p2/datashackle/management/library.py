@@ -13,7 +13,7 @@ from js.jquery import jquery
 from p2.datashackle.management.resource_library import FormLibrary, \
     SetmanagerLayoutResources    
 from p2.datashackle.management import xmlDOM, jqueryui, p2_js, cookies_js, \
-    multiple_inheritance_js, window_js, windowmanager_js
+    multiple_inheritance_js, window_js, windowmanager_js, html5_upload
 
 
 class SetmanagerLibrary(resource.ResourceLibrary):
@@ -40,6 +40,7 @@ class SetmanagerResourceViewlet(grok.Viewlet):
         SetmanagerLibrary.need()
         xmlDOM.need()
         SetmanagerLayoutResources.need()
+        html5_upload.need()
  
     def render(self):
         return u""

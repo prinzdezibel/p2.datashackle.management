@@ -29,7 +29,6 @@ p2.Span.Fileupload = function(el, sourceId, applicationUrl, info){
 	    		$(uploadField).css('top', y - 1 + 'px');
 	    		$(uploadField).css('left', x - w + 1 + 'px');
         });
-
             uploadField.html5_upload({
                 url: function(number) {
                     var url = applicationUrl + '/@@upload';

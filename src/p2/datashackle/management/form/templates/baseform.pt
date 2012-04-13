@@ -14,7 +14,7 @@
                          style                      python:context.css;               
                          data-node-id               data_node_id;
     					 data-source-id             source_id;
-                         class                      python:'p2-form';
+                         class                      python:'p2-form' + view.extra_classes;
                          " 
             tabIndex="-1">
         <tal:define define="script_id               view/generate_random_identifier;">

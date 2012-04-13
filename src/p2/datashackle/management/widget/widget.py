@@ -44,15 +44,22 @@ class WidgetType(SetobjectType):
         super(WidgetType, self).common_init()
         self.operational = False
 
-    def update_location_info(self, parent, name):
-        self.__parent__ = parent
-        self.__name__ = name
+    #def update_location_info(self, parent, name):
+    #    self.__parent__ = parent
+    #    self.__name__ = name
         
+    @property
+    def __parent__(self):
+        return self.form
+       
+    @property 
+    def __name__(self):
+        return self.id   
 
     def pre_order_traverse(self):
         if self.form == None:
             raise Exception("Can't finish initialization without the form attribute set.")
-        self.update_location_info(self.form, self.id)
+        #self.update_location_info(self.form, self.id)
         
         # set op_setobject_type from parent form's attributes
         self.op_setobject_type = setobject_type_registry.lookup(self.form.so_module, self.form.so_type)
