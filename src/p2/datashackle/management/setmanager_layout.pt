@@ -3,7 +3,6 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="p2.setmanager">
     <head>
-        <!-- base href="" tal:attributes="href layout/base" / -->
         <base href="" tal:attributes="href python:view.application_url() + '/'" />
         <tal:header content="structure provider:dolmen.header" />
        </head>

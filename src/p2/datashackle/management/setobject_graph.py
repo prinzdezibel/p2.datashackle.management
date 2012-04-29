@@ -141,7 +141,7 @@ class SetobjectGraph(object):
         so_type = setobject_type_registry.lookup(module, typename)
         objid = node.get('objid')
         linked = node.get('linked')
-
+            
         setobject = None
         if action == 'new' and node.getparent().tag == 'coll':
             attr_name = node.getparent().get('attr_name')

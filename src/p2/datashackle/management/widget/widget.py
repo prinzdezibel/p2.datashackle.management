@@ -44,10 +44,6 @@ class WidgetType(SetobjectType):
         super(WidgetType, self).common_init()
         self.operational = False
 
-    #def update_location_info(self, parent, name):
-    #    self.__parent__ = parent
-    #    self.__name__ = name
-        
     @property
     def __parent__(self):
         return self.form

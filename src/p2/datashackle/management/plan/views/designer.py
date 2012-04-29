@@ -15,7 +15,6 @@ from p2.datashackle.management import MF as _
 from p2.datashackle.management.interfaces import IGenericSet
 from p2.datashackle.core.interfaces import IFormType
 from p2.datashackle.management.resource_library import SetmanagerResources, PlanResources
-#from p2.windowmanager.layout import WindowManagerLibrary
 from p2.windowmanager.skin import WindowManagerSkin
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 
@@ -40,7 +39,6 @@ class DesignerView(Page):
         super(DesignerView, self).update()
         
         # Needed libraries for view
-        # WindowManagerLibrary.need()
         WindowManagerSkin.need()
         SetmanagerResources.need()
         PlanResources.need()

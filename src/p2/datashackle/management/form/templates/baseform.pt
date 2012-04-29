@@ -25,7 +25,7 @@
 		                 var linked = null;
 			         ">
                   </tal:replace>
-                  <tal:condition condition="source_id" replace="string:sourceId = ${source_id};"></tal:condition>
+                  <tal:condition condition="source_id" replace="string:sourceId = '${source_id}';"></tal:condition>
                   <tal:condition condition="python:linked != None" replace="string:linked = ('${linked}' == 'true' ? true : false);"></tal:condition>
                   <tal:is_not_archetype condition="python:not context.is_archetype()">
                       <tal:replace replace="string:

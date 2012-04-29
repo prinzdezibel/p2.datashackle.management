@@ -11,7 +11,7 @@ p2.PropertyForm = function(scheme_host_path, sourceId, setobjectId){
 	this.isLoaded = false;
 	this.setobjectId = setobjectId;
 	this.sourceId = sourceId;
- 
+    console.log('setobjectId' + setobjectId); 
     var options = {
 		autoOpen: false,
         closeOnEscape: true, // works together with close option, which resets form
@@ -56,11 +56,15 @@ p2.PropertyForm.prototype = function(){
 p2.PropertyForm.prototype.constructor = p2.Formloader;
 
 
-p2.PropertyForm.prototype.open = function(){
+p2.PropertyForm.prototype.open = function(success){
+    var self = this;
+    var _success = function(){
+        self.isLoaded = true;
+        if (success) success(arguments);
+    }
     // If dialog is already there, we don't load it again from database
     if (!this.isLoaded){
-        var self = this;
-        p2.Formloader.prototype.open.call(this, this.rootEl, function(){self.isLoaded = true;});
+        p2.Formloader.prototype.open.call(this, this.rootEl, _success);
     }
 	$(this.dialog).dialog('open');
 }

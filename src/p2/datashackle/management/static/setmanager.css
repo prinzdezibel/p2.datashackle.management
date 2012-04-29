@@ -762,7 +762,6 @@ textarea {
 .windowmanager .windows-screen-estate {
 	position: relative;
 	width: 100%;
-	height: 600px;
 }
 
 
@@ -872,7 +871,11 @@ textarea {
 	cursor: move;
 }
 
-#toolbox .p2-widget div.float-toggle,#toolbox .p2-widget .resizable, #toolbox .edit-icon, #editsetpage .window-content .edit-icon, #editsetpage .float-toggle {
+#toolbox .p2-widget div.float-toggle,
+#toolbox .p2-widget .resizable, 
+#toolbox .widgets .edit-icon,
+#editsetpage .window-content .edit-icon,
+#editsetpage .float-toggle {
 	display: none;
 }
 

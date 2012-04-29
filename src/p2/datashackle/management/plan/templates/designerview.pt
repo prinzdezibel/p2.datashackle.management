@@ -10,6 +10,7 @@
             <div tal:replace="structure provider:windowmanager">
                 Windowmanager HTML goes here.
             </div>
+            <div id="listlayoutforms"></div>
         </div>
 
         <script type="text/javascript" tal:content="string:
@@ -49,18 +50,39 @@
             <div class="forms">
                <ul>
                 <tal:repeat repeat="form python:view.forms_for_plan()">
-                    <tal:define define="index repeat/form/index">
+                    <tal:define define="
+                        index repeat/form/index;
+                        ">
                     <li>
                         <div class="form">
                             <a id="92883733" href="#" 
-                               tal:attributes="onclick string:p2.setdesigner.showForm(this, '${form/form_name}');;return false;;">
+                               tal:attributes="onclick string:p2.setdesigner.showForm(this, '${form/form_identifier}');;return false;;">
                                 <img alt="form icon" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/icon_form.png"/>
                                 <div class="form-name" tal:content="string:${form/form_name} [${form/form_identifier}]"></div>
+                                <img class="edit-icon" style="margin: 10px 0 0 10px" alt="edit icon" 
+                                    tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/edit.gif;
+                                    ">
+                                <script>
+
+                                </script>
                                 <div class="clear"></div>
                             </a>
-                            <script tal:condition="python: index == 0" tal:content="string:
-                                p2.setdesigner.showForm($$('#92883733'), '${form/form_name}');;
-                                $$('#92883733').removeAttr('id');;">
+                            <script tal:content="string:
+                             (function(){
+                                var propertyform = new p2.PropertyForm(
+                                        '${view/application_url}/configuration/meta/p2_form/forms/form_properties', sourceId=null, '${form/form_identifier}');;
+                                 $$('#92883733 img.edit-icon').click(function(){
+                                     propertyform.open(function(){
+                                        p2.setdesigner.onFormpropertiesLoaded('${form/form_identifier}');;
+                                     });;
+                                });;
+                                if (${index} == 0){
+                                    p2.setdesigner.showForm($$('#92883733'), '${form/form_identifier}');;
+                                }
+                                $$('#92883733').removeAttr('id');;
+                             })()
+                             ">
+                                
                             </script>
                         </div>
                         
@@ -70,7 +92,7 @@
                 </ul>
             </div>
             <h3>Widgets</h3>
-            <div style="padding: 10px;" id="composites">
+            <div class="widgets" style="padding: 10px;" id="composites">
                 <div tal:content="structure view/lookup_archetype_view"></div>
             </div>
         </div>

@@ -11,6 +11,7 @@ p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_ident
     this.applicationUrl = applicationUrl;
     this.formModule = formModule;
     this.formType = formType;
+    this.listlayoutForms = {};
     
     var rootEl = $('#view_area');
     var self = this;
@@ -133,12 +134,13 @@ p2.Setdesigner.prototype.fetch_form = function(
 	return form;
 }
 
-p2.Setdesigner.prototype.showForm = function(el, form_name){
+p2.Setdesigner.prototype.showForm = function(el, form_id){
     // clear active item
-    $(el).parents('.forms').find('.active').each(function(){$(this).removeClass('active')});
+    $(el).parents('.forms').find('.active').each(function(){
+    $(this).removeClass('active')});
     for (var i = 0; i < this.windows.length; i++){
         var window = this.windows[i];
-        if (window.windowId == form_name){
+        if (window.dataNodeId == form_id){
             window.fadeIn();
             $(el).parent().addClass('active');
         }else{
@@ -261,3 +263,34 @@ p2.Setdesigner.prototype.changed = function() {
     $('#globalsavebutton').removeAttr('disabled');
     $('#globalrevertbutton').removeAttr('disabled');
 }
+
+
+p2.Setdesigner.prototype.onFormpropertiesLoaded = function(formId){
+      var self = this;
+      // bind dropdown selection with form's layout
+      $('.p2-span[data-node-id="3429670735"] .input').change(function(){
+            if ($(this).val() == 'LIST'){
+                // hide all windows
+                for (var i = 0; i < self.windows.length; i++){
+                    var window = self.windows[i];
+                    $(window.rootEl).hide();
+                }
+                // create new ListlayoutForm, if necessary
+                var $form =  $('#listlayoutforms .p2-form[data-node-id="' + formId + '"]');
+                if (!$form.length){
+                    var form = new p2.ListlayoutForm(formId, $('#listlayoutforms'));
+                    form.load();
+                    $form = $(form.formEl);
+                }
+                $form.show();
+        
+            }else if ($(this).val() == 'FORM'){
+                $('#listlayoutforms .p2-form').each(function(){
+                   $(this).hide(); 
+                });
+                self.showForm(null, formId);
+            }
+      });
+}
+
+

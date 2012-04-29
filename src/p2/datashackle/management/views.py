@@ -53,7 +53,6 @@ class AjaxView(BaseView):
     	if self.source_id != None and self.linked == None:
     		raise Exception("source_id parameter must be accompanied by linked parameter")
     	if self.linked != None and self.source_id == None:
-            import pdb; pdb.set_trace()
             raise Exception("linked parameter must be accompanied by linked source_id parameter.")
     	self.relation_source_id = self.request.form.get('relation_source_id')
         

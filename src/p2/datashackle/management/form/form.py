@@ -39,6 +39,7 @@ class FormType(SetobjectType):
         self.form_name = form_name
         self.widgets = dict()
         self.css = ''
+        self.fk_formlayout = 'FORM'
         # END sqlalchemy instrumented attributes
  
         if self.plan != None:    

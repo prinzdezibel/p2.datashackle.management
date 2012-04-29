@@ -3,6 +3,21 @@
 
 namespace("p2");
 
+
+p2.ListlayoutForm = function(dataNodeId, parentEl){
+    var url = 'configuration/meta/p2_form/forms/manage_flow_formlayout';
+    p2.Formloader.call(this, url, 'OPERATIONAL', sourceId=null, dataNodeId, parentEl);
+};
+
+p2.ListlayoutForm.prototype = function(){
+	function instance(){};
+	instance.prototype = p2.Formloader.prototype;
+	return new instance();
+}();
+
+p2.ListlayoutForm.prototype.constructor = p2.ListlayoutForm;
+
+
 p2.DesignerForm = function(module,
                            type,
                            parentEl,
