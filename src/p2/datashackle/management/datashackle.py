@@ -3,6 +3,9 @@
 import dolmen.content as content
 import grok
 import transaction
+
+import p2.datashackle.management
+
 from grok.util import create_application
 from dolmen.app import security
 from zope.app.appsetup.bootstrap import getInformationFromEvent
@@ -15,7 +18,6 @@ from zope.principalannotation.utility import PrincipalAnnotationUtility
 from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.securitypolicy.interfaces import IRolePermissionManager
 
-from p2.datashackle.core import setup
 from p2.datashackle.management.folder import PrivateFolder, Folder
 from p2.datashackle.management.generic_set import GenericSet
 from p2.datashackle.management.users import Users
@@ -23,6 +25,8 @@ from p2.container.container import ignore_enumeration
 from p2.datashackle.management import MF as _
 from p2.datashackle.management.interfaces import IDatashackle
 from p2.datashackle.core.interfaces import IDbUtility
+
+ 
 
 
 class Datashackle(grok.Application, content.OrderedContainer):
@@ -48,25 +52,18 @@ class Datashackle(grok.Application, content.OrderedContainer):
 
 @grok.subscribe(WSGIPublisherApplicationCreated)
 def wsgi_app_created(event):
-   """Preinstalls the datashackle management application when the zope instance is instantiated."""
-   db = event.application.requestFactory._db
-   connection = db.open()
-   root = connection.root()
-   application = root['Application']
-   if 'datashackle' not in application:
-        name = 'datashackle'
-        new_app = create_application(Datashackle, root['Application'], name)
-        transaction.commit()
-   connection.close()
+    """Preinstalls the datashackle management application when the zope instance is instantiated."""
+    db = event.application.requestFactory._db
+    connection = db.open()
+    root = connection.root()
+    application = root['Application']
+    if 'datashackle' not in application:
+         name = 'datashackle'
+         new_app = create_application(Datashackle, root['Application'], name)
+         transaction.commit()
+    connection.close()
+     
     
-   config = getProductConfiguration('setmanager')
-   settings = {
-        'provider': config.get('db_provider'),
-        'host': config.get('db_host'),
-        'user': config.get('db_user'),
-        'password': config.get('db_password'),
-        'db': config.get('db_name')}
-   setup(settings)
 
 @grok.subscribe(IDatabaseOpenedWithRootEvent)
 def init_all_applications(event):

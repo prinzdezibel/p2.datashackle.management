@@ -100,7 +100,7 @@ def genericset_added(genericset, event):
         table_type = Table(
             table_identifier,
             metadata,
-            Column(genericset.table_key_field, String(8), primary_key=True, autoincrement=False),
+            Column(genericset.table_key_field, String(10), primary_key=True, autoincrement=False),
             mysql_engine='InnoDB'
         )    
         # Newly created setobjects live always in 'p2.datashackle.core.models.setobject_types'
