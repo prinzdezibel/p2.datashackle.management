@@ -28,7 +28,6 @@ class DesignerView(Page):
     
     @property
     def parent_application(self):
-        """ Traverse 'backwards' to find the application object again """
         node = self.context
         while node is not None:
             if IApplication.providedBy(node): return node
@@ -37,15 +36,16 @@ class DesignerView(Page):
 
     def update(self):
         super(DesignerView, self).update()
-        
+    
+
         # Needed libraries for view
         WindowManagerSkin.need()
         SetmanagerResources.need()
         PlanResources.need()
             
     def render(self):
-        template = grokcore.view.PageTemplateFile("../templates/designerview.pt")
-        html = template.render(self)
+        self.template = grokcore.view.PageTemplateFile("../templates/designerview.pt")
+        html = self.template.render(self)
         return html
 
 

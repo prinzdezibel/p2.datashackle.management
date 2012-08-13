@@ -6,7 +6,7 @@
 <div id="edit-data">
     <div class="search-bar">
         <input id="searchfield" name="searchfield" type="text" size="40" />
-        <img alt="Search" src="@@/setmanager.ui.skin/search.png" />
+        <img alt="Search" src="/@@/setmanager.ui.skin/search.png" />
         <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Save changes" style="margin-left:100px" id="globalsavebutton"
         onClick="javascript:p2.datamanagement.save.apply(p2.datamanagement, [])" disabled/>
         <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Revert changes" style="margin-left:100px" id="globalrevertbutton"

@@ -14,9 +14,6 @@ from p2.datashackle.core.models.identity import generate_random_identifier
 from p2.datashackle.management.form.views.base import BaseForm
  
  
-grok.templatedir('templates')
-
-        
 
 class ObjectPicker(BaseForm, RelationMixin):
 

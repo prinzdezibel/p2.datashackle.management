@@ -57,10 +57,10 @@
                         <div class="form">
                             <a id="92883733" href="#" 
                                tal:attributes="onclick string:p2.setdesigner.showForm(this, '${form/form_identifier}');;return false;;">
-                                <img alt="form icon" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/icon_form.png"/>
+                                <img alt="form icon" tal:attributes="src string:${application_url}/@@/setmanager.ui.skin/icon_form.png"/>
                                 <div class="form-name" tal:content="string:${form/form_name} [${form/form_identifier}]"></div>
                                 <img class="edit-icon" style="margin: 10px 0 0 10px" alt="edit icon" 
-                                    tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/edit.gif;
+                                    tal:attributes="src string:${application_url}/@@/setmanager.ui.skin/edit.gif;
                                     ">
                                 <script>
 
@@ -70,7 +70,7 @@
                             <script tal:content="string:
                              (function(){
                                 var propertyform = new p2.PropertyForm(
-                                        '${view/application_url}/configuration/meta/p2_form/forms/form_properties', sourceId=null, '${form/form_identifier}');;
+                                        '${application_url}/configuration/meta/p2_form/forms/form_properties', sourceId=null, '${form/form_identifier}');;
                                  $$('#92883733 img.edit-icon').click(function(){
                                      propertyform.open(function(){
                                         p2.setdesigner.onFormpropertiesLoaded('${form/form_identifier}');;

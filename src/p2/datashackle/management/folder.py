@@ -9,7 +9,7 @@ import dolmen.content
 from dolmen import menu
 from dolmen.app.content import icon
 from dolmen.app.layout import ContextualMenu
-from menhir.contenttype.privatefolder import PrivateFolder
+#from menhir.contenttype.privatefolder import PrivateFolder
 
 from p2.container.listing import FolderListing
 from p2.datashackle.management.properties import TranslatableDescriptiveProperties
@@ -17,9 +17,9 @@ from p2.datashackle.management.interfaces import IFolder, IListingDefault
 
 
 
-class PrivateFolder(TranslatableDescriptiveProperties, PrivateFolder):
-    grok.implements(IListingDefault)
-    dolmen.content.nofactory()
+#class PrivateFolder(TranslatableDescriptiveProperties, PrivateFolder):
+#    grok.implements(IListingDefault)
+#    dolmen.content.nofactory()
 
 
 @menu.menuentry(ContextualMenu, order=40)

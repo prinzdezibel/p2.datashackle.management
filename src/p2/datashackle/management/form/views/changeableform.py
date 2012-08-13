@@ -10,7 +10,6 @@ from zope.component import queryMultiAdapter
 from p2.datashackle.core.interfaces import IFormType
 from p2.datashackle.management.form.views.base import BaseForm
     
-grok.templatedir('templates')
 
 class ChangeableForm(BaseForm):
     template = grok.PageTemplateFile('../templates/changeableform.pt')

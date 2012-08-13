@@ -18,9 +18,9 @@ from zope.principalannotation.utility import PrincipalAnnotationUtility
 from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.securitypolicy.interfaces import IRolePermissionManager
 
-from p2.datashackle.management.folder import PrivateFolder, Folder
+from p2.datashackle.management.folder import Folder
 from p2.datashackle.management.generic_set import GenericSet
-from p2.datashackle.management.users import Users
+#from p2.datashackle.management.users import Users
 from p2.container.container import ignore_enumeration
 from p2.datashackle.management import MF as _
 from p2.datashackle.management.interfaces import IDatashackle
@@ -85,7 +85,7 @@ def init_application(event):
     # created propertyform
     setSite(application)
         
-    configfolder = PrivateFolder()
+    configfolder = Folder()
     configfolder.title = _(u'Configuration')
     application['configuration'] = configfolder
     # Deny view, edit permission to role dolmen.Owner (which is the default role for our restricted users).
@@ -97,14 +97,15 @@ def init_application(event):
 
 
 
-    metaconfig = PrivateFolder()
+    metaconfig = Folder()
     metaconfig.title = _(u'Meta configuration')
     configfolder['meta'] = metaconfig
     ignore_enumeration(metaconfig, 'zope.Everybody') 
  
-    users = Users()
-    users.title = _(u'Users')
-    configfolder['users'] = users
+    
+    #users = Users()
+    #users.title = _(u'Users')
+    #configfolder['users'] = users
     
     set_ = GenericSet()
     set_.title = u'p2_plan'

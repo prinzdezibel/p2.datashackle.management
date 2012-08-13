@@ -4,7 +4,6 @@
 namespace("p2");
 
 p2.ChangeableForm = function(setobjectid) {
-    if (/^\d+$/.test(setobjectid) == false) {throw "Setobject id contains non-digit characters";}
     self = this;
     this.setobjectid = setobjectid;
     var setobject_id = this.setobjectid;
@@ -34,7 +33,6 @@ p2.ChangeableForm = function(setobjectid) {
         if (id == setobject_id) {
             var settings = p2.datamanagement.datarowsettings.getSettingsObject.apply(p2.datamanagement.datarowsettings, [setobject_id]);
             if (settings.dirty == true) {
-                //p2.datamanagement.FormMarkSaved.apply(p2.datamanagement, [setobject_id]);
                 settings.dirty = false;
             }
             $(document).trigger('form-remove-handlers', id);
