@@ -38,7 +38,7 @@ class FormType(SetobjectType):
         self.plan = plan
         self.form_name = form_name
         self.widgets = dict()
-        self.css = ''
+        self.css = 'height:300px; width:400px;'
         self.fk_formlayout = 'FORM'
         # END sqlalchemy instrumented attributes
  
