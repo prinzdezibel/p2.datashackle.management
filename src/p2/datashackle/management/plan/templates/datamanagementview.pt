@@ -9,17 +9,6 @@
         <img alt="Search" src="/@@/setmanager.ui.skin/search.png" />
         <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Save changes" style="margin-left:100px" id="globalsavebutton"
         onClick="javascript:p2.datamanagement.save.apply(p2.datamanagement, [])" disabled/>
-        <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Revert changes" style="margin-left:100px" id="globalrevertbutton"
-        onClick="javascript:p2.datamanagement.revert.apply(p2.datamanagement, [])" disabled/>
-    </div>
-    <div class="action-box">
-        <div style="clear:both; float:left;" class="action-select"><input style="margin-top:8px" type="checkbox" /></div>
-        <div style="float:left; margin: 4px 0 0 15px;">Action:
-            <select>
-                <option value=""></option>
-                <option value="delete">Delete selected</option>
-            </select>
-        </div>
     </div>
     <table  class="resultstable" id="datamanagementfiltertable">
            <tr>

@@ -6,9 +6,6 @@
     p2.datamanagement.datarowsettings.getSettingsObject.apply(p2.datamanagement.datarowsettings, ['${setobject_id}']).runtimecreated = true;
 "></script>
 </tal:runtimecreated>
-<td class="action-select">
-    <input type="checkbox" value="${setobject_id}" />
-</td>
 <!-- Echo form content -->
 <td>
     <div class="outerstaticframe" tal:attributes="style string:padding:2px;;margin:3px;id string:formfilterbox_${setobject_id}">

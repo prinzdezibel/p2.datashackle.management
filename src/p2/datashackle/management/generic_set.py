@@ -3,7 +3,6 @@
 # Author:  Michael Jenny <michael.jenny%40projekt-und-partner.com>
 
 import grok
-import logging
 from dolmen.app.container.listing import FolderListing
 from dolmen.app.layout import Add, Edit, Delete, ContextualMenu
 import dolmen.forms.base as form
@@ -83,9 +82,6 @@ def genericset_added(genericset, event):
         # Don't do anything for system tables that are created on application init.
         return
 
-    #TODO: Remove me
-    if genericset.table_identifier == 'test':
-        return # Test tables created at application init time. 
     
     plan_identifier = identity.generate_random_identifier()
     genericset.plan_identifier = plan_identifier

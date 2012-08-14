@@ -198,10 +198,4 @@ def init_application(event):
     set_.table_key_field = 'id'
     metaconfig['p2_span_countries'] = set_
 
-    set_ = GenericSet()
-    set_.title = u'Test'
-    set_.plan_identifier = 'test'
-    set_.table_identifier = 'test'
-    set_.table_key_field = 'id'
-    application['test'] = set_                     
 
