@@ -101,13 +101,6 @@ class JsonView(grok.View):
     def __call__(self):
         self.response.setHeader('Content-Type', 'application/json')
        
-        # When configured appropriately, loop request through nodejs scripting server. 
-        config = getProductConfiguration('setmanager')
-        if config['nodeserver_scripting'].lower() == 'on':
-            result = self.before_update_hook()
-            if result != None:
-                # Send response
-                return result
 
         try:
             mapply(self.update, (), self.request)
@@ -131,88 +124,3 @@ class JsonView(grok.View):
 
         return mapply(self.render, (), self.request) 
 
-    def before_update_hook(self):
-        """Before update happens, setmanager does a RPC call to the node.js Server.
-        The call is mapped onto an optionally (user-defined) Javascript function.
-        If a plugin is found, the function is executed. If not, the standard
-        grok behaviour takes place.
-        """
-        
-        jsonrpc_method = 'beforeUpdate'
-        # ES5 specification requires all JSON strings to be enclosed in double quotes.
-        # This requires to be all literal " that appear in the xml to be escaped
-        data = self.request.form['root'].replace('"', '\\"')
-        # JSON strings may not contain unescaped newlines
-        data = data.replace('\n', '\\n')
-        jsonrpc_params = {'root': data}        
- 
-        body =  '{"jsonrpc": "2.0",'
-        body += '"id": "false",'
-        body += '"method": "' + jsonrpc_method + '",'
-        body += '"params": [{'
-        body += ','.join(['"%s": "%s"' % (k,v) for (k,v) in jsonrpc_params.items()])
-        body += '}]}'
- 
-        config = getProductConfiguration('setmanager')
-        host = config['node_host']
-        port = config['node_port']
-        node_root = config['node_root']
-
-        url = 'http://' + host
-        if len(port) > 0:
-            url += ':' + port
-        path = urlparse(self.request.getURL())[2]
-        # strip the part that contains the zope application
-        index = path.index('/', 1)
-        path = path[index:]
-        # remove @@
-        index = path.find('@@')
-        if index > 0:
-            path = path[:index] + path[index + 2:]
-        # remove traversal adapter ++view++
-        index = path.find('++view++')
-        if index > 0:
-            path = path[:index] + path[index + 8:]
-        url += path
-        
-        # Certain values that serve as environment within a node.js request
-        # are sent as query parameters.
-        db_util = getUtility(IDbUtility)
-        conn = db_util.getConnectionString()
-        params = dict(conn=conn, node_root=node_root)                
-        url += '?'
-        url += "&".join(["%s=%s"%(k,v) for (k,v) in params.items()])       
-        
-        # The RPC call
-        headers = {'Content-Type': 'application/json'}
-        request = urllib2.Request(url, body, headers)
-        try:
-            # ATM, the timeout for request is 1 second.
-            response = urllib2.urlopen(request, None, 1)
-        except urllib2.HTTPError as e:
-            # 40X or 50X errors
-            # error property in json response will be filled according to JsonRPC specification.
-            response = e.read()
-            data = json.loads(response)
-            logging.error('Node.js server returned error code %s: %s' % (e.getcode(), data['error']['message']))
-            return json.dumps({'error': {'message': data['error']['message'],
-                                         'title': 'HTTP Error %s' % e.code}})
-        except urllib2.URLError as e:
-            # Often, URLError is raised because there is no network connection (no route to the specified server),
-            # or the specified server doesn't exist
-            logging.error('Node.js server call failed: %s' % str(e.reason))
-            return json.dumps({'error': {'message': e.reason,
-                                         'title': "Network error"}});
-                                         
-           
-        json_string = response.read()
-        data = json.loads(json_string)
-        if 'error' in data['result']:
-            return json.dumps({'error': data['result']['error']})
-        else:
-            # Re-assign returned values 
-            self.request.form['root'] = data['result']['params']['root'] 
-
-        # proceed with request
-        return None
-        
