@@ -147,7 +147,7 @@ p2.Span.Alphanumeric.prototype.bindMultiline = function(){
 p2.Span.Alphanumeric.prototype.registerDataNode = function(){
     var inputEl = $(this.rootEl).find('.input');
     var initValue = $(inputEl).val();
-    var setobject = p2.datashackle.core.session.registerDataNode(this.info.module, this.info.type, this.info.data_node_id, this.info.action);
+    var setobject = p2.datashackle.core.session.registerDataNode(this.info.type, this.info.data_node_id, this.info.action);
     if (this.sourceId != null){
         var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject(this.sourceId);
         

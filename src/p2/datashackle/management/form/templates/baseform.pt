@@ -1,6 +1,5 @@
 <tal:define define="id                  python:view.generate_random_identifier();
                     source_id           view/source_id;
-                    module              python:context.operational and context.op_setobject_type.__module__ or context.__class__.__module__;
                     type                python:context.operational and context.op_setobject_type.__name__ or context.__class__.__name__;
                     data_node_id        python:context.operational and context.op_setobject_id or context.form_identifier;
                     operational         context/operational;
@@ -29,7 +28,7 @@
                   <tal:condition condition="python:linked != None" replace="string:linked = ('${linked}' == 'true' ? true : false);"></tal:condition>
                   <tal:is_not_archetype condition="python:not context.is_archetype()">
                       <tal:replace replace="string:
-                            var dataNode = p2.datashackle.core.session.registerDataNode('${module}', '${type}', '${data_node_id}', '${action}');
+                            var dataNode = p2.datashackle.core.session.registerDataNode('${type}', '${data_node_id}', '${action}');
                             if (sourceId != null && linked != null){
     			                var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject(sourceId);
                            	    if (linked){

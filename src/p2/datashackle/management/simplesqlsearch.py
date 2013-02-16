@@ -82,8 +82,8 @@ class SimpleSQLSearch(grok.GlobalUtility):
         columns = []
         
         # we always want to have the primary key column in our results
-        so_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)
-        columns.append(getattr(tableclass.c, so_type.get_primary_key_attr_name()))
+        klass = setobject_type_registry.lookup(plan.klass)
+        columns.append(getattr(tableclass.c, klass.get_primary_key_attr_name()))
         
         # compose the search conditions based on the avilable input fields
         for value in searchvalues:

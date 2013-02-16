@@ -24,12 +24,12 @@ from p2.datashackle.management.span.dataconverter import IDataConverter, DataCon
 from p2.datashackle.management.span.span import SpanType
 
 
-@model_config(tablename='p2_span_alphanumeric', maporder=3)
+@model_config(maporder=3)
 class Alphanumeric(SpanType):
  
     def __init__(self, span_name=None):
         self.required = True
-        ft = setobject_type_registry.lookup('p2.datashackle.core.models.setobject_types', 'p2_fieldtype')
+        ft = setobject_type_registry.lookup('p2_fieldtype')
         sess = getUtility(IDbUtility).Session()
         self.field_type = sess.query(ft).filter_by(field_type='textline').one()
         self.style = "left:" + str(self.label_width) + "px; width:" + str(self.label_width) + "px;"
@@ -58,7 +58,7 @@ class Alphanumeric(SpanType):
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        alphanumeric_table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        alphanumeric_table = setobject_table_registry.lookup_by_class(cls.__name__)
         inherits = SpanType._sa_class_manager.mapper
         orm.mapper(Alphanumeric,
                    alphanumeric_table,
@@ -78,10 +78,8 @@ class Alphanumeric(SpanType):
  
     def post_order_traverse(self, mode):
         if mode == 'save':
-            so_type = setobject_type_registry.lookup(
-                self.op_setobject_type.__module__,
-                self.op_setobject_type.__name__)
-            table_name = so_type.get_table_name()
+            klass = setobject_type_registry.lookup(self.op_setobject_type.__name__)
+            table_name = klass.get_table_name()
             map_field_attr(
                 table_name,
                 self.field_identifier,

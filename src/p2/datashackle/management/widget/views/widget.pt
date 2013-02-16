@@ -1,7 +1,6 @@
 <tal:define define="id                      python:view.generate_random_identifier();
                     source_id               view/source_id;
                     operational             context/operational;
-                    module                  python:operational and context.op_setobject_type.__module__ or context.__class__.__module__;
                     type                    python:operational and context.op_setobject_type.__name__ or context.__class__.__name__;
                     data_node_id            python:operational and context.op_setobject_id or context.widget_identifier;
                     action                  python:operational and context.setobject.action or context.action;
@@ -13,7 +12,6 @@
                                            data-widget-identifier       widget_identifier;
                                            data-widget-type             widget_type;
                                            data-node-id                 data_node_id;
-                                           data-module                  module;
                                            data-type                    type;
                                            data-source-id               source_id;
                                            data-operational             operational;
@@ -31,7 +29,7 @@
                      <tal:replace replace="string:
                          var propertyform = new ${context/js_propertyform_constructor}('${view/application_url}/configuration/meta/p2_widget/forms/${context/widget_type}', '${source_id}', '${data_node_id}');
 
-                         $('#${id}').data('data-object', new p2.Widget(rootEl, operational, propertyform, '${source_id}', '${module}', '${type}', '${data_node_id}', '${action}', '${archetype}'));
+                         $('#${id}').data('data-object', new p2.Widget(rootEl, operational, propertyform, '${source_id}', '${type}', '${data_node_id}', '${action}', '${archetype}'));
                          ">
                       </tal:replace>
                       <tal:is_not_archetype condition="not:archetype">

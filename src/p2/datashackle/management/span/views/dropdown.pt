@@ -3,14 +3,17 @@
                     data_node_id    python:context.span_identifier;
                     span_type       context/span_type;
                     info            python:context.get_info();
-                    is_multi_selectable python:context.linkage.relation.cardinality.id == 'ONE_TO_MANY';
+                    linkage         python:context.linkage;
+                    is_multi_selectable python:linkage and linkage.relation.cardinality.id == 'ONE_TO_MANY' or False;
                     span_identifier python:context.span_identifier;
+                    attr_name       python:linkage and linkage.attr_name or '';
+                    
                     ">
     <div class="p2-span" tal:attributes="id                         id;
                                          data-span-type             span_type;
                                          data-span-operational      context/operational;
                                          data-node-id               data_node_id;
-                                         data-field-identifier      context/linkage/attr_name;
+                                         data-field-identifier      attr_name;
                                          data-span-identifier       span_identifier;
                                          style                      python:context.css;
                                          ">
@@ -34,7 +37,7 @@
                     <script type="text/javascript" tal:content="string:
                     var isMultiSelectable = null;
                     if ('${is_multi_selectable}' == 'True') isMultiSelectable = true; else isMultiSelectable = false;
-                    p2.datashackle.core.session.registerLinkageNode('${context/setobject/id}', '${view/collection_id}', '${context/linkage/attr_name}', isMultiSelectable, '${context/span_identifier}');
+                    p2.datashackle.core.session.registerLinkageNode('${context/setobject/id}', '${view/collection_id}', '${attr_name}', isMultiSelectable, '${context/span_identifier}');
                     ">
                     </script>
                     <tal:condition condition="python:context.required == False">
@@ -47,7 +50,6 @@
                     <tal:repeat repeat="t view/query">
                         <tal:define define="
                             setobject   python:t[0];
-                            module      python:setobject.__module__;
                             type        python:setobject.__class__.__name__;
                             so_id       python:setobject.id;
                             action      python:setobject.action;
@@ -55,7 +57,7 @@
                             index       repeat/t/index;
                             ">
                             <script type="text/javascript" tal:content="string:
-                              var dataNode = p2.datashackle.core.session.registerDataNode('${module}', '${type}', '${so_id}', '${action}');
+                              var dataNode = p2.datashackle.core.session.registerDataNode('${type}', '${so_id}', '${action}');
 		    	              var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject('${view/collection_id}');
                               if ('${linked}' == 'true') var linked = true; else var linked = false;
                               if (linked){
@@ -64,13 +66,13 @@
                                 linkageVertex.vertex.unlink('${so_id}');
                               }
                             "></script>
-                            <tal:condition condition="python:linked == 'true'">
+                            <tal:condition condition="python:context and linked == 'true'">
                                 <option selected="selected"
                                     tal:content="python:getattr(setobject, context.attr_name)"
                                     tal:attributes="value so_id">
                                 </option><test2>test</test2>
                             </tal:condition>
-                            <tal:condition condition="python:linked != 'true'">
+                            <tal:condition condition="python:context and linked != 'true'">
                                 <option tal:content="python:getattr(setobject, context.attr_name)"
                                     tal:attributes="value so_id">
                                 </option><test1>test</test1>

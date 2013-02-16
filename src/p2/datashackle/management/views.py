@@ -68,9 +68,9 @@ class AjaxView(BaseView):
         else:
              raise Exception("Mode must have one of the values ARCHETYPE, DESIGNER, OPERATIONAL")
         
-        self.so_type = setobject_type_registry.lookup(module, classname)
+        self.klass = setobject_type_registry.lookup(classname)
         if setobject_id == '':
-            setobject = self.so_type()
+            setobject = self.klass()
             session.add(setobject)
             setobject_id = setobject.id
             session.flush()
@@ -80,14 +80,15 @@ class AjaxView(BaseView):
             graph.link(self.source_id, module, classname, setobject_id, self.linked)
             
         if setobject_id != None:
-            self.setobject = session.query(self.so_type).filter(self.so_type.get_primary_key_attr() == setobject_id).one()
+            self.setobject = session.query(self.klass).filter(self.klass.get_primary_key_attr() == setobject_id).one()
         
         relation_id = self.request.get('relation_id')
         if relation_id != None:
             if self.relation_source_id == None:
                 raise Exception("relation_id parameter must be accompanied by relation_source_id.")
             self.relation = session.query(EmbeddedForm).filter_by(span_identifier=relation_id).one()
-            source_type = setobject_type_registry.lookup(self.relation.linkage.source_module, self.relation.linkage.source_classname)
+            import pdb; pdb.set_trace()
+            source_type = setobject_type_registry.lookup(self.relation.linkage.source_model.klass)
             self.relation_source = session.query(source_type).filter(source_type.get_primary_key_attr() == self.relation_source_id).one()   
         
         if self.graph_xml != None and self.graph_xml != '':

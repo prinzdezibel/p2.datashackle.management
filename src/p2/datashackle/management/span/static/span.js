@@ -39,7 +39,7 @@ p2.Span.prototype.initializeVisibility = function(){
     var self = this;
     // Evaluate initial visible state.
     this.setVisibility(this.info.visible);
-    var eventName = p2.datashackle.core.buildChangeEventName(this.info.module, this.info.type, this.info.span_identifier, 'visible');
+    var eventName = p2.datashackle.core.buildChangeEventName(this.info.type, this.info.span_identifier, 'visible');
     $(document).bind(eventName, function(e, senderEl, value){
         self.setVisibility(value);
     });
@@ -137,7 +137,7 @@ p2.Span.prototype.registerDataNode = function(){
     }else{
         var initValue = $(inputEl).val();
     }
-    var setobject = p2.datashackle.core.session.registerDataNode(this.info.module, this.info.type, this.info.data_node_id, this.info.action);
+    var setobject = p2.datashackle.core.session.registerDataNode(this.info.type, this.info.data_node_id, this.info.action);
     if (setobject.id == this.sourceId){debugger; /* I'd not expect this*/}
     if (this.sourceId != null){
         var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject(this.sourceId);

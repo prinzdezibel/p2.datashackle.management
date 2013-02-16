@@ -13,7 +13,7 @@ from p2.datashackle.core.models.linkage import Linkage
 from p2.datashackle.management.span.span import SpanType
 
 
-@model_config(tablename='p2_span_dropdown', maporder=2)
+@model_config(maporder=2)
 class Dropdown(SpanType):
    
     width = 95
@@ -37,7 +37,7 @@ class Dropdown(SpanType):
             session = Session()
             plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
             source_type = self.op_setobject_type
-            target_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)
+            target_type = setobject_type_registry.lookup(plan.klass)
     
             # set relation value
             self.relation.source_table = source_type.get_table_name()
@@ -45,10 +45,9 @@ class Dropdown(SpanType):
             self.relation.create_relation('LIST')
             
             # Set computed linkage values
-            self.linkage.source_module = source_type.__module__
-            self.linkage.source_classname = source_type.__name__
-            self.linkage.target_module = plan.so_module
-            self.linkage.target_classname = plan.so_type
+            self.linkage.source_model = plan
+            m = session.query(Plan).filter_by(klass=plan.klass).one()
+            self.linkage.target_model = m
      
     def __setattr__(self, name, value):
         SpanType.__setattr__(self, name, value)
@@ -57,9 +56,8 @@ class Dropdown(SpanType):
                 # Get the table identifier from our plan identifier and set it as the linkage's target class
                 table = setobject_table_registry.lookup_by_table('p2_plan')
                 plan = getUtility(IDbUtility).engine.execute(table.select(table.c.plan_identifier == self.plan_identifier)).first()
-                plan_module = plan['so_module']
                 plan_type = plan['so_type']
-                table_identifier = setobject_type_registry.lookup(plan_module, plan_type).get_table_name()
+                table_identifier = setobject_type_registry.lookup(plan_type).get_table_name()
                 oldtargetclass = None
                 try:
                     oldtargetclass = self.linkage.target_classname
@@ -78,7 +76,7 @@ class Dropdown(SpanType):
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        table = setobject_table_registry.lookup_by_class(cls.__name__)
         inherits = SpanType._sa_class_manager.mapper
         orm.mapper(Dropdown,
                    table,

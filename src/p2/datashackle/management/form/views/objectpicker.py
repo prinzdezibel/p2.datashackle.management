@@ -7,12 +7,12 @@ import grok
 from zope.component import getUtility
 
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
-from p2.datashackle.core.interfaces import IFormType, IDbUtility
+from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.scopedmarkup import ScopedMarkup
 from p2.datashackle.core.models.identity import generate_random_identifier
 from p2.datashackle.management.form.views.base import BaseForm
- 
+from p2.datashackle.management.interfaces import IFormType
  
 
 class ObjectPicker(BaseForm, RelationMixin):

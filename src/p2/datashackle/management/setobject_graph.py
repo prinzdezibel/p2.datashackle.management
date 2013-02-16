@@ -51,9 +51,9 @@ class SetobjectGraph(object):
         if node.tag == 'obj':
             module = node.get('module')
             typename = node.get('type')
-            so_type = setobject_type_registry.lookup(module, typename)
+            klass = setobject_type_registry.lookup(typename)
             objid = node.get('objid')
-            setobject = self.session.query(so_type).get(objid)
+            setobject = self.session.query(klass).get(objid)
             assert(setobject != None)
         for child in node:
             self._each_collection(child, setobject)
@@ -73,8 +73,8 @@ class SetobjectGraph(object):
                         break
                 if not found:
                     if __debug__:
-                        so_type = setobject_type_registry.lookup(module, classname)
-                        assert(self.session.query(so_type).get(setobject_id) != None)
+                        klass = setobject_type_registry.lookup(classname)
+                        assert(self.session.query(klass).get(setobject_id) != None)
                     obj = etree.Element("obj")
                     # The setobject MUST already be present in sqlalchemy session. 
                     # Through action 'save' it is later queried again.
@@ -103,7 +103,7 @@ class SetobjectGraph(object):
             # these are not visualized as spans
             if span_identifier is not None:
                 session = getUtility(IDbUtility).Session()
-                span_type = setobject_type_registry.lookup('p2.datashackle.management.span.span', 'SpanType')
+                span_type = setobject_type_registry.lookup('SpanType')
                 span = session.query(span_type).get(span_identifier)
                 assert(span != None)
                 value = span.onbefore_set_payload_attribute(setobject, attribute, value, self.mode)
@@ -125,6 +125,7 @@ class SetobjectGraph(object):
             pass
         else:
             # Unknown/invalid node.
+            import pdb; pdb.set_trace()
             raise SetobjectGraphException("Unknown node '" + node.tag + "'")
            
         if descend:
@@ -138,7 +139,7 @@ class SetobjectGraph(object):
         action = node.get('action')
         module = node.get('module')
         typename = node.get('type')
-        so_type = setobject_type_registry.lookup(module, typename)
+        klass = setobject_type_registry.lookup(typename)
         objid = node.get('objid')
         linked = node.get('linked')
             
@@ -168,28 +169,29 @@ class SetobjectGraph(object):
                     setobject.id = objid
         if setobject == None:
             if action == 'save':
-                setobject = self.session.query(so_type).filter(so_type.get_primary_key_attr() == objid).one()
+                setobject = self.session.query(klass).filter(klass.get_primary_key_attr() == objid).one()
                 self.session.add(setobject)
                 self.session.flush()
             elif action == 'new':
-                assert(self.session.query(so_type).get(objid) is None)
-                setobject = so_type()
+                assert(self.session.query(klass).get(objid) is None)
+                setobject = klass()
                 setobject.id = objid
                 self.session.add(setobject)
                 self.session.flush()
             elif action == 'delete':
-                setobject = self.session.query(so_type).filter(so_type.get_primary_key_attr() == objid).one()
+                setobject = self.session.query(klass).filter(klass.get_primary_key_attr() == objid).one()
                 # Actual deletion is performed as post order step as it may be necessary
                 # to clear linkages prior deleting the object.
-                setobject = self.session.query(so_type).filter(so_type.get_primary_key_attr() == objid).one()
+                setobject = self.session.query(klass).filter(klass.get_primary_key_attr() == objid).one()
             else:
+                import pdb; pdb.set_trace()
                 raise SetobjectGraphException("Invalid action '" + action + "' for setobject", node.get('objid'))
         
         self.do_linkage(node, setobject, parent_setobject)
         if action != 'delete':
             setobject.pre_order_traverse()
         
-        setobject = self.session.query(so_type).get(objid)
+        setobject = self.session.query(klass).get(objid)
         assert(setobject != None)
         
         if action == 'delete':
@@ -236,7 +238,7 @@ class SetobjectGraph(object):
                     span_identifier = node.get('span_identifier')
                     if span_identifier is not None:
                         session = getUtility(IDbUtility).Session()
-                        span_type = setobject_type_registry.lookup('p2.datashackle.management.span.span', 'SpanType')
+                        span_type = setobject_type_registry.lookup('SpanType')
                         span = session.query(span_type).get(span_identifier)
                         setobject = span.onbefore_set_payload_attribute(
                             setobject=parent_setobject,
@@ -262,7 +264,7 @@ class SetobjectGraph(object):
         if node.tag == 'coll' and node.get('span_identifier') != None:
             span_identifier = node.get('span_identifier')
             session = getUtility(IDbUtility).Session()
-            span_type = setobject_type_registry.lookup('p2.datashackle.management.span.span', 'SpanType')
+            span_type = setobject_type_registry.lookup('SpanType')
             span = session.query(span_type).get(span_identifier)
             span.onbefore_post_order_traverse(setobject, self.mode)
         elif node.tag == 'obj' and node.get('action') != 'delete':

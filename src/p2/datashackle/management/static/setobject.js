@@ -51,12 +51,11 @@ p2.LinkageVertex.prototype.isLinked = function(dataNodeId){
     return this.linkages[dataNodeId];
 }
 
-p2.Setobject = function(module, type, id, action) {
+p2.Setobject = function(type, id, action) {
     if (action === undefined) {debugger; throw new Error("Action can't be undefined.");}
     this.action = action;
     this.id = id;
     this.type = type;
-    this.module = module;
     this.attrs = {};
 }
 

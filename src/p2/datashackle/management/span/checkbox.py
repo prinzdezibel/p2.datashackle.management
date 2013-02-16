@@ -11,13 +11,13 @@ from p2.datashackle.core.models.setobject_types import setobject_table_registry,
     setobject_type_registry
 from p2.datashackle.management.span.span import SpanType
 
-@model_config(tablename='p2_span_checkbox', maporder=3)
+@model_config(maporder=3)
 class Checkbox(SpanType):
 
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        table = setobject_table_registry.lookup_by_class(cls.__name__)
         inherits = SpanType._sa_class_manager.mapper
         orm.mapper(Checkbox,
                     table, # Joined table inheritance
@@ -39,9 +39,7 @@ class Checkbox(SpanType):
     
     def post_order_traverse(self, mode):
         if mode == 'save':
-            so_type = setobject_type_registry.lookup(
-                self.op_setobject_type.__module__,
-                self.op_setobject_type.__name__)
+            so_type = setobject_type_registry.lookup(self.op_setobject_type.__name__)
             table_name = so_type.get_table_name()
             map_field_attr(
                 table_name,

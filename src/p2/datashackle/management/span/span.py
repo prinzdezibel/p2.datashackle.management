@@ -16,11 +16,11 @@ from zope.location.interfaces import ILocation
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.exceptions import *
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry
-from p2.datashackle.core.interfaces import *
 from p2.datashackle.core.models.setobject_types import SetobjectType
+from p2.datashackle.management.interfaces import ISpanType
 
 
-@model_config(tablename='p2_span')
+@model_config()
 class SpanType(SetobjectType):
     grok.implements(ISpanType, ILocation)
     
@@ -124,7 +124,7 @@ class SpanType(SetobjectType):
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        table_type = setobject_table_registry.lookup_by_class(SpanType.__module__, SpanType.__name__)
+        table_type = setobject_table_registry.lookup_by_class(SpanType.__name__)
 
         # Map base class
         #    
@@ -148,13 +148,13 @@ class SpanType(SetobjectType):
     #        SetobjectType.set_attribute(self, attribute, value, mode)
    
  
-@model_config(tablename='p2_span_action', maporder=2) 
+@model_config(maporder=2) 
 class Action(SpanType):
 
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        action_table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        action_table = setobject_table_registry.lookup_by_class(cls.__name__)
         inherits = SpanType._sa_class_manager.mapper
         orm.mapper(Action,
                     action_table, # We want joined table inheritance for the action span (additional table for action specific fields)

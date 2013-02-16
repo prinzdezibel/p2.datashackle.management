@@ -7,7 +7,7 @@ import grok
 
 from zope.component import queryMultiAdapter
 
-from p2.datashackle.core.interfaces import IFormType
+from p2.datashackle.management.interfaces import IFormType
 from p2.datashackle.management.form.views.base import BaseForm
     
 

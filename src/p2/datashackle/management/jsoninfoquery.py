@@ -7,7 +7,7 @@ import json
 import sqlalchemy
 from zope.component import getUtility
 
-from p2.datashackle.core.interfaces import IPlan, IDbUtility 
+from p2.datashackle.core.interfaces import IDbUtility 
 from p2.datashackle.management.plan.plan import Plan
 from p2.datashackle.management.interfaces import IDatashackle
 

@@ -6,7 +6,7 @@ import grok
 
 from zope.component import getUtility, getMultiAdapter
 
-from p2.datashackle.core.interfaces import *
+from p2.datashackle.management.interfaces import ISpanType
 from p2.datashackle.management.scopedmarkup import ScopedMarkup
 from p2.datashackle.management.views import BaseView
 from p2.datashackle.management.span.views.span import Span

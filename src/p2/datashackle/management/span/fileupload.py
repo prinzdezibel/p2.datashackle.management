@@ -14,7 +14,7 @@ from p2.datashackle.core.models.relation import Relation
 from p2.datashackle.management.span.span import SpanType
 
 
-@model_config(tablename='p2_span_fileupload', maporder=3)
+@model_config(maporder=3)
 class Fileupload(SpanType):
    
     fileupload_label_width = 50
@@ -23,7 +23,7 @@ class Fileupload(SpanType):
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        fileupload_table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        fileupload_table = setobject_table_registry.lookup_by_class(cls.__name__)
         inherits = SpanType._sa_class_manager.mapper
         orm.mapper(Fileupload,
                    fileupload_table,

@@ -7,10 +7,9 @@ p2.datashackle.core.Session = function(){
     this.graph = new p2.SetobjectGraph();
 }
 
-p2.datashackle.core.buildChangeEventName = function(module, type, id, attrName){
+p2.datashackle.core.buildChangeEventName = function(type, id, attrName){
     // replace dotted names with "_" because the events type property seems to be truncated if dotted names are used.
-    module = module.replace(/\./g, '_');
-    return 'mapchange_' + id + '_' + module + '_' + type + '_' + attrName;
+    return 'mapchange_' + id + '_' + type + '_' + attrName;
 }
 
 p2.datashackle.core.triggerChangeOnElement = function(domElement) {
@@ -21,7 +20,7 @@ p2.datashackle.core.triggerChangeOnElement = function(domElement) {
 }
 
 p2.datashackle.core.handleChangeEvent = function(element, setobject, dataType, attr_name, spanIdentifier){
-   var eventName = p2.datashackle.core.buildChangeEventName(setobject.module, setobject.type, setobject.id, attr_name);
+   var eventName = p2.datashackle.core.buildChangeEventName(setobject.type, setobject.id, attr_name);
    
    // change event binding
    $(element).bind('blur change keydown keyup', function(e){
@@ -57,11 +56,11 @@ p2.datashackle.core.Session.prototype.lookupDataNode = function(dataNodeId){
     return adjlist.vertex;
 }
 
-p2.datashackle.core.Session.prototype.registerDataNode = function(module, type, id, action){
+p2.datashackle.core.Session.prototype.registerDataNode = function(type, id, action){
     if (action === undefined){debugger; throw Error("Parameter 'action' must not be undefined.")}
     var adjlist = this.graph.queryGraphObject(id);
     if (adjlist == false){
-        var setobject = new p2.Setobject(module, type, id, action);
+        var setobject = new p2.Setobject(type, id, action);
         adjlist = this.graph.insertVertex(setobject);
     }
     if (adjlist.vertex.action != 'delete') {
@@ -81,7 +80,7 @@ p2.datashackle.core.Session.prototype.deleteNode = function(setobjectId) {
 
 
 p2.datashackle.core.Session.prototype.registerLinkageNode = function(sourceId, linkageId, attrName, isMultiSelectable, spanIdentifier){
-    if (!linkageId){debugger; throw Error("linkageId must be passed in.");}
+    if (!linkageId) return;
     if (isMultiSelectable == null){debugger; throw Error("isMultiSelectable must be passed in.");}
 
     var adjlist = this.graph.queryGraphObject(linkageId);

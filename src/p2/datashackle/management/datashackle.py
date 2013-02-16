@@ -3,8 +3,9 @@
 import dolmen.content as content
 import grok
 import transaction
-
+import venusian
 import p2.datashackle.management
+import sys
 
 from grok.util import create_application
 from dolmen.app import security
@@ -25,7 +26,15 @@ from p2.container.container import ignore_enumeration
 from p2.datashackle.management import MF as _
 from p2.datashackle.management.interfaces import IDatashackle
 from p2.datashackle.core.interfaces import IDbUtility
+from p2.datashackle.core.interfaces import IRelationalDatabaseOpened 
 
+
+@grok.subscribe(IRelationalDatabaseOpened)
+def scan(event):
+    # scan package for datashackle directives
+    scanner = venusian.Scanner()
+    package = sys.modules['p2.datashackle.management']
+    scanner.scan(package, categories=('datashackle',))
  
 
 
@@ -62,6 +71,7 @@ def wsgi_app_created(event):
          new_app = create_application(Datashackle, root['Application'], name)
          transaction.commit()
     connection.close()
+    
      
     
 
@@ -79,7 +89,7 @@ def init_application(event):
     if not IDatashackle.providedBy(application):
         # no datashackle grok application
         return          
- 
+
     # Site needs to be setted manually at this point.
     # Otherwise the framework does not notify the catalog to index the newly
     # created propertyform

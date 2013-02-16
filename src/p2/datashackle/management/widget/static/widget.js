@@ -3,18 +3,17 @@
 
 namespace("p2.Widget");
 
-p2.Widget = function(element, operational, propertyform, sourceId, module, type, dataNodeId, action, archetype){
+p2.Widget = function(element, operational, propertyform, sourceId, type, dataNodeId, action, archetype){
     var self = this;
     this.rootEl = element;
     this.operational = operational;
     this.sourceId = sourceId;
-    this.module = module;
     this.type = type;
     this.dataNodeId = dataNodeId;
     this.action = action;
 
     if (!this.operational && archetype != "True"){
-       var dataNode = p2.datashackle.core.session.registerDataNode(this.module, this.type, this.dataNodeId, this.action);
+       var dataNode = p2.datashackle.core.session.registerDataNode(this.type, this.dataNodeId, this.action);
        var coll = p2.datashackle.core.session.graph.lookupGraphObject(this.sourceId).vertex;
        coll.link(this.dataNodeId);
     }
@@ -215,7 +214,7 @@ p2.Widget.prototype.adaptCssValue = function(element){
     var sourceId = $(element).attr('data-source-id');
     var style= $(element).attr('style');
     if (!this.operational){
-        var setobject = p2.datashackle.core.session.registerDataNode(this.module, this.type, this.dataNodeId, this.action);
+        var setobject = p2.datashackle.core.session.registerDataNode(this.type, this.dataNodeId, this.action);
         setobject.setAttr('css', style);
     }
 }

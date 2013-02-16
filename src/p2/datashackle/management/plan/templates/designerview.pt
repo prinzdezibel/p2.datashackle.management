@@ -31,8 +31,7 @@
                                                '${form/form_name} [${form/form_identifier}]' ,
                                                '${plan_url}/forms/${form/form_name}',
                                                '${form/form_identifier}',
-                                               '${context/plan/so_module}',
-                                               '${context/plan/so_type}',
+                                               '${context/plan/klass}',
                                                '${form/action}',
                                                '${collection_id}'
                                                 );

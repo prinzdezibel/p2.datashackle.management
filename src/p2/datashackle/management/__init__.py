@@ -108,10 +108,5 @@ jqueryui = Group([jquery_ui_core_js, jquery_ui_dialog_js, jquery_ui_mouse_js,
     jquery_ui_draggable_js, jquery_ui_widget_js, jquery_ui_droppable_js
     ])
 
-
-
-# scan package for datashackle directives
-scanner = venusian.Scanner()
-package = sys.modules[__name__] # p2.datashackle.management
-scanner.scan(package, categories=('datashackle',))
+ 
  

@@ -14,9 +14,11 @@ from zope.location.interfaces import ILocation
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.core.models.setobject_types import SetobjectType
-from p2.datashackle.core.interfaces import IFormType, IDbUtility
+from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.management.setobject_graph import SetobjectGraph
 from p2.datashackle.management.widget.widget_factory import create_widget
+from p2.datashackle.management.interfaces import IFormType
+
 
 
 class LocationHelper(object):
@@ -25,7 +27,7 @@ class LocationHelper(object):
         self.__parent__ = parent
         self.__name__ = 'forms'
 
-@model_config(tablename='p2_form', maporder=2)
+@model_config(maporder=2)
 class FormType(SetobjectType):
     # In order to find default views via /index rather than
     # Zope3's /index.html we need to implement interfaces.IContext
@@ -44,16 +46,14 @@ class FormType(SetobjectType):
  
         if self.plan != None:    
             self.plan_identifier = plan.id
-            self.so_type = plan.so_type
-            self.so_module = plan.so_module
+            self.klass = plan.klass
         
         super(FormType, self).__init__()
  
     @orm.reconstructor    
     def reconstruct(self):
         self.plan_identifier = self.plan.plan_identifier
-        self.so_module = self.plan.so_module
-        self.so_type = self.plan.so_type
+        self.klass = self.plan.klass
         super(FormType, self).reconstruct()
 
     @property
@@ -69,23 +69,19 @@ class FormType(SetobjectType):
         #self.__name__ =  self.form_name # Location awareness
         #self.__parent__ = LocationHelper(self.plan) # Location awareness
         self.operational = False
-        if hasattr(self, 'so_type') and hasattr(self, 'so_module'):
-            self.op_setobject_type = setobject_type_registry.get(
-                self.so_module, self.so_type
-            )
+        if hasattr(self, 'klass'):
+            self.op_setobject_type = setobject_type_registry.get(self.klass)
     
     def post_order_traverse(self, mode):
         super(FormType, self).post_order_traverse(mode)
             
-        if hasattr(self, 'so_type') and hasattr(self, 'so_module'):
-            self.op_setobject_type = setobject_type_registry.get(
-                self.so_module, self.so_type
-            )
+        if hasattr(self, 'klass'):
+            self.op_setobject_type = setobject_type_registry.get(self.klass)
             if self.op_setobject_type == None:
-                raise Exception("Type '%s.%s' does not exist. Check p2_plan " \
+                raise Exception("Type '%s' does not exist. Check p2_plan " \
                     "table and/or ensure that class type exists in " \
                     "appropriate module and restart server." \
-                    % (self.so_module, self.so_type)
+                    % (self.klass)
                 )
 
     def widget_collection(self):

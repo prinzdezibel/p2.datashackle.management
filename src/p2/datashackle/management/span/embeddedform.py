@@ -17,7 +17,7 @@ from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setob
 from p2.datashackle.management.span.span import SpanType
 
 
-@model_config(tablename='p2_span_embeddedform', maporder=3)
+@model_config(maporder=3)
 class EmbeddedForm(SpanType):
     
     height = 50
@@ -43,7 +43,6 @@ class EmbeddedForm(SpanType):
     #        session = Session()
     #        from p2.datashackle.management.plan.plan import Plan
     #        plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
-    #        value.target_module = plan.so_module
     #        value.target_classname = plan.so_type
     #    elif attribute == 'relation':
     #        value.source_table = self.get_table_name()
@@ -60,13 +59,13 @@ class EmbeddedForm(SpanType):
             session = Session()
             plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
             source_type = self.op_setobject_type
-            target_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)
+            target_type = setobject_type_registry.lookup(plan.klass)
             
             # Set computed values on inner objects
-            self.linkage.source_module = source_type.__module__
-            self.linkage.source_classname = source_type.__name__
-            self.linkage.target_module = plan.so_module
-            self.linkage.target_classname = plan.so_type
+            m = session.query(Plan).filter_by(klass=source_type.__name__).one()
+            self.linkage.source_model = m
+            m = session.query(Plan).filter_by(klass=plan.klass).one()
+            self.linkage.target_model = m
 
             self.linkage.relation.source_table = source_type.get_table_name() 
             self.linkage.relation.target_table = target_type.get_table_name()            
@@ -89,7 +88,7 @@ class EmbeddedForm(SpanType):
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        embeddedform_table = setobject_table_registry.lookup_by_class(cls.__module__, cls.__name__)
+        embeddedform_table = setobject_table_registry.lookup_by_class(cls.__name__)
         inherits = SpanType._sa_class_manager.mapper
         orm.mapper(EmbeddedForm,
                    embeddedform_table, # We want joined table inheritance for the embeddedform span (additional table for embeddedform specific fields)

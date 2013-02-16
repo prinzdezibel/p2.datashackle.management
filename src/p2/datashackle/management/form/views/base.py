@@ -7,9 +7,9 @@ import grok
 from zope.component import getUtility, getMultiAdapter
 from zope.interface import Interface, Attribute
 
-from p2.datashackle.core.interfaces import IFormType, IDbUtility, ILocationProvider
+from p2.datashackle.core.interfaces import IDbUtility, ILocationProvider
 from p2.datashackle.management.views import AjaxView
-
+from p2.datashackle.management.interfaces import IFormType
             
        
 class BaseForm(AjaxView):

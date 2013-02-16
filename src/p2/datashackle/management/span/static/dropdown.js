@@ -31,7 +31,7 @@ p2.Span.Dropdown = function(el, sourceId, info, targetResource, collectionId){
     if(info.operational == true){
         // handleChangeEvent is normally called in registerDataNode
         var inputEl = $(this.rootEl).find('.input');
-        var eventName = p2.datashackle.core.buildChangeEventName(this.info.module, this.info.type, this.info.data_node_id, this.info.attr_name);
+        var eventName = p2.datashackle.core.buildChangeEventName(this.info.type, this.info.data_node_id, this.info.attr_name);
         // change event binding
         $(inputEl).bind('change', function(e){
             var value = $(inputEl).val();

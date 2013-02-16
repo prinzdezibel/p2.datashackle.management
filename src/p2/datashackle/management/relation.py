@@ -49,7 +49,7 @@ class RelationMixin(object):
         plan_id = self.relation.plan_identifier
         from p2.datashackle.management.plan.plan import Plan
         plan = session.query(Plan).get(plan_id)
-        target_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)        
+        target_type = setobject_type_registry.lookup(plan.klass)        
         query = session.query(target_type)
         query = query.add_column(
             literal_column("'false'").label('linked')
@@ -75,8 +75,8 @@ class RelationMixin(object):
             else:
                 query_mode=QueryMode.SHARED
 
-        source_type = setobject_type_registry.lookup(self.relation.linkage.source_module, self.relation.linkage.source_classname)
-        target_type = setobject_type_registry.lookup(self.relation.linkage.target_module, self.relation.linkage.target_classname)        
+        source_type = setobject_type_registry.lookup(self.relation.linkage.source_model.klass)
+        target_type = setobject_type_registry.lookup(self.relation.linkage.target_model.klass)        
         session = getUtility(IDbUtility).Session()
 
         if target_type == source_type:

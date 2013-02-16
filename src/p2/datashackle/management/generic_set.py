@@ -34,7 +34,6 @@ from p2.datashackle.core.models.setobject_types import create_setobject_type
 from p2.datashackle.management.interfaces import IGenericSet
 from p2.datashackle.management.form.form import FormType
 from p2.datashackle.management.plan.plan import fetch_plan, Plan
-
    
 
 class GenericSetFactory(dolmen.content.Factory):
@@ -99,30 +98,26 @@ def genericset_added(genericset, event):
             Column(genericset.table_key_field, String(10), primary_key=True, autoincrement=False),
             mysql_engine='InnoDB'
         )    
-        # Newly created setobjects live always in 'p2.datashackle.core.models.setobject_types'
-        # and the class name equals the table identifier.
-        so_module = 'p2.datashackle.core.models.setobject_types'
-        so_type = genericset.table_identifier
+        
+        klass = genericset.table_identifier
         # Register table type
-        setobject_table_registry.register_type(so_module, so_type, table_identifier, table_type)
+        setobject_table_registry.register_type(klass, table_identifier, table_type)
         
         # Even if the user gives a specialized class and module we create a 
-        # generic so_type first, because the specialized class definition will not exist until the
+        # generic klass first, because the specialized class definition will not exist until the
         # user defines it in the source code and restarts the server.
-        setobject_type = create_setobject_type(table_identifier)
+        setobject_type = create_setobject_type(table_identifier, table_identifier)
         
         # DDL
         table_type.create()
     else:
-        # find so_type class for table
+        # find klass class for table
         so = setobject_type_registry.lookup_by_table(table_identifier)
-        so_module = so.__module__
-        so_type = so.__name__
+        klass = so.__name__
 
     session = getUtility(IDbUtility).Session()
-    plan = Plan(plan_identifier, so_module, so_type)
-    #plan.so_module = so_module
-    #plan.so_type = so_type
+    plan = Plan(plan_identifier, klass, table_identifier)
+    #plan.klass = klass
     form = FormType(
         plan=plan,
         form_name='default_form'
@@ -132,14 +127,6 @@ def genericset_added(genericset, event):
     session.add(plan)
     session.commit()
     
-    ## write css styles
-    #selector = 'div[data-form-identifier="' + form.id + '"]'
-    #plan.update_css_rule(selector, 'width: 550px; height: 200px')
-    ## add strip-selector rule for forms
-    #style="left: 15px"
-    #selector = 'div[data-form-identifier="' + form.id + '"].selector-strip'
-    #plan.update_css_rule(selector, 'left: 15px')
-    #plan.write_stylesheet()        
 
 
 

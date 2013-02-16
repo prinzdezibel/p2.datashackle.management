@@ -18,8 +18,7 @@ p2.ListlayoutForm.prototype = function(){
 p2.ListlayoutForm.prototype.constructor = p2.ListlayoutForm;
 
 
-p2.DesignerForm = function(module,
-                           type,
+p2.DesignerForm = function(type,
                            parentEl,
                            plan_identifier,
                            plan_url,
@@ -28,8 +27,7 @@ p2.DesignerForm = function(module,
                            schemeHostPath,
                            operational,
                            dataNodeId,
-                           soModule,
-                           soType,
+                           klass,
                            action,
                            collectionId,
                            applicationUrl
@@ -39,12 +37,10 @@ p2.DesignerForm = function(module,
     this.plan_identifier = plan_identifier;
     this.plan_url = plan_url;
     this.viewSave = '@@committoserver';
-    this.module = module;
     this.type = type;
     this.windowTitle = windowTitle;
     this.operational = operational;
-    this.soModule = soModule;
-    this.soType = soType;
+    this.klass = klass;
     this.dataNodeId = dataNodeId;
     this.action = action;
     // collection_id of the form's widget collection
@@ -62,7 +58,7 @@ p2.DesignerForm = function(module,
                         self._onClose(formName);
                     }
                     };
-    var dataNode = p2.datashackle.core.session.registerDataNode(this.module, this.type, this.dataNodeId, this.action);
+    var dataNode = p2.datashackle.core.session.registerDataNode(this.type, this.dataNodeId, this.action);
     p2.datashackle.core.session.registerLinkageNode(this.dataNodeId, this.collectionId, 'widgets', isMultiSelectable=true);
     
     var openFn = function(){
@@ -86,13 +82,12 @@ p2.DesignerForm = function(module,
 }
 
 p2.DesignerForm.prototype.initNode = function(node) {
-    node.setAttr('so_type', this.soType);
-    node.setAttr('so_module', this.soModule);
+    node.setAttr('klass', this.klass);
 }
 
 p2.DesignerForm.prototype.opened = function(element){
     var self = this;
-    var dataNode = p2.datashackle.core.session.registerDataNode(this.module, this.type, this.dataNodeId, this.action);
+    var dataNode = p2.datashackle.core.session.registerDataNode(this.type, this.dataNodeId, this.action);
     this.initNode(dataNode);
      // register for window size changes
      $(this.rootEl).bind('MSG_WINDOW_SIZE_CHANGED', function(e, width, height){

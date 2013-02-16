@@ -6,7 +6,7 @@ import grok, grokcore
 
 from zope.component import getUtility, getMultiAdapter
 
-from p2.datashackle.core.interfaces import ISimpleSQLSearch, IPlan
+from p2.datashackle.core.interfaces import ISimpleSQLSearch
 from p2.datashackle.management.interfaces import IGenericSet
 
 

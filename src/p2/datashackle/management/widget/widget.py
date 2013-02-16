@@ -12,16 +12,16 @@ from sqlalchemy.sql import and_, or_
 from zope.component import getUtility, getMultiAdapter, queryMultiAdapter
 from zope.location.interfaces import ILocation
 
-from p2.datashackle.core.interfaces import IWidgetType
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.exceptions import UnspecificException
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.core.models.identity import generate_random_identifier
 from p2.datashackle.management.span.span_factory import create_span
+from p2.datashackle.management.interfaces import IWidgetType
 
 
-@model_config(tablename='p2_widget')
+@model_config()
 class WidgetType(SetobjectType):
     grok.implements(IWidgetType, interfaces.IContext, ILocation)
     
@@ -58,7 +58,7 @@ class WidgetType(SetobjectType):
         #self.update_location_info(self.form, self.id)
         
         # set op_setobject_type from parent form's attributes
-        self.op_setobject_type = setobject_type_registry.lookup(self.form.so_module, self.form.so_type)
+        self.op_setobject_type = setobject_type_registry.lookup(self.form.klass)
         
         for span in self.spans.itervalues():
             span.widget = self
@@ -100,7 +100,7 @@ class WidgetType(SetobjectType):
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
-        p2_widget = setobject_table_registry.lookup_by_class(WidgetType.__module__, WidgetType.__name__)    
+        p2_widget = setobject_table_registry.lookup_by_class(WidgetType.__name__)    
         # Map base class
         widget_mapper = orm.mapper(
             WidgetType,
@@ -110,8 +110,8 @@ class WidgetType(SetobjectType):
             )
 
 
-@model_config(tablename='p2_widget', maporder=2)
-class Action(WidgetType):
+@model_config(maporder=2)
+class ActionWidget(WidgetType):
     grok.implements(IWidgetType)   
      
     def __init__(self):
@@ -122,19 +122,19 @@ class Action(WidgetType):
     def map_computed_properties(cls):
         cls.sa_map_dispose()
         inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(Action,
+        orm.mapper(ActionWidget,
             inherits=inherits,
             polymorphic_identity='action',
-            properties=Action.mapper_properties,
+            properties=ActionWidget.mapper_properties,
             )
 
    
-@model_config(tablename='p2_widget', maporder=2)
-class Checkbox(WidgetType):
+@model_config(maporder=2)
+class CheckboxWidget(WidgetType):
     grok.implements(IWidgetType)   
  
     def __init__(self):
-        super(Checkbox, self).__init__()
+        super(CheckboxWidget, self).__init__()
         self.register_span('label', 'label')
         self.register_span('checkbox', 'piggyback')
 
@@ -142,13 +142,13 @@ class Checkbox(WidgetType):
     def map_computed_properties(cls):
         cls.sa_map_dispose()
         inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(Checkbox,
+        orm.mapper(CheckboxWidget,
               inherits=inherits,
               polymorphic_identity='checkbox',
-              properties=Checkbox.mapper_properties,
+              properties=CheckboxWidget.mapper_properties,
               )
 
-@model_config(tablename='p2_widget', maporder=2)
+@model_config(maporder=2)
 class Labeltext(WidgetType):
     grok.implements(IWidgetType)   
     
@@ -168,15 +168,15 @@ class Labeltext(WidgetType):
                  )
         
         
-@model_config(tablename='p2_widget', maporder=2)
-class Fileupload(WidgetType):
+@model_config(maporder=2)
+class FileuploadWidget(WidgetType):
     grok.implements(IWidgetType)   
     
     js_propertyform_constructor = 'p2.FileuploadPropertyform'
     js_widget_constructor = 'p2.Widget.Fileupload'
     
     def __init__(self):
-        super(Fileupload, self).__init__()
+        super(FileuploadWidget, self).__init__()
         self.register_span('label', 'label')
         self.register_span('fileupload', 'piggyback')
    
@@ -184,20 +184,20 @@ class Fileupload(WidgetType):
     def map_computed_properties(cls):
         cls.sa_map_dispose()
         inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(Fileupload,
+        orm.mapper(FileuploadWidget,
                   inherits=inherits,
                   polymorphic_identity='fileupload',
-                  properties=Fileupload.mapper_properties,
+                  properties=FileuploadWidget.mapper_properties,
                   )
 
-@model_config(tablename='p2_widget', maporder=2)
-class EmbeddedForm(WidgetType):
+@model_config(maporder=2)
+class EmbeddedFormWidget(WidgetType):
     grok.implements(IWidgetType)
 
     js_propertyform_constructor = 'p2.RelationPropertyform'
     
     def __init__(self):
-        super(EmbeddedForm, self).__init__()
+        super(EmbeddedFormWidget, self).__init__()
         self.register_span('label', 'label')
         self.register_span('embeddedform', 'piggyback')
 
@@ -205,9 +205,9 @@ class EmbeddedForm(WidgetType):
     def map_computed_properties(cls):
         cls.sa_map_dispose()
         inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(EmbeddedForm,
+        orm.mapper(EmbeddedFormWidget,
             inherits=inherits,
-            properties=EmbeddedForm.mapper_properties,
+            properties=EmbeddedFormWidget.mapper_properties,
             polymorphic_identity='embeddedform')
 
 

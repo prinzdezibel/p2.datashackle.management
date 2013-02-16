@@ -12,7 +12,6 @@ from zope.interface import Interface, implements
 
 from p2.datashackle.management import MF as _
 from p2.datashackle.management.resource_library import SetmanagerResources, PlanResources 
-from p2.datashackle.core.interfaces import IPlan
 from p2.datashackle.management.interfaces import IGenericSet
 from p2.windowmanager.skin import WindowManagerSkin
 

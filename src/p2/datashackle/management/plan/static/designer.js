@@ -32,7 +32,7 @@ p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_ident
 	$(this.rootEl).bind('formreset', function(ev, form_name, windowTitle, schemeHostPath, width, height){
 	    var form = ev.target;
         $(form).remove();
-        self.fetch_form(form_name, windowTitle, schemeHostPath, width, height);
+        self.fetch_form(form_name, windowTitle, schemeHostPath);
 	});
     
     // Bind to window size changed event 
@@ -108,28 +108,25 @@ p2.Setdesigner.prototype.fetch_form = function(
         windowTitle,
         schemeHostPath,
         dataNodeId,
-        soModule,
-        soType,
+        klass,
         action,
         collectionId
         ){
     var parentEl = $(this.rootEl).find('.windows-screen-estate');
-    var form = new p2.DesignerForm(this.formModule,
-                                     this.formType,
-                                     parentEl,
-                                     this.plan_identifier,
-                                     this.plan_url,
-                                     form_name,
-                                     windowTitle,
-                                     schemeHostPath,
-                                     operational = false,
-                                     dataNodeId,
-                                     soModule,
-                                     soType,
-                                     action,
-                                     collectionId,
-                                     this.applicationUrl
-                                     );
+    var form = new p2.DesignerForm(this.formType,
+                                    parentEl,
+                                    this.plan_identifier,
+                                    this.plan_url,
+                                    form_name,
+                                    windowTitle,
+                                    schemeHostPath,
+                                    operational = false,
+                                    dataNodeId,
+                                    klass,
+                                    action,
+                                    collectionId,
+                                    this.applicationUrl
+                                    );
 	this._append_window(form_name, form);
 	return form;
 }

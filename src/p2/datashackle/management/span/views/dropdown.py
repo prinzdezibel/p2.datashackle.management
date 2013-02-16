@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C), projekt-und-partner.com, 20111
+# Copyright (C), projekt-und-partner.com, 2011
 # Author: Michael Jenny
 
 import grok
@@ -7,10 +7,10 @@ import grok
 from zope.component import getMultiAdapter, getUtility
 from zope.traversing.browser import absoluteurl
 
-from p2.datashackle.core.interfaces import ISpanType, ILocationProvider
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.span.views.span import Span
+from p2.datashackle.management.interfaces import ISpanType
 
 
 class Dropdown(Span, RelationMixin):

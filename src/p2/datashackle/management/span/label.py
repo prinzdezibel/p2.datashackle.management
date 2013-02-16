@@ -7,7 +7,7 @@ from sqlalchemy import orm
 from p2.datashackle.core import model_config
 from p2.datashackle.management.span.span import SpanType
 
-@model_config(tablename='p2_span', maporder=3)
+@model_config(maporder=3)
 class Label(SpanType):
 
     @classmethod

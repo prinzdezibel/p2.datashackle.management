@@ -61,7 +61,7 @@ p2.Span.Fileupload = function(el, sourceId, applicationUrl, info){
                         var result = response.result;
                         
                         // Register the media node
-                        var media = p2.datashackle.core.session.registerDataNode("p2.datashackle.core.models.media", "Media", result.id, 'save');
+                        var media = p2.datashackle.core.session.registerDataNode("Media", result.id, 'save');
                         // And link it.
                         var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject(collectionNode.id).vertex;
                         linkageVertex.link(result.id);
@@ -75,7 +75,7 @@ p2.Span.Fileupload = function(el, sourceId, applicationUrl, info){
 
             if (info.media_id != null){
                 // Register the media node
-                var media = p2.datashackle.core.session.registerDataNode("p2.datashackle.core.models.media", "Media", info.media_id, 'save');
+                var media = p2.datashackle.core.session.registerDataNode("Media", info.media_id, 'save');
                 // And link it.
                 collectionNode.link(info.media_id);
 

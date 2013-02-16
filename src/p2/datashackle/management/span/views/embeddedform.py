@@ -11,10 +11,11 @@ from zope.traversing.browser import absoluteurl
 
 from p2.datashackle.core import Session
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
-from p2.datashackle.core.interfaces import ISpanType, ILocationProvider
+from p2.datashackle.core.interfaces import ILocationProvider
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.views import AjaxView
 from p2.datashackle.management.span.views.span import Span
+from p2.datashackle.management.interfaces import ISpanType
 
 
 class EmbeddedForm(Span, RelationMixin):
@@ -68,7 +69,7 @@ class TreeQuery(AjaxView):
         plan_id = self.context.plan_identifier
         from p2.datashackle.management.plan.plan import Plan
         plan = session.query(Plan).get(plan_id)
-        target_type = setobject_type_registry.lookup(plan.so_module, plan.so_type)        
+        target_type = setobject_type_registry.lookup(plan.klass)        
         query = session.query(target_type)
         query = query.add_column(
             literal_column("'false'").label('linked')

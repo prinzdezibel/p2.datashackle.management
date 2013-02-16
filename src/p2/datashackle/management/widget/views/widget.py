@@ -4,7 +4,7 @@
 
 import grok
 
-from p2.datashackle.core.interfaces import IWidgetType
+from p2.datashackle.management.interfaces import IWidgetType
 from p2.datashackle.management.views import AjaxView, BaseView
 
 
