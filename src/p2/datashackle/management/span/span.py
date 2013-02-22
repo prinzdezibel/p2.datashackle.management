@@ -15,9 +15,13 @@ from zope.location.interfaces import ILocation
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.exceptions import *
-from p2.datashackle.core.app.setobjectreg import setobject_table_registry
+from p2.datashackle.core.app.setobjectreg import (setobject_table_registry,
+                                                  setobject_type_registry)
 from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.management.interfaces import ISpanType
+from sqlalchemy.orm import class_mapper
+from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
+
 
 
 @model_config()
@@ -28,14 +32,11 @@ class SpanType(SetobjectType):
  
     def __init__(self, span_name=None):
         super(SpanType, self).__init__()
-        # BEGIN sqlalchemy instrumented attributes
-        # self.span_identifier initialized through SetobjectType base class.
         self.widget = None
         self.span_name = span_name
         self.span_type = self.__class__.__name__.lower()
         self.visible = True
         self.css = ''
-        # END sqlalchemy instrumented attributes
      
     def common_init(self):
         super(SpanType, self).common_init()
@@ -46,17 +47,12 @@ class SpanType(SetobjectType):
     @orm.reconstructor 
     def reconstruct(self):
         super(SpanType, self).reconstruct()
-        #self.update_location_info(self.widget, self.span_name)
         
     def make_operational(self, setobject):
         self.operational = True
         self.setobject = setobject
         self.op_setobject_id = setobject.id
     
-    #def update_location_info(self, parent, name):
-    #    self.__parent__ = parent
-    #    self.__name__ = name
-
     @property
     def __parent__(self):
         return self.widget
@@ -80,9 +76,8 @@ class SpanType(SetobjectType):
         view = queryMultiAdapter((self, request), name=self.span_type)
         if view == None:
             # Use the generalized class
-            view = getMultiAdapter((self, request), context=self, name="span")
-            view.template_name = self.span_type
-       
+            view = getMultiAdapter((self, request), context=self, name='SpanType')
+        view.template_name = self.span_type
         view.mode = view_mode
 
         if relation_linkage_id is not None:
@@ -137,39 +132,88 @@ class SpanType(SetobjectType):
             polymorphic_on=table_type.c.span_type,
             polymorphic_identity='spantype',
             properties=cls.mapper_properties,
-            with_polymorphic='*', 
+            with_polymorphic='*'
        )
     
-    #def set_attribute(self, attribute, value, mode):
-    #    if attribute == 'css_style':
-    #        selector = 'div[data-span-identifier="' + self.id + '"]'
-    #        self.widget.form.plan.update_css_rule(selector, value)
-    #    else:
-    #        SetobjectType.set_attribute(self, attribute, value, mode)
-   
- 
-@model_config(maporder=2) 
-class Action(SpanType):
+  
+from p2.datashackle.core.interfaces import IDbUtility
 
+class PolymorphicSpanType(SpanType):
     @classmethod
     def map_computed_properties(cls):
+        from p2.datashackle.management.plan.plan import Plan 
+        t = setobject_table_registry.lookup_by_class(Plan.__name__)
+        select = t.select().where(t.c.klass == cls.__name__)
+        rec = dict(select.execute().first())
+        
         cls.sa_map_dispose()
-        action_table = setobject_table_registry.lookup_by_class(cls.__name__)
-        inherits = SpanType._sa_class_manager.mapper
-        orm.mapper(Action,
-                    action_table, # We want joined table inheritance for the action span (additional table for action specific fields)
-                    inherits=inherits,
-                    polymorphic_identity='action',
-                    properties=cls.mapper_properties,
-                  )
-    
+        if rec['table'] == SpanType.get_table_name():
+            orm.mapper(cls,
+                       inherits=SpanType._sa_class_manager.mapper,
+                       polymorphic_identity=cls.__name__,
+                       properties=cls.mapper_properties)
+        else:
+            table = setobject_table_registry.lookup_by_class(cls.__name__)
+            orm.mapper(cls,
+                       table,
+                       inherits=SpanType._sa_class_manager.mapper,
+                       polymorphic_identity=cls.__name__,
+                       properties=cls.mapper_properties)
+
+
+@model_config(maporder=3)
+class Label(PolymorphicSpanType):
+
+    def __init__(self, span_name=None):
+        self.field_type = 'text'
+        self.css = "width:" + str(self.label_width) + "px;"
+        super(Label, self).__init__(span_name)
+
+ 
+@model_config(maporder=2) 
+class Action(PolymorphicSpanType):
+
     def _get_info(self):
         info = {}
+        info['method'] = self.method
+        info['ajax'] = self.ajax
+        info['aktion'] = self.aktion
+        info['submit'] = self.submit
         info['msg_close'] = self.msg_close
         info['msg_reset'] = self.msg_reset
         return info
 
 
+class SpanFactory(object):
 
+       
+    @classmethod
+    def copy_spans(cls, widget_id):
+        spans = {}
 
+        db_util = getUtility(IDbUtility)
+        session = db_util.Session()
+        query = session.query(SpanType).filter_by(fk_p2_widget=widget_id)
+
+        for span in query:
+            new = cls.create_span(span.span_type, span.span_name)
+            pk_keys = set([c.key for c in class_mapper(new.__class__).primary_key])
+            cols = [p for p in class_mapper(new.__class__).iterate_properties 
+                        if p.key not in pk_keys]
+            for col in cols:
+                if col.__class__ == ColumnProperty:
+                    if col.key == 'order':
+                        continue # order field is autoincremented
+                    val = getattr(span, col.key)
+                    setattr(new, col.key, val)
+                elif col.__class__ == RelationshipProperty:
+                    val = getattr(span, col.key)
+                    setattr(new, col.key, val)
+            spans[span.span_name] = new
+        return spans
+
+    @classmethod
+    def create_span(cls, span_type_name, span_name):
+        span_type = setobject_type_registry.lookup(span_type_name)
+        return span_type(span_name)
 

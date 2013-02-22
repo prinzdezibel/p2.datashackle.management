@@ -138,7 +138,6 @@ p2.Span.prototype.registerDataNode = function(){
         var initValue = $(inputEl).val();
     }
     var setobject = p2.datashackle.core.session.registerDataNode(this.info.type, this.info.data_node_id, this.info.action);
-    if (setobject.id == this.sourceId){debugger; /* I'd not expect this*/}
     if (this.sourceId != null){
         var linkageVertex = p2.datashackle.core.session.graph.lookupGraphObject(this.sourceId);
         if (!this.info.operational){

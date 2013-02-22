@@ -6,7 +6,6 @@ import grok
 from dolmen.app.container.listing import FolderListing
 from dolmen.app.layout import Add, Edit, Delete, ContextualMenu
 import dolmen.forms.base as form
-from dolmen.forms.crud.interfaces import IFactoryAdding
 from dolmen.forms.crud.utils import getSchemaFields
 from dolmen.menu import menuentry
 from zope.cachedescriptors.property import CachedProperty
@@ -16,12 +15,13 @@ import dolmen.app.layout as layout
 import dolmen.content
 from grokcore import view, viewlet
 from dolmen.app.content import icon
-from dolmen.forms.crud.crudforms import Add,Edit
+from dolmen.forms.crud.crudforms import Edit
 from dolmen.forms.crud.interfaces import IFactoryAdding
 from megrok import resource
 from sqlalchemy import String, Column, Table
 from zope.catalog.interfaces import ICatalog
 from zope.component import getUtility
+from zope.schema import TextLine
 from zope.schema.fieldproperty import FieldProperty
 
 from p2.datashackle.core.app.exceptions import *
@@ -31,15 +31,19 @@ from p2.datashackle.core.globals import metadata
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models import identity
 from p2.datashackle.core.models.setobject_types import create_setobject_type
-from p2.datashackle.management.interfaces import IGenericSet
+from p2.datashackle.management.interfaces import IGenericSet, IDatashackleContentFactory
+from p2.datashackle.management.content.factoring import DatashackleContentFactory
 from p2.datashackle.management.form.form import FormType
 from p2.datashackle.management.plan.plan import fetch_plan, Plan
    
 
-class GenericSetFactory(dolmen.content.Factory):
+
+
+class GenericSetFactory(DatashackleContentFactory):
     """Custom genericset factory allows to specify a custom addform."""
-    dolmen.content.name('p2.datashackle.management.generic_set.GenericSet')
-    addform = u'genericsetaddform'   
+    dolmen.content.name('GenericSet')
+    addform = u'addmodelview'   
+    addtraversal = u'addmodel'
 
  
 class GenericSet(dolmen.content.Container):
@@ -76,14 +80,15 @@ class GenericSetTraverser(grok.Traverser):
 def genericset_added(genericset, event):
     """A new GenericSet was added. Create the setobject type for it.
     """
-    
-    if genericset.table_identifier.startswith('p2_'):
-        # Don't do anything for system tables that are created on application init.
-        return
+ 
+    #if genericset.table_identifier.startswith('p2_'):
+    #    # Don't do anything for system tables that are created on application init.
+    #    return
 
     
-    plan_identifier = identity.generate_random_identifier()
-    genericset.plan_identifier = plan_identifier
+    #plan_identifier = identity.generate_random_identifier()
+    #genericset.plan_identifier = plan_identifier
+    plan_identifier = genericset.plan_identifier
     table_identifier = genericset.table_identifier
     
     # update the genericset index
@@ -110,22 +115,22 @@ def genericset_added(genericset, event):
         
         # DDL
         table_type.create()
-    else:
-        # find klass class for table
-        so = setobject_type_registry.lookup_by_table(table_identifier)
-        klass = so.__name__
+    #else:
+    #    # find klass class for table
+    #    so = setobject_type_registry.lookup_by_table(table_identifier)
+    #    klass = so.__name__
 
-    session = getUtility(IDbUtility).Session()
-    plan = Plan(plan_identifier, klass, table_identifier)
-    #plan.klass = klass
-    form = FormType(
-        plan=plan,
-        form_name='default_form'
-    )
-    plan.register_form(form)
-    plan.set_default(form)
-    session.add(plan)
-    session.commit()
+    #session = getUtility(IDbUtility).Session()
+    #plan = Plan(plan_identifier, klass, table_identifier)
+    ##plan.klass = klass
+    #form = FormType(
+    #    plan=plan,
+    #    form_name='default_form'
+    #)
+    #plan.register_form(form)
+    #plan.set_default(form)
+    #session.add(plan)
+    #session.commit()
     
 
 
@@ -139,19 +144,6 @@ class EditView(Edit):
         return getSchemaFields(
             self, self.getContentData().getContent(),
             '__parent__', 'plan_identifier', 'description')
-
-
-class AddView(Add):
-    """A custom addform to add a GenericSet. It omits the plan_identifier field.
-    """
-    grok.context(IFactoryAdding)
-    # The name the ++add++ traversal adapter uses to lookup the add form as a named multi-adapter.
-    grok.name('genericsetaddform')
-
-    @CachedProperty
-    def fields(self):
-        return getSchemaFields(
-            self, self.context.factory.factory, '__parent__', 'plan_identifier', 'description')
 
 
 @menuentry(ContextualMenu, order=40)

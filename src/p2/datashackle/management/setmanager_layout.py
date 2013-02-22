@@ -5,7 +5,6 @@
 import grok
 import grok.util
 from zope.interface import Interface
-from megrok import resource
 from grokcore.layout import Layout
 
 from p2.datashackle.management.skin import ISetmanagerLayer 

@@ -10,6 +10,8 @@ from zope.component import getUtility
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import make_transient
 from zope.component import getMultiAdapter, queryMultiAdapter
+from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
 
 from p2.datashackle.core.interfaces import *
 from p2.datashackle.core.app.exceptions import SetobjectGraphException, UserException, UnspecificException
@@ -125,7 +127,6 @@ class SetobjectGraph(object):
             pass
         else:
             # Unknown/invalid node.
-            import pdb; pdb.set_trace()
             raise SetobjectGraphException("Unknown node '" + node.tag + "'")
            
         if descend:
@@ -171,6 +172,7 @@ class SetobjectGraph(object):
             if action == 'save':
                 setobject = self.session.query(klass).filter(klass.get_primary_key_attr() == objid).one()
                 self.session.add(setobject)
+                notify(ObjectCreatedEvent(setobject))
                 self.session.flush()
             elif action == 'new':
                 assert(self.session.query(klass).get(objid) is None)
@@ -184,7 +186,6 @@ class SetobjectGraph(object):
                 # to clear linkages prior deleting the object.
                 setobject = self.session.query(klass).filter(klass.get_primary_key_attr() == objid).one()
             else:
-                import pdb; pdb.set_trace()
                 raise SetobjectGraphException("Invalid action '" + action + "' for setobject", node.get('objid'))
         
         self.do_linkage(node, setobject, parent_setobject)

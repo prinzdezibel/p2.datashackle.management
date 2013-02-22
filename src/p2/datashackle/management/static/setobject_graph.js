@@ -243,7 +243,7 @@ p2.SetobjectGraph.prototype._dfsMain = function(adjlist, edge, node, nodeName) {
        if (action == 'ignore') {
            action = 'save'; // we don't want to sent action ignore in that particular case
        }
-       node = $.xmlDOM('<obj action="' + action + '" type="' + vertex.type + '" module="' + vertex.module + '"/>');
+       node = $.xmlDOM('<obj action="' + action + '" type="' + vertex.type + '"/>');
        elem = $(node).children();
     }else{
         if (vertex.action == 'ignore') {
@@ -256,7 +256,6 @@ p2.SetobjectGraph.prototype._dfsMain = function(adjlist, edge, node, nodeName) {
             }
             $(elem).attr('action', vertex.action);
             $(elem).attr('type', vertex.type);
-            $(elem).attr('module', vertex.module);
             $(node).append(elem);
         }else if (vertex instanceof p2.LinkageVertex){
             if (vertex.refType == 'object'){

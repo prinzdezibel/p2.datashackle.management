@@ -5,14 +5,13 @@
 import grok
 
 from zope.component import getUtility, getMultiAdapter
-
-from p2.datashackle.management.interfaces import ISpanType
 from p2.datashackle.management.views import BaseView
+from p2.datashackle.management.span.span import SpanType
 
 
 class Span(BaseView):
-    grok.name('span')
-    grok.context(ISpanType)
+    grok.name(SpanType.__name__)
+    grok.context(SpanType)
     source_id = None
 
     def update(self):
@@ -26,4 +25,11 @@ class Span(BaseView):
     def render(self):
         self.template = grok.PageTemplateFile(self.template_name.lower() + '.pt')
         return self._render_template()
+
+
+class Action(Span):
+    grok.name('Action')
+    grok.context(SpanType)
+    
+
 

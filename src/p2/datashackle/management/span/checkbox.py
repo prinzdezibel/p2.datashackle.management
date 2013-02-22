@@ -9,22 +9,12 @@ from p2.datashackle.core import model_config
 from p2.datashackle.core.models.mapping import map_field_attr
 from p2.datashackle.core.models.setobject_types import setobject_table_registry, \
     setobject_type_registry
-from p2.datashackle.management.span.span import SpanType
+from p2.datashackle.management.span.span import PolymorphicSpanType
+
 
 @model_config(maporder=3)
-class Checkbox(SpanType):
+class Checkbox(PolymorphicSpanType):
 
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        table = setobject_table_registry.lookup_by_class(cls.__name__)
-        inherits = SpanType._sa_class_manager.mapper
-        orm.mapper(Checkbox,
-                    table, # Joined table inheritance
-                    inherits=inherits,
-                    polymorphic_identity='checkbox',
-                    properties=cls.mapper_properties,
-                  )
 
     def __init__(self, span_name=None):
         self.css = "left:" + str(self.label_width) + "px;"

@@ -14,7 +14,7 @@ from p2.datashackle.management.interfaces import ISpanType
 
 
 class Dropdown(Span, RelationMixin):
-    grok.name('dropdown')
+    grok.name('Dropdown')
     grok.context(ISpanType)
 
     def __init__(self, context, request):

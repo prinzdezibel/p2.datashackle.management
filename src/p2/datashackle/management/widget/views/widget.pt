@@ -1,5 +1,6 @@
 <tal:define define="id                      python:view.generate_random_identifier();
                     source_id               view/source_id;
+                    no_metaedit             context/no_metaedit;
                     operational             context/operational;
                     type                    python:operational and context.op_setobject_type.__name__ or context.__class__.__name__;
                     data_node_id            python:operational and context.op_setobject_id or context.widget_identifier;
@@ -21,17 +22,16 @@
             <div style="visibility: hidden;" tal:attributes="id script_id">
                  <tal:replace replace="string:
                      (function(){
-                     var rootEl = $$('#${id}');">
+                     var rootEl = $$('#${id}');
+                     var no_metaedit = ('${no_metaedit}' == 'True') ? true : false;">
                  </tal:replace>
-                 <tal:condition condition="operational" replace="string: var operational = true;"></tal:condition>
-                 <tal:condition condition="not:operational" replace="string: var operational = false;"></tal:condition>
-                 <tal:condition condition="not: operational">
-                     <tal:replace replace="string:
-                         var propertyform = new ${context/js_propertyform_constructor}('${view/application_url}/configuration/meta/p2_widget/forms/${context/widget_type}', '${source_id}', '${data_node_id}');
+                 <tal:condition condition="python:not operational">
+                    <tal:replace replace="string:
+                        var propertyform = new ${context/js_propertyform_constructor}('${view/application_url}/configuration/meta/p2_widget/forms/${context/widget_type}', '${source_id}', '${data_node_id}');
 
-                         $('#${id}').data('data-object', new p2.Widget(rootEl, operational, propertyform, '${source_id}', '${type}', '${data_node_id}', '${action}', '${archetype}'));
-                         ">
-                      </tal:replace>
+                        $('#${id}').data('data-object', new p2.Widget(rootEl, operational=false, propertyform, '${source_id}', '${type}', '${data_node_id}', '${action}', '${archetype}', no_metaedit));
+                        ">
+                     </tal:replace>
                       <tal:is_not_archetype condition="not:archetype">
                           <tal:define define="collection python:context.collections['spans']">
                                 <tal:replace replace="string:
@@ -61,7 +61,7 @@
             <div tal:replace="structure python:context.spans[key].lookup_view(view.request, view.mode, source_id)()"></div>
         </tal:repeat>
         
-        <tal:condition condition="not: operational">
+        <tal:condition condition="python: not operational and not no_metaedit">
             <div class="buttons">
                 <a href="#" class="anchor-edit">
                     <img alt="edit" tal:attributes="src string:${view/application_url}/@@/setmanager.ui.skin/edit.gif" />

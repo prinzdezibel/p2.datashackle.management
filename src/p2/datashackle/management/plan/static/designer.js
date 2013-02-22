@@ -3,13 +3,12 @@
 
 namespace("p2");
 
-p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_identifier, formModule, formType)
+p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_identifier, formType)
 {
     this.plan_identifier = plan_identifier;
     this.table_identifier = table_identifier;
     this.plan_url = plan_url;
     this.applicationUrl = applicationUrl;
-    this.formModule = formModule;
     this.formType = formType;
     this.listlayoutForms = {};
     
@@ -237,7 +236,7 @@ p2.Setdesigner.prototype.findParentFormVertex = function(vertexId){
             if (go.parent == null) {return undefined;}
             go = go.parent;
         } while (!go.vertex instanceof p2.Setobject)
-    } while (go.vertex.type != "FormType" || go.vertex.module != "p2.datashackle.management.form.form")
+    } while (go.vertex.type != "FormType")
     return go.vertex;
 }
 

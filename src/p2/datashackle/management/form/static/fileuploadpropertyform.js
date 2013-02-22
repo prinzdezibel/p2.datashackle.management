@@ -46,9 +46,7 @@ p2.FileuploadPropertyform.prototype.initialize = function() {
         alert("fileuploadpropertyform.js: form node not found");return;
     }
     if (setobject) {
-        setobject.vertex.setAttr('source_module', formsetobject.getAttr("so_module"));
         setobject.vertex.setAttr('source_classname', formsetobject.getAttr("so_type"));
-        setobject.vertex.setAttr('target_module', 'p2.datashackle.core.models.media');
         setobject.vertex.setAttr('target_classname', 'Media');
     }else{
         alert("fileuploadpropertyform.js: setobject node not found...");

@@ -11,15 +11,15 @@ from zope.traversing.browser import absoluteurl
 
 from p2.datashackle.core import Session
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
-from p2.datashackle.core.interfaces import ILocationProvider
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.views import AjaxView
 from p2.datashackle.management.span.views.span import Span
-from p2.datashackle.management.interfaces import ISpanType
+from p2.datashackle.management.interfaces import ISpanType, ILocationProvider
+
 
 
 class EmbeddedForm(Span, RelationMixin):
-    grok.name('embeddedform')
+    grok.name('EmbeddedForm')
     grok.context(ISpanType)
 
     def __init__(self, context, request):

@@ -2,12 +2,13 @@
                     source_id       view/source_id;
                     module          python:context.__class__.__module__;
                     type            python:context.__class__.__name__;
+                    no_metaedit     python:context.widget.no_metaedit;
                     data_node_id    python:context.span_identifier;
                     span_type       context/span_type;
                     span_name       context/span_name;
-                    action          context/action;
                     info            python:context.get_info();
                     span_identifier python:context.span_identifier;
+                    actionurl       python:view.request.URL;
                     ">
     <div class="p2-span" tal:attributes="id                     id;
                                          data-span-type         span_type;
@@ -23,11 +24,11 @@
                }
                var sourceId = null;
                if ('${source_id}' != 'None') sourceId = '${source_id}';
-               $('#${id}').data('data-object', new p2.Span.Action($('#${id}'), sourceId, info));
+               $('#${id}').data('data-object', new p2.Span.Action($('#${id}'), sourceId, info, '${actionurl}'));
             })();
           ">
         </script>
-        <tal:condition condition="not: context/operational">
+        <tal:condition condition="python:not context.operational and not no_metaedit">
             <textarea class="input"
                 tal:content="structure context/span_value"></textarea>
             <tal:condition condition="not: context/operational">
@@ -36,7 +37,7 @@
                 </div>
             </tal:condition>
         </tal:condition>
-        <tal:condition condition="context/operational">
+        <tal:condition condition="python: context.operational or no_metaedit">
             <div style="border:1px solid #000"><input type="submit" class="p2-button" tal:attributes="value context/span_value"></div>
         </tal:condition>
     </div>

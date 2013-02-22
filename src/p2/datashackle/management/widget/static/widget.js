@@ -3,7 +3,7 @@
 
 namespace("p2.Widget");
 
-p2.Widget = function(element, operational, propertyform, sourceId, type, dataNodeId, action, archetype){
+p2.Widget = function(element, operational, propertyform, sourceId, type, dataNodeId, action, archetype, no_metaedit){
     var self = this;
     this.rootEl = element;
     this.operational = operational;
@@ -26,10 +26,12 @@ p2.Widget = function(element, operational, propertyform, sourceId, type, dataNod
     if ($(this.rootEl).parents().is('#view_area')){
         this.doDesignerEnhancements();
     }
-   
-    // append propertyform and bind it to edit button
-    $(this.rootEl).append(propertyform);
-    this.bindPropertyform(propertyform);
+  
+    if (!no_metaedit){ 
+        // append propertyform and bind it to edit button
+        $(this.rootEl).append(propertyform);
+        this.bindPropertyform(propertyform);
+    }
 
     // Bind width change event
     $(this.rootEl).bind('MSG_SIZE_CHANGE', function(ev, width, height){

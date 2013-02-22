@@ -10,11 +10,12 @@ from p2.datashackle.core.app.exceptions import SetobjectGraphException
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models.linkage import Linkage
-from p2.datashackle.management.span.span import SpanType
+from p2.datashackle.core.models.relation import Relation
+from p2.datashackle.management.span.span import PolymorphicSpanType
 
 
 @model_config(maporder=2)
-class Dropdown(SpanType):
+class Dropdown(PolymorphicSpanType):
    
     width = 95
  
@@ -50,7 +51,7 @@ class Dropdown(SpanType):
             self.linkage.target_model = m
      
     def __setattr__(self, name, value):
-        SpanType.__setattr__(self, name, value)
+        super(Dropdown, self).__setattr__(name, value)
         if name == 'linkage':
             if self.plan_identifier != None and value != None:
                 # Get the table identifier from our plan identifier and set it as the linkage's target class
@@ -73,16 +74,4 @@ class Dropdown(SpanType):
             info['attr_name'] = self.attr_name
         return info
 
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        table = setobject_table_registry.lookup_by_class(cls.__name__)
-        inherits = SpanType._sa_class_manager.mapper
-        orm.mapper(Dropdown,
-                   table,
-                   inherits=inherits,
-                   polymorphic_identity='dropdown',
-                   properties=cls.mapper_properties
-                   )
-        
 

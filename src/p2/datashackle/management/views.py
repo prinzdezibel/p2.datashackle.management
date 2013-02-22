@@ -58,7 +58,7 @@ class AjaxView(BaseView):
         
         db_utility = getUtility(IDbUtility)
         session = db_utility.Session()
-       
+      
         if self.mode == 'OPERATIONAL':
             module = self.context.op_setobject_type.__module__
             classname = self.context.op_setobject_type.__name__
@@ -69,7 +69,7 @@ class AjaxView(BaseView):
              raise Exception("Mode must have one of the values ARCHETYPE, DESIGNER, OPERATIONAL")
         
         self.klass = setobject_type_registry.lookup(classname)
-        if setobject_id == '':
+        if not setobject_id:
             setobject = self.klass()
             session.add(setobject)
             setobject_id = setobject.id
@@ -87,7 +87,6 @@ class AjaxView(BaseView):
             if self.relation_source_id == None:
                 raise Exception("relation_id parameter must be accompanied by relation_source_id.")
             self.relation = session.query(EmbeddedForm).filter_by(span_identifier=relation_id).one()
-            import pdb; pdb.set_trace()
             source_type = setobject_type_registry.lookup(self.relation.linkage.source_model.klass)
             self.relation_source = session.query(source_type).filter(source_type.get_primary_key_attr() == self.relation_source_id).one()   
         

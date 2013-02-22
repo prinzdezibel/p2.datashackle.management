@@ -18,7 +18,6 @@
                                                 plan_url='${plan_url}',
                                                 plan_identifier='${context/plan/plan_identifier}',
                                                 table_identifier='${context/plan/table_identifier}',
-                                                formModule = '${context/plan/form_module}',
                                                 formType = '${context/plan/form_type}'
                                                 );
             ">

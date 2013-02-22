@@ -2,5 +2,6 @@
          xmlns:i18n="http://namespaces.zope.org/i18n" 
          xmlns:grok="http://namespaces.zope.org/grok">
   <includeDependencies package="." />
+  <include package=".content" file="meta.zcml" />
   <grok:grok package="." />
 </configure>

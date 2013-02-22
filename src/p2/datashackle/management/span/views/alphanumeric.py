@@ -13,7 +13,7 @@ from p2.datashackle.management.span.views.span import Span
 
 
 class Alphanumeric(Span):
-    grok.name('alphanumeric')
+    grok.name('Alphanumeric')
     grok.context(ISpanType)
     
     def render(self):

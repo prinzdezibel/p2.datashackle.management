@@ -6,8 +6,7 @@
                     action              python:context.operational and context.setobject.action or context.action;
 		            linked		        view/linked;
                     ">
-    <!-- link tal:condition="context/plan/stylesheet_exists" rel="stylesheet" type="text/css" tal:attributes="href context/plan/stylesheet_url"/ -->
-    <div tal:attributes="id              id;
+     <div tal:attributes="id              id;
                          data-action                request/URL;
                          data-form-identifier       context/form_identifier;
                          style                      python:context.css;               

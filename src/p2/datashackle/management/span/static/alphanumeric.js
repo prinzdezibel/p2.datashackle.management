@@ -130,7 +130,7 @@ p2.Span.Alphanumeric.prototype.getDataID = function(el){
 p2.Span.Alphanumeric.prototype.bindMultiline = function(){
     var self = this;
     
-    var eventName = p2.datashackle.core.buildChangeEventName(this.info.module, this.info.type, this.info.span_identifier, 'field_type');
+    var eventName = p2.datashackle.core.buildChangeEventName(this.info.type, this.info.span_identifier, 'field_type');
     $(document).bind(eventName, function(e, senderEl, value){
         var index = senderEl[0].selectedIndex;
         var dropdownText = senderEl[0].children[index].text

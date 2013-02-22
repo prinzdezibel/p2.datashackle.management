@@ -13,12 +13,21 @@ from zope.component import getUtility, getMultiAdapter, queryMultiAdapter
 from zope.location.interfaces import ILocation
 
 from p2.datashackle.core import model_config
-from p2.datashackle.core.app.exceptions import UnspecificException
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.core.models.identity import generate_random_identifier
-from p2.datashackle.management.span.span_factory import create_span
+from p2.datashackle.management.span.span import SpanFactory
 from p2.datashackle.management.interfaces import IWidgetType
+from p2.datashackle.management.span.span import Action, Label
+from p2.datashackle.management.span.alphanumeric import Alphanumeric
+from p2.datashackle.management.span.fileupload import Fileupload
+from p2.datashackle.management.span.embeddedform import EmbeddedForm
+from p2.datashackle.management.span.dropdown import Dropdown
+from p2.datashackle.management.span.checkbox import Checkbox
+from sqlalchemy.orm import class_mapper
+from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
+from p2.datashackle.core.interfaces import IDbUtility
+
 
 
 @model_config()
@@ -33,6 +42,7 @@ class WidgetType(SetobjectType):
         self.css = ''
         self.tab_order = 0
         self.widget_type = self.__class__.__name__.lower()
+        self.no_metaedit = False
         super(WidgetType, self).__init__()
 
     @orm.reconstructor 
@@ -55,7 +65,6 @@ class WidgetType(SetobjectType):
     def pre_order_traverse(self):
         if self.form == None:
             raise Exception("Can't finish initialization without the form attribute set.")
-        #self.update_location_info(self.form, self.id)
         
         # set op_setobject_type from parent form's attributes
         self.op_setobject_type = setobject_type_registry.lookup(self.form.klass)
@@ -74,7 +83,7 @@ class WidgetType(SetobjectType):
       
     def register_span(self, span_type, span_name):
         if not span_name in self.spans:
-            self.spans[span_name] = create_span(span_type, span_name)
+            self.spans[span_name] = span_type(span_name)
             self.spans[span_name].widget = self
         return self.spans[span_name]
         
@@ -102,113 +111,90 @@ class WidgetType(SetobjectType):
         cls.sa_map_dispose()
         p2_widget = setobject_table_registry.lookup_by_class(WidgetType.__name__)    
         # Map base class
-        widget_mapper = orm.mapper(
+        orm.mapper(
             WidgetType,
             p2_widget,
-            polymorphic_on=p2_widget.c.widget_type, polymorphic_identity='widgettype',
+            polymorphic_on=p2_widget.c.widget_type,
+            polymorphic_identity='widgettype',
             properties=WidgetType.mapper_properties
             )
-
-
-@model_config(maporder=2)
-class ActionWidget(WidgetType):
-    grok.implements(IWidgetType)   
-     
-    def __init__(self):
-        super(Action, self).__init__()
-        self.register_span(span_type='action', span_name='button')
+   
+ 
+class PolymorphicWidget(WidgetType):
 
     @classmethod
     def map_computed_properties(cls):
         cls.sa_map_dispose()
         inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(ActionWidget,
-            inherits=inherits,
-            polymorphic_identity='action',
-            properties=ActionWidget.mapper_properties,
-            )
+        orm.mapper(cls,
+                 inherits=inherits,
+                 polymorphic_identity=cls.__name__,
+                 properties=cls.mapper_properties,
+                 )
+
+
+
+@model_config(maporder=2)
+class ActionWidget(PolymorphicWidget):
+     
+    def __init__(self):
+        super(ActionWidget, self).__init__()
+        self.register_span(span_type=Action, span_name='button')
+
 
    
 @model_config(maporder=2)
-class CheckboxWidget(WidgetType):
-    grok.implements(IWidgetType)   
+class CheckboxWidget(PolymorphicWidget):
  
     def __init__(self):
         super(CheckboxWidget, self).__init__()
-        self.register_span('label', 'label')
-        self.register_span('checkbox', 'piggyback')
+        self.register_span(Label, 'label')
+        self.register_span(Checkbox, 'piggyback')
 
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(CheckboxWidget,
-              inherits=inherits,
-              polymorphic_identity='checkbox',
-              properties=CheckboxWidget.mapper_properties,
-              )
 
 @model_config(maporder=2)
-class Labeltext(WidgetType):
-    grok.implements(IWidgetType)   
+class Labeltext(PolymorphicWidget):
     
     def __init__(self):
         super(Labeltext, self).__init__()
-        self.register_span('label', 'label')
-        self.register_span('alphanumeric', 'piggyback')
+        self.register_span(Label, 'label')
+        self.register_span(Alphanumeric, 'piggyback')
 
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(Labeltext,
-                 inherits=inherits,
-                 polymorphic_identity='labeltext',
-                 properties=Labeltext.mapper_properties,
-                 )
         
         
 @model_config(maporder=2)
-class FileuploadWidget(WidgetType):
-    grok.implements(IWidgetType)   
+class FileuploadWidget(PolymorphicWidget):
     
     js_propertyform_constructor = 'p2.FileuploadPropertyform'
     js_widget_constructor = 'p2.Widget.Fileupload'
     
     def __init__(self):
         super(FileuploadWidget, self).__init__()
-        self.register_span('label', 'label')
-        self.register_span('fileupload', 'piggyback')
+        self.register_span(Label, 'label')
+        self.register_span(Fileupload, 'piggyback')
    
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(FileuploadWidget,
-                  inherits=inherits,
-                  polymorphic_identity='fileupload',
-                  properties=FileuploadWidget.mapper_properties,
-                  )
 
 @model_config(maporder=2)
-class EmbeddedFormWidget(WidgetType):
-    grok.implements(IWidgetType)
+class EmbeddedFormWidget(PolymorphicWidget):
 
     js_propertyform_constructor = 'p2.RelationPropertyform'
     
     def __init__(self):
         super(EmbeddedFormWidget, self).__init__()
-        self.register_span('label', 'label')
-        self.register_span('embeddedform', 'piggyback')
+        self.register_span(Label, 'label')
+        self.register_span(EmbeddedForm, 'piggyback')
 
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        inherits = WidgetType._sa_class_manager.mapper
-        orm.mapper(EmbeddedFormWidget,
-            inherits=inherits,
-            properties=EmbeddedFormWidget.mapper_properties,
-            polymorphic_identity='embeddedform')
+
+@model_config(maporder=2) 
+class DropdownWidget(PolymorphicWidget):
+    
+    js_propertyform_constructor = 'p2.DropdownPropertyform'
+    
+    def __init__(self):
+        super(DropdownWidget, self).__init__()
+        self.register_span(Label, 'label')
+        self.register_span(Dropdown, 'piggyback')
+
 
 
 class WidgetTraverser(grok.Traverser):
@@ -217,4 +203,41 @@ class WidgetTraverser(grok.Traverser):
     def traverse(self, name):
         return self.context.spans[name]
         
+
+
+class WidgetFactory(object):
+    
+    @classmethod
+    def copy_widgets(cls, form_identifier):
+        widgets = {}
+        db_util = getUtility(IDbUtility)
+        session = db_util.Session()
+        query = session.query(WidgetType).filter_by(fk_p2_form=form_identifier)
+
+        for widget in query:
+            new = cls.create_widget(widget.widget_type)
+            pk_keys = set([c.key for c in class_mapper(WidgetType).primary_key])
+            cols = [p for p in class_mapper(WidgetType).iterate_properties 
+                        if p.key not in pk_keys]
+            for col in cols:
+                if col.__class__ == ColumnProperty:
+                    val = getattr(widget, col.key)
+                    setattr(new, col.key, val)
+                elif col.__class__ == RelationshipProperty:
+                    if col.key == 'spans':
+                        spans = SpanFactory.copy_spans(widget.id)
+                        setattr(new, col.key, spans)
+                    else:
+                        pass
+                        #val = getattr(widget, col.key)
+                        #setattr(new, col.key, val)
+            widgets[new.id] = new
+        return widgets
+
+    
+    @classmethod        
+    def create_widget(cls, widget_type):
+        widget_type = setobject_type_registry.lookup(widget_type)
+        widget = widget_type()
+        return widget
 

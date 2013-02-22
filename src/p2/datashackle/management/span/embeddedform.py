@@ -14,11 +14,11 @@ from p2.datashackle.core.models.linkage import Linkage
 from zope.component import getUtility
 
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
-from p2.datashackle.management.span.span import SpanType
+from p2.datashackle.management.span.span import PolymorphicSpanType
 
 
 @model_config(maporder=3)
-class EmbeddedForm(SpanType):
+class EmbeddedForm(PolymorphicSpanType):
     
     height = 50
     width = 50
@@ -33,24 +33,6 @@ class EmbeddedForm(SpanType):
             str(self.width) + "px; height:" + str(self.height) + "px;"
         super(EmbeddedForm, self).__init__(span_name)
    
-    #def set_attribute(self, attribute, value, mode):
-    #    super(EmbeddedForm, self).set_attribute(attribute, value, mode)
-    #    if attribute == 'linkage':
-    #        # Set computed linkage values
-    #        value.source_module = self.__module__
-    #        value.source_classname = self.__class__.__name__
-    #        plan_id = self.plan_identifier
-    #        session = Session()
-    #        from p2.datashackle.management.plan.plan import Plan
-    #        plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
-    #        value.target_classname = plan.so_type
-    #    elif attribute == 'relation':
-    #        value.source_table = self.get_table_name()
-    #        plan_id = self.plan_identifier
-    #        session = Session()
-    #        from p2.datashackle.management.plan.plan import Plan
-    #        plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
-    #        value.target_table = plan.get_table_name()
 
     def post_order_traverse(self, mode):
         if mode == 'save':
@@ -85,15 +67,3 @@ class EmbeddedForm(SpanType):
             info['linkage_id'] = self.linkage.id
         return info
 
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        embeddedform_table = setobject_table_registry.lookup_by_class(cls.__name__)
-        inherits = SpanType._sa_class_manager.mapper
-        orm.mapper(EmbeddedForm,
-                   embeddedform_table, # We want joined table inheritance for the embeddedform span (additional table for embeddedform specific fields)
-                   inherits=inherits,
-                   polymorphic_identity='embeddedform',
-                   properties=cls.mapper_properties
-                   )
-        

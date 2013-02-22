@@ -21,11 +21,11 @@ from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models.mapping import map_field_attr
 from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.management.span.dataconverter import IDataConverter, DataConverter
-from p2.datashackle.management.span.span import SpanType
+from p2.datashackle.management.span.span import PolymorphicSpanType
 
 
 @model_config(maporder=3)
-class Alphanumeric(SpanType):
+class Alphanumeric(PolymorphicSpanType):
  
     def __init__(self, span_name=None):
         self.required = True
@@ -55,16 +55,6 @@ class Alphanumeric(SpanType):
         else:
             self.piggyback = getattr(setobject, self.attr_name)
 
-    @classmethod
-    def map_computed_properties(cls):
-        cls.sa_map_dispose()
-        alphanumeric_table = setobject_table_registry.lookup_by_class(cls.__name__)
-        inherits = SpanType._sa_class_manager.mapper
-        orm.mapper(Alphanumeric,
-                   alphanumeric_table,
-                   inherits=inherits,
-                   properties = cls.mapper_properties,
-                   polymorphic_identity='alphanumeric')
    
     def onbefore_set_payload_attribute(self, setobject, attribute, value, mode):
         # Parameter `value` can be a native type (string, boolean) or another setobject

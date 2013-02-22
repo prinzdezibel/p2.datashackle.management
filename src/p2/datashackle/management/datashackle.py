@@ -19,9 +19,8 @@ from zope.principalannotation.utility import PrincipalAnnotationUtility
 from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.securitypolicy.interfaces import IRolePermissionManager
 
-from p2.datashackle.management.folder import Folder
-from p2.datashackle.management.generic_set import GenericSet
-#from p2.datashackle.management.users import Users
+from p2.datashackle.management.content.folder import Folder
+from p2.datashackle.management.content.generic_set import GenericSet 
 from p2.container.container import ignore_enumeration
 from p2.datashackle.management import MF as _
 from p2.datashackle.management.interfaces import IDatashackle
@@ -116,7 +115,7 @@ def init_application(event):
     #users = Users()
     #users.title = _(u'Users')
     #configfolder['users'] = users
-    
+
     set_ = GenericSet()
     set_.title = u'p2_plan'
     set_.plan_identifier = 'p2_plan'

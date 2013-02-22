@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from dolmen.content import IFactory
 from zope.dublincore.interfaces import IDCDescriptiveProperties
 from zope.interface import Interface
 from zope.location.interfaces import ILocation
@@ -7,14 +8,12 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 from p2.datashackle.management import MF as _
 
+
 languages = SimpleVocabulary(
     [SimpleTerm(value=u'', title=_(u'Browser default')),
     SimpleTerm(value=u'de', title=_(u'German')),
     SimpleTerm(value=u'en', title=_(u'English')),
     ])
-
-class IDatashackle(Interface):
-    """A Datashackle application."""
 
 class ITranslatableDescriptiveProperties(IDCDescriptiveProperties):
     """Translatable properties for content objects."""
@@ -22,8 +21,18 @@ class ITranslatableDescriptiveProperties(IDCDescriptiveProperties):
 class IFolder(ITranslatableDescriptiveProperties):
     """A folderish, translatable content type."""
 
+class IDatashackle(IFolder):
+    """A Datashackle application."""
+
 class IListingDefault(Interface):
     """A view whose default is the folderlisting."""
+
+class IDatashackleContentFactory(IFactory):
+    addtraversal = TextLine(
+        required=True,
+        title=u"Name of the add traversal adapter",
+        default=u"add")
+
 
 class IGenericSet(IFolder):
     """A dolmen-ish content type that wraps a plan."""
@@ -102,4 +111,7 @@ class IWidgetType(Interface):
 
 class ISpanType(Interface):
     pass
+
+class ILocationProvider(Interface):
+    """Provides means to make a p2.plan instance locatable to address it by URL. """
 

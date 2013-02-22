@@ -581,7 +581,7 @@ input[name="form.widgets.title"] {
 
 .p2-form {
 	position: relative;
-    overflow: auto;
+/*    overflow: auto; */
 }
 
 .p2-form.even {

@@ -11,8 +11,10 @@ from zope.component import getUtility, getMultiAdapter
 
 from p2.datashackle.core.globals import metadata
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
-from p2.datashackle.core.interfaces import IDbUtility, ILocationProvider
+from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.management.span.embeddedform import EmbeddedForm
+from p2.datashackle.management.interfaces import ILocationProvider
+
 
 
 class QueryMode(object):
