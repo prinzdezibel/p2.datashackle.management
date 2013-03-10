@@ -64,3 +64,7 @@ class SetmanagerResources(resource.ResourceLibrary):
                                  
                                  ]
                         )
+
+class AddModelResources(resource.ResourceLibrary):
+    resource.path('plan/static')
+    resource.resource("addmodel.js", depends=[])

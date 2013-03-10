@@ -206,9 +206,6 @@ class SpanFactory(object):
                         continue # order field is autoincremented
                     val = getattr(span, col.key)
                     setattr(new, col.key, val)
-                elif col.__class__ == RelationshipProperty:
-                    val = getattr(span, col.key)
-                    setattr(new, col.key, val)
             spans[span.span_name] = new
         return spans
 

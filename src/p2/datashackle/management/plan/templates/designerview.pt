@@ -28,7 +28,7 @@
                  <script type="text/javascript" tal:content="structure string:
                      p2.setdesigner.fetch_form('${form/form_name}',
                                                '${form/form_name} [${form/form_identifier}]' ,
-                                               '${plan_url}/forms/${form/form_name}',
+                                               '${plan_url}/forms/${form/form_name}/@@designerform',
                                                '${form/form_identifier}',
                                                '${context/plan/klass}',
                                                '${form/action}',
@@ -68,7 +68,7 @@
                             <script tal:content="string:
                              (function(){
                                 var propertyform = new p2.PropertyForm(
-                                        '${application_url}/configuration/meta/p2_form/forms/form_properties', sourceId=null, '${form/form_identifier}');;
+                                        '${application_url}/configuration/meta/p2_form/forms/form_properties/@@baseform', sourceId=null, '${form/form_identifier}');;
                                  $$('#92883733 img.edit-icon').click(function(){
                                      propertyform.open(function(){
                                         p2.setdesigner.onFormpropertiesLoaded('${form/form_identifier}');;

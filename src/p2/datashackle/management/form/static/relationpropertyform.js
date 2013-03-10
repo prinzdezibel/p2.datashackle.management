@@ -3,9 +3,9 @@
 
 namespace("p2");
 
-p2.RelationPropertyform = function(propertyformSchemeHostPath, propertyFormSourceId, propertyformSetobjectId)
+p2.RelationPropertyform = function(url, propertyFormSourceId, propertyformSetobjectId)
 {
-    p2.PropertyForm.call(this, propertyformSchemeHostPath, propertyFormSourceId, propertyformSetobjectId);
+    p2.PropertyForm.call(this, url, propertyFormSourceId, propertyformSetobjectId);
 }
 
 p2.RelationPropertyform.prototype = function()

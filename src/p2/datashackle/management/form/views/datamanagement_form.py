@@ -11,7 +11,8 @@ from p2.datashackle.management.interfaces import IFormType
 from p2.datashackle.management.form.views.base import BaseForm
     
 
-class DataManagementView(BaseForm):
+#class DataManagementView(BaseForm):
+class DataManagementView(grok.View):
     template = grok.PageTemplateFile('../templates/tablerowform.pt')
     grok.name("tablerowform")
     grok.context(IFormType)

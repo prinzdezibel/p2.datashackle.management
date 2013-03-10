@@ -5,11 +5,11 @@ namespace("p2");
 
 
 
-p2.Formloader = function(schemeHostPath, mode, sourceId, setobjectId, parentEl){
+p2.Formloader = function(url, mode, sourceId, setobjectId, parentEl){
     if (mode != 'OPERATIONAL' && mode != 'DESIGNER') throw Error("Mode MUST have one of the values 'OPERATIONAL', 'DESIGNER'");
     if (sourceId === undefined) throw Error("sourceId is mandatory, although it could be null.");
     if (setobjectId === undefined) throw Error("setobjectId is mandatory, although it could be null.");
-    this.schemeHostPath = schemeHostPath;
+    this.url = url;
     this.formEl = null;
     this.mode = mode;
     this.sourceId = sourceId;
@@ -33,8 +33,7 @@ p2.Formloader.prototype.load = function(success){
     if (this.setobjectId != null){
         data.setobject_id = this.setobjectId;
     }
-    //fire off request
-    $.ajax({url: this.schemeHostPath + '/@@baseform',
+    $.ajax({url: this.url,
         data: data,
         async: true,
         type: 'POST',

@@ -15,19 +15,19 @@
                                          data-span-identifier          span_identifier;
                                          style      python:context.css;
                                          ">
-        <script type="text/javascript" tal:content="string:
-           (function(){
-               try{
-                   var info = $$.parseJSON('${info}');
-               }catch(ex){
-                   alert(ex.message);
-               }
-               var sourceId = null;
-               if ('${source_id}' != 'None') sourceId = '${source_id}';
-               $('#${id}').data('data-object', new p2.Span.Checkbox($('#${id}'), sourceId, info));
-           })();
-          ">
-        </script>
         <input class="input" type="checkbox" tal:attributes="name span_name;" />
    </div>
+   <script type="text/javascript" tal:content="string:
+      (function(){
+          try{
+              var info = $$.parseJSON('${info}');
+          }catch(ex){
+              alert(ex.message);
+          }
+          var sourceId = null;
+          if ('${source_id}' != 'None') sourceId = '${source_id}';
+          $('#${id}').data('data-object', new p2.Span.Checkbox($('#${id}'), sourceId, info));
+      })();
+     ">
+   </script>
 </tal:define>

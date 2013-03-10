@@ -28,10 +28,10 @@ p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_ident
 	};
 	
 	// Bind formreset event
-	$(this.rootEl).bind('formreset', function(ev, form_name, windowTitle, schemeHostPath, width, height){
+	$(this.rootEl).bind('formreset', function(ev, form_name, windowTitle, url, width, height){
 	    var form = ev.target;
         $(form).remove();
-        self.fetch_form(form_name, windowTitle, schemeHostPath);
+        self.fetch_form(form_name, windowTitle, url);
 	});
     
     // Bind to window size changed event 
@@ -94,18 +94,14 @@ p2.Setdesigner.stopSelection = function(event)
 }
 
 p2.Setdesigner.prototype.newForm = function(formName){
-     var scheme_host_path = p2.setdesigner.plan_url + '/forms/' + formName;
-     return p2.setdesigner.fetch_form(formName,
-                               formName,
-                               scheme_host_path
-     );
-
+     var url = p2.setdesigner.plan_url + '/forms/' + formName + '/@@baseform';
+     return p2.setdesigner.fetch_form(formName, formName, url);
 }
 
 p2.Setdesigner.prototype.fetch_form = function(
         form_name,
         windowTitle,
-        schemeHostPath,
+        url,
         dataNodeId,
         klass,
         action,
@@ -118,7 +114,7 @@ p2.Setdesigner.prototype.fetch_form = function(
                                     this.plan_url,
                                     form_name,
                                     windowTitle,
-                                    schemeHostPath,
+                                    url,
                                     operational = false,
                                     dataNodeId,
                                     klass,

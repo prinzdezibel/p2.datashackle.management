@@ -9,11 +9,13 @@
                     info            python:context.get_info();
                     span_identifier python:context.span_identifier;
                     actionurl       python:view.request.URL;
+                    form_identifier python:context.widget.form.form_identifier;
+                    aktion          python:context.aktion;
                     ">
     <div class="p2-span" tal:attributes="id                     id;
                                          data-span-type         span_type;
                                          data-span-identifier   span_identifier;
-                                         style      python:context.css;
+                                         style                  context/css;
                                          ">
         <script type="text/javascript" tal:content="string:
             (function(){
@@ -38,7 +40,10 @@
             </tal:condition>
         </tal:condition>
         <tal:condition condition="python: context.operational or no_metaedit">
-            <div style="border:1px solid #000"><input type="submit" class="p2-button" tal:attributes="value context/span_value"></div>
+            <button type="button" class="p2-button" 
+                tal:attributes="name string:${form_identifier}.action.${aktion};
+                                id string:${form_identifier}.action.${aktion}"
+                tal:content="context/span_value"></button>
         </tal:condition>
     </div>
 </tal:define>

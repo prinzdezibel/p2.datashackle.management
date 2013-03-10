@@ -3,9 +3,9 @@
 
 namespace("p2");
 
-p2.DropdownPropertyform = function(propertyformSchemeHostPath, propertyFormSourceId, propertyformSetobjectId)
+p2.DropdownPropertyform = function(url, propertyFormSourceId, propertyformSetobjectId)
 {
-    p2.PropertyForm.call(this, propertyformSchemeHostPath, propertyFormSourceId, propertyformSetobjectId);
+    p2.PropertyForm.call(this, url, propertyFormSourceId, propertyformSetobjectId);
 }
 
 p2.DropdownPropertyform.prototype = function()
@@ -36,13 +36,6 @@ p2.DropdownPropertyform.prototype.initialize = function()
     setobject = p2.datashackle.core.session.graph.queryGraphObject(setobjectid);
     if (!formsetobject) {
         alert("dropdownpropertyform.js: form node not found");
-        debugger;
-        return;
-    }
-    if (setobject) {
-        setobject.vertex.offerSetAttr('target_module', 'p2.datashackle.core.models.setobject_types');
-    }else{
-        alert("dropdownpropertyfrom.js: setobject node not found");
         debugger;
         return;
     }

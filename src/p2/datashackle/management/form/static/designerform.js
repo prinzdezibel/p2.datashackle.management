@@ -4,18 +4,18 @@
 namespace("p2");
 
 
-p2.ListlayoutForm = function(dataNodeId, parentEl){
-    var url = 'configuration/meta/p2_form/forms/manage_flow_formlayout';
-    p2.Formloader.call(this, url, 'OPERATIONAL', sourceId=null, dataNodeId, parentEl);
-};
-
-p2.ListlayoutForm.prototype = function(){
-	function instance(){};
-	instance.prototype = p2.Formloader.prototype;
-	return new instance();
-}();
-
-p2.ListlayoutForm.prototype.constructor = p2.ListlayoutForm;
+//p2.ListlayoutForm = function(dataNodeId, parentEl){
+//    var url = 'configuration/meta/p2_form/forms/manage_flow_formlayout';
+//    p2.Formloader.call(this, url, 'OPERATIONAL', sourceId=null, dataNodeId, parentEl);
+//};
+//
+//p2.ListlayoutForm.prototype = function(){
+//	function instance(){};
+//	instance.prototype = p2.Formloader.prototype;
+//	return new instance();
+//}();
+//
+//p2.ListlayoutForm.prototype.constructor = p2.ListlayoutForm;
 
 
 p2.DesignerForm = function(type,
@@ -24,7 +24,7 @@ p2.DesignerForm = function(type,
                            plan_url,
                            windowId,
                            windowTitle,
-                           schemeHostPath,
+                           url,
                            operational,
                            dataNodeId,
                            klass,
@@ -33,7 +33,6 @@ p2.DesignerForm = function(type,
                            applicationUrl
                            ){
     var self = this;
-    this.schemeHostPath = schemeHostPath;
     this.plan_identifier = plan_identifier;
     this.plan_url = plan_url;
     this.viewSave = '@@committoserver';
@@ -66,7 +65,7 @@ p2.DesignerForm = function(type,
             args = args.concat([function(){p2.DesignerForm.prototype.opened.apply(self, arguments)}]);
             p2.Formloader.prototype.open.apply(self, args)};
 
-    p2.Formloader.call(this, schemeHostPath, 'DESIGNER', sourceId=null, dataNodeId);
+    p2.Formloader.call(this, url, 'DESIGNER', sourceId=null, dataNodeId);
     p2.Window.call(this, parentEl, windowId, openFn, defaults);
   
 /* Property form for form windows *//* 

@@ -16,7 +16,7 @@ from p2.datashackle.management.interfaces import IFormType
  
 
 class ObjectPicker(BaseForm, RelationMixin):
-
+    grok.name('objectpicker')
     grok.context(IFormType)
     template = None
 

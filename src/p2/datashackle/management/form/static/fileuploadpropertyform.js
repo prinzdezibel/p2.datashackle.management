@@ -3,8 +3,8 @@
 
 namespace("p2");
 
-p2.FileuploadPropertyform = function(propertyformSchemeHostPath, propertyFormSourceId, propertyformSetobjectId) {
-    p2.PropertyForm.call(this, propertyformSchemeHostPath, propertyFormSourceId, propertyformSetobjectId);
+p2.FileuploadPropertyform = function(url, propertyFormSourceId, propertyformSetobjectId) {
+    p2.PropertyForm.call(this, url, propertyFormSourceId, propertyformSetobjectId);
 }
 
 p2.FileuploadPropertyform.prototype = function() {
@@ -46,8 +46,7 @@ p2.FileuploadPropertyform.prototype.initialize = function() {
         alert("fileuploadpropertyform.js: form node not found");return;
     }
     if (setobject) {
-        setobject.vertex.setAttr('source_classname', formsetobject.getAttr("so_type"));
-        setobject.vertex.setAttr('target_classname', 'Media');
+        setobject.vertex.setAttr('klass', 'Media');
     }else{
         alert("fileuploadpropertyform.js: setobject node not found...");
     }

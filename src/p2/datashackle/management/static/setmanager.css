@@ -544,26 +544,6 @@ dl.comments-listing dd {
 	min-height: 70px;
 }
 
-.snappy-video-player {
-	padding: 1em;
-}
-
-.tagger {
-	float: right;
-	width: 17em;
-}
-
-.tagger fieldset {
-	background: url("grey-gradient2.png") repeat-x scroll 0 0 transparent;
-	border: 0 none;
-	margin: 2em 1em 0 0;
-}
-
-.tagger fieldset legend {
-	color: #008CBD;
-	font-size: 110%;
-	font-weight: bold;
-}
 
 input[name="form.widgets.title"] {
 	font-size: 120%;
@@ -612,23 +592,19 @@ input[name="form.widgets.title"] {
     top: 0px;
 }
 
-.p2-span[data-span-type='alphanumeric'] {
+.p2-span[data-span-type='Alphanumeric'] {
 }
 
-.p2-span[data-span-type='relation'][data-span-operational='True'] {
-    /*border: 1px dashed gray;*/
-    overflow: auto;
-}
 
-.p2-span[data-span-type='label'] {
+.p2-span[data-span-type='Label'] {
     height: 15px;
 }
 
-.p2-span[data-span-type='checkbox']{
+.p2-span[data-span-type='Checkbox']{
     width: 15px;
 }
 
-.p2-span[data-span-type='fileupload'] .cabinet {
+.p2-span[data-span-type='Fileupload'] .cabinet {
     width: 71px;
     height:26px;
     left:100%;
@@ -639,7 +615,7 @@ input[name="form.widgets.title"] {
     overflow:hidden;
 }
 
-.p2-span[data-span-type='fileupload'] .cabinet input[type="file"] {
+.p2-span[data-span-type='Fileupload'] .cabinet input[type="file"] {
     position:relative;
     width:auto;
     opacity:0;
@@ -734,9 +710,6 @@ input[name="form.widgets.title"] {
 	clear: both;
 }
 
-textarea {
-	
-}
 
 #designerpage {
 	position: relative;
@@ -1092,9 +1065,6 @@ textarea {
     height:100%;
     float:left;
     padding-right:15px;
-}
-.p2-span[data-span-type="relation"] .container {
-    padding-right:0px;
 }
 
 .container .thumbnail {

@@ -227,10 +227,6 @@ class WidgetFactory(object):
                     if col.key == 'spans':
                         spans = SpanFactory.copy_spans(widget.id)
                         setattr(new, col.key, spans)
-                    else:
-                        pass
-                        #val = getattr(widget, col.key)
-                        #setattr(new, col.key, val)
             widgets[new.id] = new
         return widgets
 

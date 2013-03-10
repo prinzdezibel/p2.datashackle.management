@@ -3,10 +3,9 @@
 
 namespace("p2");
 
-p2.PropertyForm = function(scheme_host_path, sourceId, setobjectId){
+p2.PropertyForm = function(url, sourceId, setobjectId){
     // if (!setobjectId) throw new Error("PropertyForm constructor: setobjectId is obligatory!");
 	var self = this;
-    this.scheme_host_path = scheme_host_path;
 	this.rootEl = $('<div></div>');
 	this.isLoaded = false;
 	this.setobjectId = setobjectId;
@@ -35,7 +34,7 @@ p2.PropertyForm = function(scheme_host_path, sourceId, setobjectId){
 		}
 	};
 	this.dialog = $(this.rootEl).dialog(options);
-    p2.Formloader.call(this, this.scheme_host_path, 'OPERATIONAL', sourceId, setobjectId);
+    p2.Formloader.call(this, url, 'OPERATIONAL', sourceId, setobjectId);
 
 	$(this.rootEl).bind('P2_CLOSE', function(e){
         self.close();

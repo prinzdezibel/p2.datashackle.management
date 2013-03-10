@@ -11,7 +11,8 @@ from p2.datashackle.management.interfaces import IFormType
 from p2.datashackle.management.form.views.base import BaseForm
     
 
-class ChangeableForm(BaseForm):
+#class ChangeableForm(BaseForm):
+class ChangeableForm(grok.View):
     template = grok.PageTemplateFile('../templates/changeableform.pt')
     grok.name("changeableform")
     grok.context(IFormType)
