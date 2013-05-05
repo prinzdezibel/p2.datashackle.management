@@ -9,7 +9,17 @@
 <!-- Echo form content -->
 <td>
     <div class="outerstaticframe" tal:attributes="style string:padding:2px;;margin:3px;id string:formfilterbox_${setobject_id}">
-        <tal:replace replace="structure python: view.call_form()"></tal:replace>
+        <div tal:attributes="id string:changeableform_${setobject_id}">
+            <tal:replace replace="structure provider:form" ></tal:replace>
+            <!-- Initialize changeableform obj -->
+            <script type="text/javascript" tal:content="string:
+                (function(){
+                    changeableformobj_${setobject_id} = new p2.ChangeableForm('${setobject_id}');
+                    changeableformobj_${setobject_id}.initialize();
+                })();
+                ">
+            </script>
+        </div>
     </div>
     <script type="text/javascript">p2.datamanagement.displayedresultscount += 1;</script>
 </td>

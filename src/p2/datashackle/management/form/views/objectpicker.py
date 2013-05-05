@@ -11,11 +11,11 @@ from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.management.relation import RelationMixin, QueryMode
 from p2.datashackle.management.scopedmarkup import ScopedMarkup
 from p2.datashackle.core.models.identity import generate_random_identifier
-from p2.datashackle.management.form.views.base import BaseForm
+from p2.datashackle.management.form.views.base import Form
 from p2.datashackle.management.interfaces import IFormType
  
 
-class ObjectPicker(BaseForm, RelationMixin):
+class ObjectPicker(Form, RelationMixin):
     grok.name('objectpicker')
     grok.context(IFormType)
     template = None

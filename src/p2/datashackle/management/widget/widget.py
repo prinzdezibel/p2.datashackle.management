@@ -42,7 +42,6 @@ class WidgetType(SetobjectType):
         self.css = ''
         self.tab_order = 0
         self.widget_type = self.__class__.__name__.lower()
-        self.no_metaedit = False
         super(WidgetType, self).__init__()
 
     @orm.reconstructor 

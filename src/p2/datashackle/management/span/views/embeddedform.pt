@@ -39,35 +39,6 @@
                 }
             ">
             </script>
-            <tal:condition condition="python:context.characteristic.id == 'ADJACENCY_LIST'">
-                <div tal:attributes="id string:tree_${context/span_identifier}"></div>
-                <script type="text/javascript" tal:content="string:
-                $$(function () {
-                        $$.jstree.THEMES_DIR = '@@/p2.javascript/jquery_plugins/jsTree/themes/';
-                        $$('#tree_${context/span_identifier}').jstree({
-                        'html': {
-                            'core': {'html_titles': true},
-                            'ajax': {
-                                'url': '${view/treequery_url}',
-                                'data': function (n)    {
-                                    if (n == -1){
-                                        return;
-                                    }else{ 
-                                        // retrieve the node's payload id
-                                        n = $$(n).children('a').children('.p2-form').attr('data-node-id');
-                                        return {'node_id': n};
-                                    }
-                                 }
-                            }
-            		    },
-                        'plugins': ['themes', 'html', 'core']
-                    }); 
-
-                });
-                ">
-                </script>
-            </tal:condition>
-            <tal:condition condition="python:context.characteristic.id == 'LIST'">
                 <tal:condition condition="python: view.count == 0">
                     <p>No objects.</p>
                 </tal:condition>
@@ -92,7 +63,6 @@
                     collection
                 </a>
                 </tal:condition>
-            </tal:condition>
         </tal:condition>
         <tal:condition condition="python:not context.operational">
             <div class="container" id="container">

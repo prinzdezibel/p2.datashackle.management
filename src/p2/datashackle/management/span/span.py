@@ -29,6 +29,8 @@ class SpanType(SetobjectType):
     grok.implements(ISpanType, ILocation)
     
     label_width = 95
+    operational = False # Designer mode or user mode?
+    action = None
  
     def __init__(self, span_name=None):
         super(SpanType, self).__init__()
@@ -40,7 +42,6 @@ class SpanType(SetobjectType):
      
     def common_init(self):
         super(SpanType, self).common_init()
-        self.operational = False # Designer mode or user mode?
         self.op_setobject_id = None
         self.op_setobject_type = None
     

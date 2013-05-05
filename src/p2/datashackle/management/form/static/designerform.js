@@ -35,7 +35,6 @@ p2.DesignerForm = function(type,
     var self = this;
     this.plan_identifier = plan_identifier;
     this.plan_url = plan_url;
-    this.viewSave = '@@committoserver';
     this.type = type;
     this.windowTitle = windowTitle;
     this.operational = operational;
@@ -49,7 +48,6 @@ p2.DesignerForm = function(type,
     var defaults = {windowTitle: windowTitle,
                     windowId: windowId,
                     resizeable: true,
-                    resizeCallback: function(){self.setDirty();$(document).trigger('global-mark-dirty');},
                     maximizeButton: false,
                     closeButton : false,
                     minimizeButton: false,
@@ -100,12 +98,6 @@ p2.DesignerForm.prototype.opened = function(element){
 }
 
 
-p2.DesignerForm.prototype.onSave = function(){
-    p2.datashackle.core.session.commitToServer(this.plan_url + '/' + this.viewSave, function(){self.reloadGraph();});
-}
 
-p2.DesignerForm.prototype.setDirty = function(){
-    $(this.formEl).attr('data-action', 'save');
-}
 
 applyInheritance(p2.DesignerForm, p2.Window, p2.Formloader);

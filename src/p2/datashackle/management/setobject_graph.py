@@ -24,7 +24,6 @@ from p2.datashackle.management.span.span import SpanType
 
 class SetobjectGraph(object):
     
-    #def __init__(self, plan_identifier, request, raw_xml):
     def __init__(self, request, raw_xml):
         #self.plan_identifier = plan_identifier
         self.session = getUtility(IDbUtility).Session()
@@ -51,7 +50,6 @@ class SetobjectGraph(object):
 
     def _each_collection(self, node, setobject):
         if node.tag == 'obj':
-            module = node.get('module')
             typename = node.get('type')
             klass = setobject_type_registry.lookup(typename)
             objid = node.get('objid')
@@ -63,7 +61,7 @@ class SetobjectGraph(object):
         if node.tag == 'obj':
             self.process_collection_ids(node, setobject)
 
-    def link(self, collection_id, module, classname, setobject_id, linked):
+    def link(self, collection_id, classname, setobject_id, linked):
         self.mode = 'link'
         def callback(coll_node):
             if coll_node.get('linkage_id') == collection_id:
@@ -83,7 +81,6 @@ class SetobjectGraph(object):
                     obj.set('action', 'save')
                     obj.set('objid', setobject_id)
                     obj.set('linked', linked)
-                    obj.set('module', module)
                     obj.set('type', classname)
                     coll_node.append(obj)
         try:
@@ -138,7 +135,6 @@ class SetobjectGraph(object):
     
     def process_object(self, node, parent_setobject):
         action = node.get('action')
-        module = node.get('module')
         typename = node.get('type')
         klass = setobject_type_registry.lookup(typename)
         objid = node.get('objid')

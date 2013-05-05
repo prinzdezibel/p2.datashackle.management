@@ -1,0 +1,6 @@
+<tal:define define="form_id context/form_identifier">
+    <tal:replace replace="structure provider:form" ></tal:replace>
+    <button class="p2-button" style="position: absolute; bottom: -30px;" type="button"
+        tal:attributes="id string:${form_id}.action.save;
+                        name string:${form_id}.action.save">Save</button>
+</tal:define>

@@ -57,7 +57,7 @@ class DesignerView(Page):
         view = getMultiAdapter(
             (form, self.request),
             context=IFormType,
-            name='baseform'
+            name='bareform'
             )
         # ATTENTION: Displaying the archetype form does not mean it is in archetype mode.
         # That mode is for ajax requests when dropping widget into designer form.

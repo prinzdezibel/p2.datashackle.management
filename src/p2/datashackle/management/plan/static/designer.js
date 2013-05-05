@@ -123,6 +123,46 @@ p2.Setdesigner.prototype.fetch_form = function(
                                     this.applicationUrl
                                     );
 	this._append_window(form_name, form);
+   
+    $('#' + $(form.formEl).attr('data-form-identifier') + '\\.action\\.save').click(function(){
+       debugger; 
+       var form = $(this).parents('.p2-form');
+       var nodeId = $(form).attr('data-node-id');
+       var sess = p2.datashackle.core.session;
+       var xml = sess.graph.toXml(nodeId);
+       //var form = $('<form style="display: none"' +
+       //             ' action="' + url + '"' +
+       //             ' method="POST">');
+       //var textarea = $('<textarea name="data"/>')
+       //textarea.text(data);
+       //form.append(textarea);
+       //var submit = $('<input type="text" name="' + $(this).attr('name') +
+       //                '" value="' + $(this).text() + '"/>');
+       //form.append(submit);
+       //$('body').append(form);
+       //form.submit(); 
+       var data = {};
+       data['data'] = xml;
+       data[$(this).attr('name')] = $(this).text();
+               $.ajax({url: url,
+                       async: false,
+                       dataType: "json",
+                       type: "POST",
+                       data: data,
+                       success: function(data, textStatus, xmlHttpRequest){
+                           if (data.error !== undefined){
+                               errorshown = true;
+                               alert(data.error);
+                           }else{
+                               success = true;
+                           }
+                       },
+                       error: function(xhr, text, error){
+                           alert(error);
+                       }
+               });
+    });
+
 	return form;
 }
 
@@ -242,11 +282,7 @@ p2.Setdesigner.prototype.reloadPage = function() {
     window.location.replace(window.location); //reload
 }
 
-p2.Setdesigner.prototype.save = function() {
-    if (p2.datashackle.core.session.commitToServer.apply(p2.datashackle.core.session, [this.plan_url + "/@@committoserver"]) == true) {
-        this.reloadPage();
-    }
-}
+
 p2.Setdesigner.prototype.revert = function() {
     this.reloadPage();
 }

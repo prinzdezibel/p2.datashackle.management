@@ -46,8 +46,7 @@ class Plan(Model):
         form = FormTypeFactory.copy(plan_name='p2_archetype', form_name='default_form')
         self.forms['default_form'] = form        
         self.default_form = form
-
-     
+        
     @orm.reconstructor          
     def reconstruct(self):
         util = getUtility(ILocationProvider)

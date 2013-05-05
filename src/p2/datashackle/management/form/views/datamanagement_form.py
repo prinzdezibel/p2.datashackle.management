@@ -8,23 +8,16 @@ import grok
 from zope.component import queryMultiAdapter
 
 from p2.datashackle.management.interfaces import IFormType
-from p2.datashackle.management.form.views.base import BaseForm
+from p2.datashackle.management.form.views.base import Form
+
+from p2.datashackle.management.form.views.base import FormTemplateFile
     
-
-#class DataManagementView(BaseForm):
-class DataManagementView(grok.View):
-    template = grok.PageTemplateFile('../templates/tablerowform.pt')
+class DataManagementView(Form):
     grok.name("tablerowform")
-    grok.context(IFormType)
 
-    def call_form(self):
-        self.request.form['source_id'] = self.source_id
-        form = queryMultiAdapter((self.context, self.request), name='changeableform')
-        self.request.form['mode'] = self.mode
-        self.request.form['setobject_id'] = self.context.op_setobject_id
-        self.request.form['alternation'] = None
-        form.source_id = self.request.form['source_id']
-        return form()
+    def render(self):
+        template = FormTemplateFile('templates/tablerowform.pt')
+        return template.render(self)
 
     def update(self):
         super(DataManagementView, self).update()
@@ -33,4 +26,10 @@ class DataManagementView(grok.View):
             self.runtimecreated = True
         else:
             self.runtimecreated = False
+       
+        #import pdb; pdb.set_trace() 
+        #self.request.form['changeableform'] = True
+        #self.request.form['mode'] = self.mode
+        #self.request.form['setobject_id'] = self.context.op_setobject_id
+        #self.request.form['alternation'] = None
 

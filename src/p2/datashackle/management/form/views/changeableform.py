@@ -3,21 +3,20 @@
 # Author:  Jonas Thiem <jonas.thiem%40projekt-und-partner.com>
 
 
-import grok
-
-from zope.component import queryMultiAdapter
-
-from p2.datashackle.management.interfaces import IFormType
-from p2.datashackle.management.form.views.base import BaseForm
+#import grok
+#
+#from zope.component import queryMultiAdapter
+#
+#from p2.datashackle.management.interfaces import IFormType
+#from p2.datashackle.management.form.views.base import Form
     
+#grok.templatedir('templates') 
+#
+#class ChangeableForm(Form):
+#    grok.name("changeableform")
+#    grok.template('changeableform')
+#
+#    def update(self):
+#        self.request.form['changeableform'] = True
+#        super(ChangeableForm, self).update()
 
-#class ChangeableForm(BaseForm):
-class ChangeableForm(grok.View):
-    template = grok.PageTemplateFile('../templates/changeableform.pt')
-    grok.name("changeableform")
-    grok.context(IFormType)
-
-    def call_form(self):
-        form = queryMultiAdapter((self.context, self.request), name='baseform')
-        self.request.form['changeableform'] = True
-        return form()

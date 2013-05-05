@@ -7,6 +7,7 @@ $(document).ready(function(){
         var vertex = p2.datashackle.core.session.graph.queryGraphObject(nodeId);
         var planId = vertex.vertex.getAttr('plan_identifier');
         var tableId = vertex.vertex.getAttr('table');
+        var klass = vertex.vertex.getAttr('klass');
         var form = $('<form style="display: none"' +
                      ' action="' + window.location.href + '"' +
                      ' method="POST">');
@@ -22,6 +23,9 @@ $(document).ready(function(){
         var tableNode = $('<input type="text" name="table_identifier" value="' +
                         tableId + '" />');
         form.append(tableNode);
+        var klassNode = $('<input type="text" name="klass" value="' +
+                        klass + '" />');
+        form.append(klassNode);
         $('body').append(form);
         form.submit(); 
     });

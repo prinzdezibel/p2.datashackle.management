@@ -130,7 +130,7 @@ p2.Span.prototype.getDataID = function(el){
 
 p2.Span.prototype.registerDataNode = function(){
     var inputEl = $(this.rootEl).find('.input');
-    if (this.info.span_type == 'checkbox'){
+    if (this.info.span_type == 'Checkbox'){
         var initValue = $(inputEl).is(':checked') ? 1 : null; // Little hack to make the checkbox datatype work with
                                                               // String and Boolean database fields. In designer mode
                                                               // the checkbox state is saved as string in "span_value".

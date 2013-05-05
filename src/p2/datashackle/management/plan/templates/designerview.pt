@@ -3,10 +3,6 @@
     <div id="designerpage">
         
         <div id="view_area">
-            <div id="header">
-                <input id="globalsavebutton" type="submit" value="Save changes" onClick="javascript:p2.setdesigner.save.apply(p2.setdesigner, [])" disabled>
-                <input id="globalrevertbutton" type="submit" value="Revert changes" onClick="javascript:p2.setdesigner.revert.apply(p2.setdesigner, [])" disabled>
-            </div>
             <div tal:replace="structure provider:windowmanager">
                 Windowmanager HTML goes here.
             </div>

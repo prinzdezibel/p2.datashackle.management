@@ -56,15 +56,9 @@ class RelationMixin(object):
         query = query.add_column(
             literal_column("'false'").label('linked')
         )
-        if self.relation.characteristic.id == 'ADJACENCY_LIST':
-            # Initially, only the root node(s) of embedded form is displayed.
-            # Children are loaded on demand via Ajax.
-            # Find root node(s) of tree
-            linkage_id = self.relation.adjacency_linkage
-            from p2.datashackle.core.models.linkage import Linkage
-            linkage = session.query(Linkage).get(linkage_id)
-            query = query.filter(getattr(target_type, linkage.relation.foreignkeycol) == None)
-        if self.relation.filter_clause:
+        if hasattr(self.relation, 'filter_clause') and \
+                self.relation.filter_clause != None and \
+                len(self.relation.filter_clause) > 0:
             query = query.filter(self.relation.filter_clause)
         return query
 
@@ -235,7 +229,7 @@ class RelationMixin(object):
                 form_view = getMultiAdapter((form, self.request), name='changeableform')
         except KeyError:
             if form_view == None:
-                form_view = getMultiAdapter((form, self.request), name='baseform')
+                form_view = getMultiAdapter((form, self.request), name='bareform')
         self.request.form['setobject_id'] = setobject_id
         self.request.form['mode'] = 'OPERATIONAL'
         self.request.form['source_id'] = source_id

@@ -3,19 +3,20 @@
 
 namespace("p2.Widget");
 
-p2.Widget = function(element, operational, propertyform, sourceId, type, dataNodeId, action, archetype, no_metaedit){
+p2.Widget = function(element, propertyform, sourceId, type, dataNodeId, action, archetype, collection_id){
     var self = this;
     this.rootEl = element;
-    this.operational = operational;
     this.sourceId = sourceId;
     this.type = type;
     this.dataNodeId = dataNodeId;
     this.action = action;
 
-    if (!this.operational && archetype != "True"){
+    if (archetype != "True"){
        var dataNode = p2.datashackle.core.session.registerDataNode(this.type, this.dataNodeId, this.action);
        var coll = p2.datashackle.core.session.graph.lookupGraphObject(this.sourceId).vertex;
        coll.link(this.dataNodeId);
+        
+       p2.datashackle.core.session.registerLinkageNode(dataNodeId, collection_id, 'spans', isMultiSelectable=true);
     }
 
     this.widget_type = $(this.rootEl).attr('data-widget-type');
@@ -27,19 +28,16 @@ p2.Widget = function(element, operational, propertyform, sourceId, type, dataNod
         this.doDesignerEnhancements();
     }
   
-    if (!no_metaedit){ 
-        // append propertyform and bind it to edit button
-        $(this.rootEl).append(propertyform);
-        this.bindPropertyform(propertyform);
-    }
-
+    $(this.rootEl).append(propertyform);
+    this.bindPropertyform(propertyform);
+    
     // Bind width change event
     $(this.rootEl).bind('MSG_SIZE_CHANGE', function(ev, width, height){
         self.calcWidth();
         return true;
     });
     
-    this.bindDeleteDialog();    
+    this.bindDeleteDialog();
 }
 
 p2.Widget.prototype.calcWidth = function(){
@@ -215,10 +213,8 @@ p2.Widget.prototype.adaptCssValue = function(element){
     this.calcWidth();
     var sourceId = $(element).attr('data-source-id');
     var style= $(element).attr('style');
-    if (!this.operational){
-        var setobject = p2.datashackle.core.session.registerDataNode(this.type, this.dataNodeId, this.action);
-        setobject.setAttr('css', style);
-    }
+    var setobject = p2.datashackle.core.session.registerDataNode(this.type, this.dataNodeId, this.action);
+    setobject.setAttr('css', style);
 }
 
 

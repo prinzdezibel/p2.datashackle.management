@@ -35,7 +35,7 @@ p2.Formloader.prototype.load = function(success){
     }
     $.ajax({url: this.url,
         data: data,
-        async: true,
+        async: false,
         type: 'POST',
         timeout: 20000, //20 seconds
         success: function(contentHtml, textStatus, xhr){

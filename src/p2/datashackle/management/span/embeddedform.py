@@ -10,6 +10,7 @@ from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setob
 from p2.datashackle.core.app.exceptions import UserException
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models.setobject_types import SetobjectType
+from p2.datashackle.core.models.cardinality import Cardinality
 from p2.datashackle.core.models.linkage import Linkage
 from zope.component import getUtility
 
@@ -24,15 +25,20 @@ class EmbeddedForm(PolymorphicSpanType):
     width = 50
  
     def __init__(self, span_name=None):
-        self.linkage = Linkage()
         session = Session()
-        so = setobject_type_registry.lookup_by_table('p2_embform_characteristic')
-        self.characteristic = session.query(so).get('LIST')
+        self.linkage = Linkage()
+        self.linkage.relation.cardinality = session.query(Cardinality). \
+            filter(Cardinality.id == 'NONE').one()
         self.form_name = 'default_form'
         self.css = "left:" + str(self.label_width) + "px; width:" + \
             str(self.width) + "px; height:" + str(self.height) + "px;"
         super(EmbeddedForm, self).__init__(span_name)
-   
+
+    @orm.reconstructor          
+    def reconstruct(self):
+        if not self.linkage:
+            # archetype embeddedform widget has no linkage object
+            self.linkage = Linkage()   
 
     def post_order_traverse(self, mode):
         if mode == 'save':
@@ -52,14 +58,8 @@ class EmbeddedForm(PolymorphicSpanType):
             self.linkage.relation.source_table = source_type.get_table_name() 
             self.linkage.relation.target_table = target_type.get_table_name()            
 
-            if self.characteristic.id == 'ADJACENCY_LIST':
-                # Ensure given linkage id that identifies which relation
-                # is used to represent the tree structure
-                if not self.adjacency_linkage:
-                    raise UserException("Missing value. For tree types the linkage id is mandatory.")
-
             if self.linkage.relation.cardinality.id != 'NONE':
-                self.linkage.relation.create_relation(self.characteristic.id)
+                self.linkage.relation.create_relation()
 
     def _get_info(self):
         info = {}
