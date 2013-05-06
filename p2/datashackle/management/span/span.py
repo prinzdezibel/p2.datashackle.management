@@ -176,12 +176,7 @@ class Action(PolymorphicSpanType):
 
     def _get_info(self):
         info = {}
-        info['method'] = self.method
-        info['ajax'] = self.ajax
         info['aktion'] = self.aktion
-        info['submit'] = self.submit
-        info['msg_close'] = self.msg_close
-        info['msg_reset'] = self.msg_reset
         return info
 
 

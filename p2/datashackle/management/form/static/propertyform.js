@@ -4,13 +4,11 @@
 namespace("p2");
 
 p2.PropertyForm = function(url, sourceId, setobjectId){
-    // if (!setobjectId) throw new Error("PropertyForm constructor: setobjectId is obligatory!");
 	var self = this;
 	this.rootEl = $('<div></div>');
 	this.isLoaded = false;
 	this.setobjectId = setobjectId;
 	this.sourceId = sourceId;
-    console.log('setobjectId' + setobjectId); 
     var options = {
 		autoOpen: false,
         closeOnEscape: true, // works together with close option, which resets form
@@ -36,14 +34,7 @@ p2.PropertyForm = function(url, sourceId, setobjectId){
 	this.dialog = $(this.rootEl).dialog(options);
     p2.Formloader.call(this, url, 'OPERATIONAL', sourceId, setobjectId);
 
-	$(this.rootEl).bind('P2_CLOSE', function(e){
-        self.close();
-        return true;
-	});
-    $(this.rootEl).bind('P2_RESET', function(e){
-        self.cancel();
-        return true;
-    });
+
 }
 
 p2.PropertyForm.prototype = function(){
@@ -57,8 +48,13 @@ p2.PropertyForm.prototype.constructor = p2.Formloader;
 
 p2.PropertyForm.prototype.open = function(success){
     var self = this;
-    var _success = function(){
+    var _success = function(rootEl){
         self.isLoaded = true;
+        
+        $(rootEl).click(function(){
+            $(self.dialog).dialog('close');
+        });
+
         if (success) success(arguments);
     }
     // If dialog is already there, we don't load it again from database

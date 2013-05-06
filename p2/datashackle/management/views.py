@@ -95,32 +95,32 @@ class BaseView(grok.View):
 #            graph.update_collections()
         
 
-class JsonView(grok.View):
-    grok.baseclass() 
-    
-    def __call__(self):
-        self.response.setHeader('Content-Type', 'application/json')
-       
-
-        try:
-            mapply(self.update, (), self.request)
-        except SetobjectGraphException as e:
-            return json.dumps({'error': {'message': e.reason,
-                                         'id': e.setobjectid,
-                                         'title': "Error during submit"}})
-        
-        except UserException as e:
-            return json.dumps({'error': {'message':str(e),
-                                         'title': "Error"}})
-                                         
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-
-        return mapply(self.render, (), self.request) 
+#class JsonView(grok.View):
+#    grok.baseclass() 
+#    
+#    def __call__(self):
+#        self.response.setHeader('Content-Type', 'application/json')
+#       
+#
+#        try:
+#            mapply(self.update, (), self.request)
+#        except SetobjectGraphException as e:
+#            return json.dumps({'error': {'message': e.reason,
+#                                         'id': e.setobjectid,
+#                                         'title': "Error during submit"}})
+#        
+#        except UserException as e:
+#            return json.dumps({'error': {'message':str(e),
+#                                         'title': "Error"}})
+#                                         
+#        if self.request.response.getStatus() in (302, 303):
+#            # A redirect was triggered somewhere in update().  Don't
+#            # continue rendering the template or doing anything else.
+#            return
+#
+#        template = getattr(self, 'template', None)
+#        if template is not None:
+#            return self._render_template()
+#
+#        return mapply(self.render, (), self.request) 
 

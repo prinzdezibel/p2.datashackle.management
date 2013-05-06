@@ -5,6 +5,7 @@ namespace("p2");
 
 p2.Datamanagement = function(planurl, planidentifier, parentid)
 {
+    var self = this;
     this.planidentifier = planidentifier;
     this.plan_url = planurl;
     this.filtertimeouthandle = null;
@@ -13,6 +14,32 @@ p2.Datamanagement = function(planurl, planidentifier, parentid)
     this.page = 1;
     this.displayedresultscount = 0;
     this.datarowsettings = new p2.Datamanagement.Datarowsettings();
+    
+    $('#' + this.planidentifier + '\\.action\\.save').click(function(){
+       var sess = p2.datashackle.core.session;
+       var xml = sess.graph.toXml(null);
+       var data = {};
+       data['data'] = xml;
+       data[$(this).attr('name')] = $(this).text();
+       $.ajax({url: self.plan_url,
+               async: false,
+               dataType: "json",
+               type: "POST",
+               data: data,
+               success: function(data, textStatus, xmlHttpRequest){
+                   if (data.error !== undefined){
+                       errorshown = true;
+                       alert(data.error);
+                   }else{
+                       success = true;
+                       p2.datashackle.core.session.graph.init(); //this will wipe out the graph
+                   }
+               },
+               error: function(xhr, text, error){
+                   alert(error);
+               }
+       });
+    });
 }
 p2.Datamanagement.prototype._ActivateFilterCallbackComplete = function(XMLHttpRequest, textStatus)
 {
@@ -139,8 +166,6 @@ p2.Datamanagement.prototype.FormMarkChanged = function(dataid)
     //colour the form background
     $('#changeableform_' + dataid).addClass('resultstable_marked');
     //enable the global save button just in case it's not done yet
-    $('#globalsavebutton').removeAttr('disabled');
-    $('#globalrevertbutton').removeAttr('disabled');
     //set setobject action to save
     if (node.vertex.action == "ignore") {
         node.vertex.action = "save";
@@ -181,38 +206,10 @@ p2.Datamanagement.prototype.FormMarkRuntimecreated = function(dataid, domparenti
     settings.runtimecreated_parentid = domparentid;
     //add coloured form background (since runtime created means not persisted yet)
     $('#formfilterbox_' + dataid).addClass('resultstable_marked');
-    //enable the global save button just in case it's not done yet
-    $('#globalsavebutton').removeAttr('disabled');
     //set setobject action to save
     p2.datashackle.core.session.graph.queryGraphObject(dataid).vertex.action = "new";
 }
 
-p2.Datamanagement.prototype.save = function()
-{
-    if (!p2.datashackle.core.session.commitToServer(this.plan_url + "/@@committoserver")) {return;}
-    //then emerge saved event
-    $(document).trigger('form-global-save');
-    //and then disable save and revert buttons again
-    $('#globalsavebutton').attr('disabled', 'disabled');
-    $('#globalrevertbutton').attr('disabled', 'disabled');
-    //throw away our setobject graph!
-    p2.datashackle.core.session.graph.init(); //this will wipe out the graph
-    //and now refetch the view
-    this.ActivateFilter();
-}
-
-p2.Datamanagement.prototype.revert = function()
-{
-    //emerge revert event
-    $(document).trigger('form-global-revert');
-    //and then disable save and revert button sagain
-    $('#globalsavebutton').attr('disabled', 'disabled');
-    $('#globalrevertbutton').attr('disabled', 'disabled');
-    //throw away our setobject graph!
-    p2.datashackle.core.session.graph.init(); //this will wipe out the graph
-    //and now refetch the view
-    this.ActivateFilter();
-}
 
 p2.Datamanagement.prototype.DeleteClick = function(dataid)
 {
@@ -240,8 +237,6 @@ p2.Datamanagement.prototype.DeleteClick = function(dataid)
         $('tr[id="tablerowform_' + dataid + '"]').addClass('tobedeleted');
         $('tr[id="tablerowform_' + dataid + '"] .p2-form input').attr('disabled', 'disabled');
         //enable the global save button just in case it's not done yet
-        $('#globalsavebutton').removeAttr('disabled');
-        $('#globalrevertbutton').removeAttr('disabled');
         settings.dirty = false;
     }
 }

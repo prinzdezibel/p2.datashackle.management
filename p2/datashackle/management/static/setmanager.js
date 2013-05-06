@@ -92,35 +92,6 @@ p2.datashackle.core.Session.prototype.registerLinkageNode = function(sourceId, l
     return adjlist.vertex;
 }
 
-p2.datashackle.core.Session.prototype.commitToServer = function(saveView){
-    var self = this;
-    var xml = this.graph.toXml(null);
-    var success = false;
-    var errorshown = false;
-    alert(xml);
-    $.ajax({url: saveView,
-        async: false,
-        dataType: "json",
-        type: "POST",
-        data: {'graph': xml},
-        success: function(data, textStatus, xmlHttpRequest){
-            if (data.error !== undefined){
-                errorshown = true;
-                self.displayOverlay(350, 250, data.error);
-            }else{
-                success = true;
-            }
-        }
-    });
-    if (errorshown == false && success == false) {
-        var error = new Object();
-        error.title = "Cannot save";
-        error.message = "Save failed due to error during network request";
-        self.displayOverlay(350, 250, error);
-    }
-    return success;
-}
-
 
 p2.datashackle.core.Session.prototype._xhrComplete = function(result){
     xmlHttpRequest = result[0];

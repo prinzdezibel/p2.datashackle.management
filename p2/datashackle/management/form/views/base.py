@@ -147,10 +147,7 @@ class BareForm(Form):
 class LayoutAwareForm(ZeamLayoutAwareForm, Form):
     grok.implements(IPage)
     grok.name('layoutawareform')
-
     layout = None
-
-    template = FormTemplateFile('templates/bareform.pt')
 
     def default_namespace(self):
         namespace = super(LayoutAwareForm, self).default_namespace()
@@ -158,7 +155,8 @@ class LayoutAwareForm(ZeamLayoutAwareForm, Form):
         return namespace
 
     def content(self):
-        return self.template.render(self)
+        template = FormTemplateFile('templates/bareform.pt')
+        return template.render(self)
 
     def __call__(self):
         mapply(self.update, (), self.request)

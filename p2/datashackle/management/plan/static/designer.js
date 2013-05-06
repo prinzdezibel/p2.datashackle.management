@@ -43,7 +43,6 @@ p2.Setdesigner = function(applicationUrl, plan_url, plan_identifier, table_ident
 	var availableWidth = $('#dolmen-site').width() - $('#toolbox').width();
 	
 	var self = this;
-	$(document).bind('global-mark-dirty', function (e) {self.changed.apply(self, []);});
 }
 
 p2.Setdesigner.prototype = function(){
@@ -287,10 +286,6 @@ p2.Setdesigner.prototype.revert = function() {
     this.reloadPage();
 }
 
-p2.Setdesigner.prototype.changed = function() {
-    $('#globalsavebutton').removeAttr('disabled');
-    $('#globalrevertbutton').removeAttr('disabled');
-}
 
 
 p2.Setdesigner.prototype.onFormpropertiesLoaded = function(formId){

@@ -1,14 +1,10 @@
-<script type="text/javascript" tal:content="string:
-        p2.datamanagement = new p2.Datamanagement(plan_url='${context/plan/@@absolute_url}',
-                                            planidentifier='${context/plan/plan_identifier}',
-                                            parentid='datamanagementfiltertable');">
-</script>
 <div id="edit-data">
     <div class="search-bar">
         <input id="searchfield" name="searchfield" type="text" size="40" />
         <img alt="Search" src="/@@/setmanager.ui.skin/search.png" />
-        <input type="submit" i18n:attributes="value" i18n:domain="p2.datashackle.core" value="Save changes" style="margin-left:100px" id="globalsavebutton"
-        onClick="javascript:p2.datamanagement.save.apply(p2.datamanagement, [])" disabled/>
+        <button class="p2-button" type="button"
+                        tal:attributes="id string:${context/plan/plan_identifier}.action.save;
+                                        name string:${context/plan/plan_identifier}.action.save">Save</button>
     </div>
     <table  class="resultstable" id="datamanagementfiltertable">
            <tr>
@@ -30,6 +26,9 @@
     </table>
 </div>
 <script type="text/javascript" tal:content="string:
+        p2.datamanagement = new p2.Datamanagement(plan_url='${context/plan/@@absolute_url}',
+                                            planidentifier='${context/plan/plan_identifier}',
+                                            parentid='datamanagementfiltertable');
         $$('#searchfield').bind('changed', function(){p2.datamanagement.SetFilter.apply(p2.datamanagement, 
         [$$('#searchfield').val()] );});
         $$('#searchfield').bind('keyup', function(){p2.datamanagement.SetFilter.apply(p2.datamanagement, 

@@ -7,18 +7,6 @@ p2.ActionWidget = function(element, operational, propertyform, options){
     p2.Widget.call(this, element, operational, propertyform);
     
     this.options = options;
-    
-    var self = this; 
-    var click = function(event){
-        if (self.options.msg_reset){
-            $(element).trigger('P2_RESET', []);
-        }
-        if (self.options.msg_close){
-            $(element).trigger('P2_CLOSE', []);
-        }
-    }
-
-    $(element).bind('click', click);    
 }
 
 p2.ActionWidget.prototype = function(){

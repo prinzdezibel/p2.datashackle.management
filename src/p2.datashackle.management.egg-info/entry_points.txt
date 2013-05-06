@@ -1,3 +1,0 @@
-[fanstatic.libraries]
-foobar = p2.datashackle.management:management_library
-
