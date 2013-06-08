@@ -33,6 +33,12 @@ p2.Datamanagement = function(planurl, planidentifier, parentid)
                    }else{
                        success = true;
                        p2.datashackle.core.session.graph.init(); //this will wipe out the graph
+                            try{
+                       $('.p2-form').each(function(){
+                            var dataid = $(this).attr('data-node-id');
+                            self.FormMarkSaved(dataid);
+                       });
+                            }catch(err){alert(err)}
                    }
                },
                error: function(xhr, text, error){

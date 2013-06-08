@@ -26,7 +26,6 @@ from grokcore.layout.interfaces import ILayout, IPage
 class EditData(Form):
     class SaveAction(Action):
         def __call__(self, form):
-            form.saved = True
             jsonresponse = dict()
 
             graph_xml = form.request.form['data']
@@ -40,7 +39,7 @@ class EditData(Form):
                                           'message': ex.reason,
                                           'data_node_id': ex.setobjectid}
             form.jsonresponse = jsonresponse
-
+            
     
     grok.name('index') 
     grok.context(IGenericSet)
@@ -48,7 +47,14 @@ class EditData(Form):
     grok.require('dolmen.content.View')
 
     actions = Actions(SaveAction('Save'),)
-    saved = False
+
+    def __call__(self):
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            self.updateActions()
+            self.response.setHeader('Content-Type', 'application/json')
+            return json.dumps(self.jsonresponse)
+        else:
+            return super(EditData, self).__call__() 
 
     @property
     def prefix(self):
@@ -68,12 +74,8 @@ class EditData(Form):
         if self.context.plan_identifier == "p2_meta_property_form" or self.context.plan_identifier == "p2_meta_archetype":
             return ""
 
-        if self.saved:
-            self.response.setHeader('Content-Type', 'application/json')
-            return json.dumps(self.jsonresponse)
-        else: 
-            template = grok.PageTemplateFile("../templates/datamanagementview.pt")
-            html = template.render(self)
-            return html
+        template = grok.PageTemplateFile("../templates/datamanagementview.pt")
+        html = template.render(self)
+        return html
 
 

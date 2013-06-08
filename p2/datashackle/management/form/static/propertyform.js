@@ -50,11 +50,6 @@ p2.PropertyForm.prototype.open = function(success){
     var self = this;
     var _success = function(rootEl){
         self.isLoaded = true;
-        
-        $(rootEl).click(function(){
-            $(self.dialog).dialog('close');
-        });
-
         if (success) success(arguments);
     }
     // If dialog is already there, we don't load it again from database
@@ -62,6 +57,11 @@ p2.PropertyForm.prototype.open = function(success){
         p2.Formloader.prototype.open.call(this, this.rootEl, _success);
     }
 	$(this.dialog).dialog('open');
+    
+    var formId = $(this.rootEl).children('.p2-form').attr('data-form-identifier');
+    $(this.rootEl).find('#' + formId + '\\.action\\.close').click(function(){
+        $(self.dialog).dialog('close');
+    });
 }
 
 p2.PropertyForm.prototype.close = function(){

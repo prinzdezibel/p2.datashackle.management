@@ -135,6 +135,8 @@ class SetobjectGraph(object):
     
     def process_object(self, node, parent_setobject):
         action = node.get('action')
+        if not action:
+            raise SetobjectGraphException("Mandatory action attribute missing.")
         typename = node.get('type')
         klass = setobject_type_registry.lookup(typename)
         objid = node.get('objid')

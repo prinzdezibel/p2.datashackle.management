@@ -58,9 +58,8 @@ class GenericSet(dolmen.content.Container):
 
     @property    
     def plan(self):
-        # Create plan
         plan = fetch_plan(self)
-        # I was thinking that the next assignment triggers the Catalog index implictly. But that's obviously not 
+        # I was thinking that the next assignment triggers the Catalog index implictly. But that's obviously not
         # the case, therefore we update the index manually thereafter.
         self.plan_identifier = str(plan.plan_identifier) # Comes as unicode from database, but schema is ASCIILine
         # Indexing our updated plan_identifier value:

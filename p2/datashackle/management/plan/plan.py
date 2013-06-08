@@ -3,8 +3,6 @@
 # Author:  Michael Jenny <michael.jenny%40projekt-und-partner.com>
 
 import grok
-import logging
-import os
 
 from grokcore.content.interfaces import IContext
 from sqlalchemy import orm
@@ -14,8 +12,8 @@ from zope.location.interfaces import ILocation
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
-from p2.datashackle.core.models.model import Model
-from p2.datashackle.core.interfaces import IDbUtility 
+from p2.datashackle.core.models.model import StrippedModel
+from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.management.form.form import FormType, FormTypeFactory
 from p2.datashackle.management.widget.widget import WidgetType
 from p2.datashackle.management.span.span import SpanType
@@ -32,10 +30,10 @@ def fetch_plan(genericset):
                
 
 
- 
+
 
 @model_config()
-class Plan(Model):
+class Plan(StrippedModel):
     # In order to find default views via /index rather than
     # Zope3's /index.html we need to implement interfaces.IContext
     grok.implements(IPlan, IContext, ILocation)
@@ -50,8 +48,8 @@ class Plan(Model):
     @orm.reconstructor          
     def reconstruct(self):
         util = getUtility(ILocationProvider)
-        genericset = util.get_genericset(self.plan_identifier) # Requires that genericset.plan_identifier
-                                                               # (yes, genericset.plan_identifier, not self.plan_identifier)
+        genericset = util.get_genericset(self.plan_identifier)
+
         if genericset != None:
             self.make_locatable(genericset.__name__, genericset.__parent__)
         super(Plan, self).reconstruct()
@@ -61,14 +59,19 @@ class Plan(Model):
         self.form_type = FormType.__name__
         self.form_module = FormType.__module__
 
-
     def make_locatable(self, name, parent):
          # Implementation of ILocation interface enables the object to be located with an URL,
          # which is needed for views of the plan, form and the like.
          self.__name__ = name
          self.__parent__ = parent
-                 
-           
+
+    @classmethod
+    def map_computed_properties(cls):
+        orm.mapper(cls,
+                 inherits=StrippedModel._sa_class_manager.mapper,
+                 properties=cls.mapper_properties,
+                 )
+
     def traverse(self, name):
         if name == 'forms':
             return FormDirectory(self)

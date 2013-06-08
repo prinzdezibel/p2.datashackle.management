@@ -30,7 +30,7 @@ class SpanType(SetobjectType):
     
     label_width = 95
     operational = False # Designer mode or user mode?
-    action = None
+    action = 'save'
  
     def __init__(self, span_name=None):
         super(SpanType, self).__init__()
@@ -91,6 +91,9 @@ class SpanType(SetobjectType):
         return {}
     
     def get_info(self):
+        from p2.datashackle.management.span.embeddedform import EmbeddedForm
+        #if isinstance(self, EmbeddedForm):
+        #    import pdb; pdb.set_trace()
         info = {'operational': self.operational,
                 'module': self.operational and self.op_setobject_type and self.op_setobject_type.__module__ or self.__class__.__module__,
                 'type': self.operational and self.op_setobject_type and self.op_setobject_type.__name__ or self.__class__.__name__,
