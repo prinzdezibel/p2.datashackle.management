@@ -28,7 +28,7 @@ class SetobjectGraph(object):
         #self.plan_identifier = plan_identifier
         self.session = getUtility(IDbUtility).Session()
         # deferred import
-        #from p2.datashackle.management.plan.plan import Model
+        #from p2.datashackle.management.model.model import Model
         #self.plan = self.session.query(Model).filter_by(plan_identifier=self.plan_identifier).one()
         #self.table_identifier = self.plan.table_identifier
         self.request = request

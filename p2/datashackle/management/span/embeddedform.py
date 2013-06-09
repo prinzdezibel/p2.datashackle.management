@@ -41,7 +41,7 @@ class EmbeddedForm(PolymorphicSpanType):
 
     def post_order_traverse(self, mode):
         if mode == 'save':
-            from p2.datashackle.management.plan.plan import Model
+            from p2.datashackle.management.model.model import Model
             plan_id = self.plan_identifier
             session = Session()
             plan = session.query(Model).filter_by(plan_identifier=plan_id).one()

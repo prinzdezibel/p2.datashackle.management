@@ -145,7 +145,7 @@ from p2.datashackle.core.interfaces import IDbUtility
 class PolymorphicSpanType(SpanType):
     @classmethod
     def map_computed_properties(cls):
-        from p2.datashackle.management.plan.plan import Model
+        from p2.datashackle.management.model.model import Model
         t = setobject_table_registry.lookup_by_class(Model.__name__)
         select = t.select().where(t.c.klass == cls.__name__)
         rec = dict(select.execute().first())

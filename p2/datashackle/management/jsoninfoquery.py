@@ -8,7 +8,7 @@ import sqlalchemy
 from zope.component import getUtility
 
 from p2.datashackle.core.interfaces import IDbUtility 
-from p2.datashackle.management.plan.plan import Model
+from p2.datashackle.management.model.model import Model
 from p2.datashackle.management.interfaces import IDatashackle
 
 
