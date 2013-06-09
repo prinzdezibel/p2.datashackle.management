@@ -36,7 +36,7 @@
          </tal:repeat>
 
         <div id="toolbox">
-            <h3>Plan</h3>
+            <h3>Model</h3>
             <ul>
                 <li tal:content="string:Identifier: ${context/plan/plan_identifier}"></li>
             </ul>

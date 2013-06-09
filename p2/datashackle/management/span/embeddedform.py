@@ -41,17 +41,17 @@ class EmbeddedForm(PolymorphicSpanType):
 
     def post_order_traverse(self, mode):
         if mode == 'save':
-            from p2.datashackle.management.plan.plan import Plan
+            from p2.datashackle.management.plan.plan import Model
             plan_id = self.plan_identifier
             session = Session()
-            plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
+            plan = session.query(Model).filter_by(plan_identifier=plan_id).one()
             source_type = self.op_setobject_type
             target_type = setobject_type_registry.lookup(plan.klass)
             
             # Set computed values on inner objects
-            m = session.query(Plan).filter_by(klass=source_type.__name__).one()
+            m = session.query(Model).filter_by(klass=source_type.__name__).one()
             self.linkage.source_model = m
-            m = session.query(Plan).filter_by(klass=plan.klass).one()
+            m = session.query(Model).filter_by(klass=plan.klass).one()
             self.linkage.target_model = m
 
             self.linkage.relation.source_table = source_type.get_table_name() 

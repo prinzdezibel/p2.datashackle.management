@@ -84,7 +84,7 @@ class FormType(ModelBase):
         if hasattr(self, 'klass'):
             self.op_setobject_type = setobject_type_registry.get(self.klass)
             if self.op_setobject_type == None:
-                raise Exception("Type '%s' does not exist. Check p2_plan " \
+                raise Exception("Type '%s' does not exist. Check p2_model " \
                     "table and/or ensure that class type exists in " \
                     "appropriate module and restart server." \
                     % (self.klass)
@@ -122,7 +122,7 @@ class FormTypeFactory(object):
     def copy(cls, plan_name, form_name):
         db_util = getUtility(IDbUtility)
         session = db_util.Session()
-        form = session.query(FormType).filter_by(fk_p2_plan=plan_name, form_name=form_name).one()
+        form = session.query(FormType).filter_by(fk_p2_model=plan_name, form_name=form_name).one()
 
         new = FormType()
         pk_keys = set([c.key for c in class_mapper(FormType).primary_key])

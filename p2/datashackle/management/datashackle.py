@@ -117,11 +117,11 @@ def init_application(event):
     #configfolder['users'] = users
 
     set_ = GenericSet()
-    set_.title = u'p2_plan'
-    set_.plan_identifier = 'p2_plan'
-    set_.table_identifier = 'p2_plan'
+    set_.title = u'p2_model'
+    set_.plan_identifier = 'p2_model'
+    set_.table_identifier = 'p2_model'
     set_.table_key_field = 'plan_identifier'
-    metaconfig['p2_plan'] = set_
+    metaconfig['p2_model'] = set_
 
     set_ = GenericSet()
     set_.title = u'p2_form'

@@ -33,10 +33,10 @@ class Dropdown(PolymorphicSpanType):
 
     def post_order_traverse(self, mode):
         if mode == 'save':
-            from p2.datashackle.management.plan.plan import Plan
+            from p2.datashackle.management.plan.plan import Model
             plan_id = self.plan_identifier
             session = Session()
-            plan = session.query(Plan).filter_by(plan_identifier=plan_id).one()
+            plan = session.query(Model).filter_by(plan_identifier=plan_id).one()
             source_type = self.op_setobject_type
             target_type = setobject_type_registry.lookup(plan.klass)
     
@@ -47,7 +47,7 @@ class Dropdown(PolymorphicSpanType):
             
             # Set computed linkage values
             self.linkage.source_model = plan
-            m = session.query(Plan).filter_by(klass=plan.klass).one()
+            m = session.query(Model).filter_by(klass=plan.klass).one()
             self.linkage.target_model = m
      
     def __setattr__(self, name, value):
@@ -55,7 +55,7 @@ class Dropdown(PolymorphicSpanType):
         if name == 'linkage':
             if self.plan_identifier != None and value != None:
                 # Get the table identifier from our plan identifier and set it as the linkage's target class
-                table = setobject_table_registry.lookup_by_table('p2_plan')
+                table = setobject_table_registry.lookup_by_table('p2_model')
                 plan = getUtility(IDbUtility).engine.execute(table.select(table.c.plan_identifier == self.plan_identifier)).first()
                 plan_type = plan['so_type']
                 table_identifier = setobject_type_registry.lookup(plan_type).get_table_name()

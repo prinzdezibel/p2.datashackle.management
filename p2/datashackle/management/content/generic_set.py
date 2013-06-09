@@ -30,11 +30,11 @@ from p2.datashackle.core.sql import table_exists
 from p2.datashackle.core.globals import metadata
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models import identity
-from p2.datashackle.core.models.model import create_setobject_type
+from p2.datashackle.core.models.model import create_basemodel_type
 from p2.datashackle.management.interfaces import IGenericSet, IDatashackleContentFactory
 from p2.datashackle.management.content.factoring import DatashackleContentFactory
 from p2.datashackle.management.form.form import FormType
-from p2.datashackle.management.plan.plan import fetch_plan, Plan
+from p2.datashackle.management.plan.plan import fetch_plan, Model
    
 
 
@@ -104,7 +104,7 @@ def genericset_added(genericset, event):
         # Even if the user gives a specialized class and module we create a 
         # generic klass first, because the specialized class definition will not exist until the
         # user defines it in the source code and restarts the server.
-        setobject_type = create_setobject_type(genericset.klass, table_identifier)
+        setobject_type = create_basemodel_type(genericset.klass, table_identifier)
         
         # DDL
         table_type.create()
@@ -114,7 +114,7 @@ def genericset_added(genericset, event):
     #    klass = so.__name__
 
     #session = getUtility(IDbUtility).Session()
-    #plan = Plan(plan_identifier, klass, table_identifier)
+    #plan = Model(plan_identifier, klass, table_identifier)
     ##plan.klass = klass
     #form = FormType(
     #    plan=plan,

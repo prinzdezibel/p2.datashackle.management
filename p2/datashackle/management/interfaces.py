@@ -88,12 +88,12 @@ class IUserPreferences(Interface):
                       default=u''
                       )
         
-class IPlan(Interface):
+class IModel(Interface):
     """Represents different views onto objects. The objects has different properties.
-    The ´Plan´ does not only represent the values of the objects itself
+    The ´Model´ does not only represent the values of the objects itself
     (the instances), but also the blueprint (e.g. which properties does it have)
-    of the object (the type). The ´Plan's´ different views are manifested
-    through a collection of ´Forms´ it holds. The ´Plan´ is wired with a table
+    of the object (the type). The ´Model's´ different views are manifested
+    through a collection of ´Forms´ it holds. The ´Model´ is wired with a table
     in a relational database.
     """
 

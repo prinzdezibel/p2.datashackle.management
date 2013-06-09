@@ -19,7 +19,7 @@ class LocationProvider(grok.GlobalUtility):
         for genericset in genericsets:
             if genericset.plan_identifier == plan_identifier:
                 return genericset.__name__, genericset.__parent__
-        raise Exception("Can't provide location information of Plan '%s'" % plan_identifier)
+        raise Exception("Can't provide location information of Model '%s'" % plan_identifier)
 
     def lookup_genericset(self, plan_identifier):
         genericset = self.get_genericset(plan_identifier)

@@ -28,8 +28,8 @@ class SetobjectGraph(object):
         #self.plan_identifier = plan_identifier
         self.session = getUtility(IDbUtility).Session()
         # deferred import
-        #from p2.datashackle.management.plan.plan import Plan
-        #self.plan = self.session.query(Plan).filter_by(plan_identifier=self.plan_identifier).one()
+        #from p2.datashackle.management.plan.plan import Model
+        #self.plan = self.session.query(Model).filter_by(plan_identifier=self.plan_identifier).one()
         #self.table_identifier = self.plan.table_identifier
         self.request = request
         self.xml_root = etree.fromstring(raw_xml)

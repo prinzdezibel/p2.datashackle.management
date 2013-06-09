@@ -17,29 +17,26 @@ from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.management.form.form import FormType, FormTypeFactory
 from p2.datashackle.management.widget.widget import WidgetType
 from p2.datashackle.management.span.span import SpanType
-from p2.datashackle.management.interfaces import IPlan, ILocationProvider
+from p2.datashackle.management.interfaces import IModel, ILocationProvider
 
         
 def fetch_plan(genericset):
     db_util = getUtility(IDbUtility)
     session = db_util.Session()
-    plan = session.query(Plan).filter_by(plan_identifier=genericset.plan_identifier).one()
+    plan = session.query(Model).filter_by(plan_identifier=genericset.plan_identifier).one()
     session.add(plan)
     plan.make_locatable(genericset.__name__, genericset.__parent__)
     return plan
                
 
-
-
-
 @model_config()
-class Plan(StrippedModel):
+class Model(StrippedModel):
     # In order to find default views via /index rather than
     # Zope3's /index.html we need to implement interfaces.IContext
-    grok.implements(IPlan, IContext, ILocation)
+    grok.implements(IModel, IContext, ILocation)
  
     def __init__(self):
-        super(Plan, self).__init__()
+        super(Model, self).__init__()
 
         form = FormTypeFactory.copy(plan_name='p2_archetype', form_name='default_form')
         self.forms['default_form'] = form        
@@ -52,10 +49,10 @@ class Plan(StrippedModel):
 
         if genericset != None:
             self.make_locatable(genericset.__name__, genericset.__parent__)
-        super(Plan, self).reconstruct()
+        super(Model, self).reconstruct()
     
     def common_init(self):
-        super(Plan, self).common_init()
+        super(Model, self).common_init()
         self.form_type = FormType.__name__
         self.form_module = FormType.__module__
 

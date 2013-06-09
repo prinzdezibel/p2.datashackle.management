@@ -8,7 +8,7 @@ import sqlalchemy
 from zope.component import getUtility
 
 from p2.datashackle.core.interfaces import IDbUtility 
-from p2.datashackle.management.plan.plan import Plan
+from p2.datashackle.management.plan.plan import Model
 from p2.datashackle.management.interfaces import IDatashackle
 
 
@@ -27,7 +27,7 @@ class JsonInfoQuery(grok.View):
         """ Dump a JSON dictionary which associates all plan identifiers with their respective table identifiers """
         dictionary = {}
         session = getUtility(IDbUtility).Session()
-        plans = session.query(Plan).all()
+        plans = session.query(Model).all()
         for plan in plans:
             dictionary[plan.plan_identifier] = plan.table_identifier
         return json.dumps(dictionary)

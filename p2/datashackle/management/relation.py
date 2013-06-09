@@ -49,8 +49,8 @@ class RelationMixin(object):
     def query_not_joined(self):
         session = getUtility(IDbUtility).Session()
         plan_id = self.relation.plan_identifier
-        from p2.datashackle.management.plan.plan import Plan
-        plan = session.query(Plan).get(plan_id)
+        from p2.datashackle.management.plan.plan import Model
+        plan = session.query(Model).get(plan_id)
         target_type = setobject_type_registry.lookup(plan.klass)        
         query = session.query(target_type)
         query = query.add_column(

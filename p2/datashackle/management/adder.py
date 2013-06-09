@@ -41,7 +41,7 @@ class Adder(grok.MultiAdapter):
                 self.factory = factory
 
                 app = grok.getApplication()
-                context = app['configuration']['meta']['p2_plan']
+                context = app['configuration']['meta']['p2_model']
                 addform = context.plan.forms['add_model_view']
                 view = queryMultiAdapter(
                     (addform, self.request, self), name=factory.addform)
