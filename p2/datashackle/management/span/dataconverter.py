@@ -3,11 +3,8 @@
 # Author:  Michael Jenny <michael.jenny%40projekt-und-partner.com>
 
 import grok
-
 from zope.interface import Interface
-#from zope.publisher.interfaces.http import IHTTPRequest
-
-from p2.datashackle.core.models.setobject_types import SetobjectType
+from p2.datashackle.core import ModelBase
 from p2.datashackle.core.app.exceptions import SetobjectGraphException
 
 
@@ -26,8 +23,8 @@ class DataConverter(grok.Adapter):
     """A base implementation of the data converter."""
     grok.implements(IDataConverter)
     grok.provides(IDataConverter)
-    #grok.adapts(SetobjectType, IHTTPRequest)
-    grok.context(SetobjectType)
+    #grok.adapts(ModelBase, IHTTPRequest)
+    grok.context(ModelBase)
 
     def to_span_value(value):
         return value

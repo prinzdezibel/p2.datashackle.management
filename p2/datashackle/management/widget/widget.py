@@ -14,7 +14,7 @@ from zope.location.interfaces import ILocation
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
-from p2.datashackle.core.models.setobject_types import SetobjectType
+from p2.datashackle.core import ModelBase
 from p2.datashackle.core.models.identity import generate_random_identifier
 from p2.datashackle.management.span.span import SpanFactory
 from p2.datashackle.management.interfaces import IWidgetType
@@ -31,7 +31,7 @@ from p2.datashackle.core.interfaces import IDbUtility
 
 
 @model_config()
-class WidgetType(SetobjectType):
+class WidgetType(ModelBase):
     grok.implements(IWidgetType, interfaces.IContext, ILocation)
     
     js_widget_constructor = 'p2.Widget'

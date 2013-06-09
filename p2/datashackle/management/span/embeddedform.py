@@ -9,7 +9,6 @@ from p2.datashackle.core import model_config, Session
 from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.app.exceptions import UserException
 from p2.datashackle.core.interfaces import IDbUtility
-from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.core.models.cardinality import Cardinality
 from p2.datashackle.core.models.linkage import Linkage
 from zope.component import getUtility

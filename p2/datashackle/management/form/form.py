@@ -13,7 +13,7 @@ from zope.location.interfaces import ILocation
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.setobjectreg import setobject_type_registry
-from p2.datashackle.core.models.setobject_types import SetobjectType
+from p2.datashackle.core import ModelBase
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.management.setobject_graph import SetobjectGraph
 from p2.datashackle.management.interfaces import IFormType
@@ -33,7 +33,7 @@ class LocationHelper(object):
 
 
 @model_config(maporder=2)
-class FormType(SetobjectType):
+class FormType(ModelBase):
     # In order to find default views via /index rather than
     # Zope3's /index.html we need to implement interfaces.IContext
     # The form gains location awareness (grok.url() capability) through implementing ILocation
@@ -42,7 +42,7 @@ class FormType(SetobjectType):
     def __init__(self):
 
         # BEGIN sqlalchemy instrumented attributes
-        # self.form_identifier initialized through SetobjectType base class.
+        # self.form_identifier initialized through ModelBase base class.
         self.plan = None
         self.form_name = ''
         self.widgets = dict()

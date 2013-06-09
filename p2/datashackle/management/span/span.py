@@ -17,7 +17,7 @@ from p2.datashackle.core import model_config
 from p2.datashackle.core.app.exceptions import *
 from p2.datashackle.core.app.setobjectreg import (setobject_table_registry,
                                                   setobject_type_registry)
-from p2.datashackle.core.models.setobject_types import SetobjectType
+from p2.datashackle.core import ModelBase
 from p2.datashackle.management.interfaces import ISpanType
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
@@ -25,7 +25,7 @@ from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
 
 
 @model_config()
-class SpanType(SetobjectType):
+class SpanType(ModelBase):
     grok.implements(ISpanType, ILocation)
     
     label_width = 95

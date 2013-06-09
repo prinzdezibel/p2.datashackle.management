@@ -7,7 +7,7 @@ from zope.component import getUtility
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.interfaces import IDbUtility
-from p2.datashackle.core.models.setobject_types import SetobjectType, setobject_table_registry
+from p2.datashackle.core.models.model import setobject_table_registry
 from p2.datashackle.core.models.linkage import Linkage
 from p2.datashackle.core.models.media import Media
 from p2.datashackle.core.models.relation import Relation
@@ -72,7 +72,7 @@ class Fileupload(PolymorphicSpanType):
 #
 #from p2.datashackle.core import model_config
 #from p2.datashackle.core.interfaces import IDbUtility
-#from p2.datashackle.core.models.setobject_types import SetobjectType, setobject_table_registry
+#from p2.datashackle.core.models.model import ModelBase, setobject_table_registry
 #from p2.datashackle.core.models.linkage import Linkage
 #from p2.datashackle.core.models.media import Media
 #from p2.datashackle.core.models.relation import Relation

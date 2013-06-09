@@ -7,7 +7,7 @@ from sqlalchemy import Boolean
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.models.mapping import map_field_attr
-from p2.datashackle.core.models.setobject_types import setobject_table_registry, \
+from p2.datashackle.core.models.model import setobject_table_registry, \
     setobject_type_registry
 from p2.datashackle.management.span.span import PolymorphicSpanType
 

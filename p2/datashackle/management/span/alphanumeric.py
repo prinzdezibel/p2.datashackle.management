@@ -15,11 +15,9 @@ from zope.security.management import getInteraction
 
 from p2.datashackle.core import model_config
 from p2.datashackle.core.app.exceptions import SetobjectGraphException
-from p2.datashackle.core.app.setobjectreg import setobject_table_registry, \
-    setobject_type_registry
+from p2.datashackle.core.app.setobjectreg import setobject_table_registry, setobject_type_registry
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models.mapping import map_field_attr
-from p2.datashackle.core.models.setobject_types import SetobjectType
 from p2.datashackle.management.span.dataconverter import IDataConverter, DataConverter
 from p2.datashackle.management.span.span import PolymorphicSpanType
 

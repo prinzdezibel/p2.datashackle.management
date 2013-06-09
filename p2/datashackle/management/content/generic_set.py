@@ -30,7 +30,7 @@ from p2.datashackle.core.sql import table_exists
 from p2.datashackle.core.globals import metadata
 from p2.datashackle.core.interfaces import IDbUtility
 from p2.datashackle.core.models import identity
-from p2.datashackle.core.models.setobject_types import create_setobject_type
+from p2.datashackle.core.models.model import create_setobject_type
 from p2.datashackle.management.interfaces import IGenericSet, IDatashackleContentFactory
 from p2.datashackle.management.content.factoring import DatashackleContentFactory
 from p2.datashackle.management.form.form import FormType
