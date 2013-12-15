@@ -21,7 +21,7 @@ objectpicker = resource.ResourceInclusion(FormLibrary, "objectpicker.js", depend
 
 
 class PlanResources(resource.ResourceLibrary):
-    resource.path('plan/static')
+    resource.path('model/static')
     resource.resource("designer.js", depends=[])
     resource.resource("datamanagement.js", depends=[])
 
@@ -66,5 +66,5 @@ class SetmanagerResources(resource.ResourceLibrary):
                         )
 
 class AddModelResources(resource.ResourceLibrary):
-    resource.path('plan/static')
+    resource.path('model/static')
     resource.resource("addmodel.js", depends=[])
